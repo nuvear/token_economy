@@ -36,6 +36,17 @@ interface ButtonRow {
 
 const roleList = (row: ButtonRow): string[] => row.allowed_roles.split(",").map((r) => r.trim());
 
+// Roles permitted to see internal floor/cost data (PRD §2). A scope that carries
+// the cost stack or published floors is server-restricted to these, regardless of
+// any allowed_roles a builder tries to attach client-side.
+const FLOOR_ROLES = ["pricing_owner", "deal_desk", "leadership"];
+/** The roles a given data scope may ever be run by, enforced server-side. */
+function permittedRolesForScope(scope: string): Set<string> {
+  if (scope === "policy") return new Set(FLOOR_ROLES); // published floors & costs
+  if (scope === "current_quote") return new Set([...FLOOR_ROLES, "sales"]); // sales narrowed to own quotes at run
+  return new Set(ROLES); // portfolio/engagement/evidence — no floor/cost stack
+}
+
 export function insightsRouter(db: Db): Router {
   const router = Router();
 
@@ -79,12 +90,16 @@ export function insightsRouter(db: Db): Router {
       res.status(400).json({ error: "invalid_provider", allowed: PROVIDERS });
       return;
     }
+    // Couple scope→roles: a floor/cost-bearing scope can never be granted to a
+    // role not permitted to see floors. Clamp to the intersection so a broad
+    // allowed_roles (or the default) cannot widen access past the scope's limit.
+    const permitted = permittedRolesForScope(b.data_scope);
     const allowedRoles = String(b.allowed_roles ?? ROLES.join(","))
       .split(",")
       .map((r) => r.trim())
-      .filter((r) => (ROLES as readonly string[]).includes(r));
+      .filter((r) => (ROLES as readonly string[]).includes(r) && permitted.has(r));
     if (allowedRoles.length === 0) {
-      res.status(400).json({ error: "invalid_allowed_roles", allowed: ROLES });
+      res.status(400).json({ error: "invalid_allowed_roles", allowed: [...permitted] });
       return;
     }
     const key =
@@ -137,9 +152,11 @@ export function insightsRouter(db: Db): Router {
       res.status(404).json({ error: "insight_button_not_found" });
       return;
     }
-    // §2: the run respects the caller's data-access rights.
-    if (!roleList(button).includes(u.role)) {
-      res.status(403).json({ error: "forbidden", reason: "role_not_allowed_for_button" });
+    // §2: the run respects the caller's data-access rights — both the button's
+    // stored allowed_roles AND the scope's hard server-side role limit (so a
+    // mis-stored button can never leak floor/cost data to a role that can't see it).
+    if (!roleList(button).includes(u.role) || !permittedRolesForScope(button.data_scope).has(u.role)) {
+      res.status(403).json({ error: "forbidden", reason: "role_not_allowed_for_scope" });
       return;
     }
 

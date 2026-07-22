@@ -41,6 +41,18 @@ export function createApp(db: Db): express.Express {
   });
   app.use("/api", api);
 
+  // Error handler — never leak stack traces or filesystem paths to clients.
+  // Malformed JSON bodies (body-parser) become a clean 400; everything else 500.
+  app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const e = err as { type?: string; status?: number; statusCode?: number };
+    if (e?.type === "entity.parse.failed" || (err instanceof SyntaxError && "body" in (err as object))) {
+      res.status(400).json({ error: "invalid_json" });
+      return;
+    }
+    const status = e?.status ?? e?.statusCode ?? 500;
+    res.status(status).json({ error: status === 500 ? "internal_error" : "request_error" });
+  });
+
   // Production: serve the built web app from ../dist.
   if (process.env.NODE_ENV === "production") {
     const dist = path.join(APP_DIR, "dist");

@@ -98,7 +98,10 @@ export default function DealWorkspace() {
   // ——— Actions ———
 
   const saveQuote = async (): Promise<number | null> => {
-    const offering = offeringList.find((o) => o.preset_key === presetKey);
+    // PRESETS keys are camelCase (testAutomation); DB preset_key is snake_case
+    // (test_automation). Normalize so every offering resolves an offering_id.
+    const presetSnake = presetKey.replace(/[A-Z]/g, (c) => "_" + c.toLowerCase());
+    const offering = offeringList.find((o) => o.preset_key === presetSnake);
     setBusy(true);
     try {
       const res = quoteId

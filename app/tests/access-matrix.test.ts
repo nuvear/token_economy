@@ -253,16 +253,31 @@ describe("§2 row: portfolio & analytics", () => {
 });
 
 describe("§2 row: insights page (every role) vs Insight Studio (builder flag)", () => {
-  it.each(ROLES)("%s can list buttons and run an open button (200)", async (role) => {
+  it.each(ROLES)("%s can list buttons (200)", async (role) => {
     const buttons = await agentFor(role).get("/api/insights/buttons");
     expect(buttons.status).toBe(200);
+  });
+
+  it.each(ROLES)("%s runs an OPEN-scope button (engagement variance) — 200", async (role) => {
     const run = await agentFor(role)
       .post("/api/insights/run")
-      .send({ button_key: "explain_governance_state", quote_id: salesQuoteId });
-    // sales owns salesQuoteId; every other role may read any quote.
+      .send({ button_key: "engagement_variance_drivers", quote_id: salesQuoteId });
     expect(run.status).toBe(200);
     expect(run.body.run.provider).toBe("mock");
     expect(run.body.run.result_md).toContain("deterministic");
+  });
+
+  it.each(ROLES)("%s on a current-quote insight: allowed for floor-seeing roles, 403 for delivery", async (role) => {
+    const run = await agentFor(role)
+      .post("/api/insights/run")
+      .send({ button_key: "explain_governance_state", quote_id: salesQuoteId });
+    if (role === "delivery") {
+      // current_quote carries the cost stack; delivery has no quote access (§2).
+      expect(run.status).toBe(403);
+    } else {
+      expect(run.status).toBe(200);
+      expect(run.body.run.provider).toBe("mock");
+    }
   });
 
   it("role-restricted buttons refuse roles outside allowed_roles", async () => {

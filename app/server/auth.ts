@@ -140,5 +140,36 @@ export function authRouter(db: Db): Router {
     res.json({ users });
   });
 
+  // Team & role admin (PRD §2: pricing_owner only). Updates role and/or the
+  // builder flag, audited to the append-only event log.
+  const ROLES: Role[] = ["pricing_owner", "sales", "deal_desk", "delivery", "leadership"];
+  router.put("/users/:id", requireRole("pricing_owner"), (req, res) => {
+    const target = loadUser(db, Number(req.params.id));
+    if (!target) {
+      res.status(404).json({ error: "user_not_found" });
+      return;
+    }
+    const body = (req.body ?? {}) as { role?: string; is_builder?: boolean };
+    const nextRole = body.role ?? target.role;
+    if (!ROLES.includes(nextRole as Role)) {
+      res.status(400).json({ error: "invalid_role", allowed: ROLES });
+      return;
+    }
+    const nextBuilder = typeof body.is_builder === "boolean" ? body.is_builder : target.is_builder;
+    db.prepare("UPDATE users SET role = ?, is_builder = ? WHERE id = ?").run(
+      nextRole,
+      nextBuilder ? 1 : 0,
+      target.id,
+    );
+    logEvent(db, {
+      actor_user_id: req.user!.id,
+      event_type: "user_role_updated",
+      entity_type: "user",
+      entity_id: target.id,
+      details_md: `**${target.full_name}** → role: ${nextRole}${nextBuilder ? " · builder" : ""} (by ${req.user!.full_name}).`,
+    });
+    res.json({ user: loadUser(db, target.id) });
+  });
+
   return router;
 }

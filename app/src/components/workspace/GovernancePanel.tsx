@@ -126,16 +126,27 @@ export function GovernancePanel(props: {
         <div style={{ fontSize: 19, fontWeight: 800, marginTop: 10, lineHeight: 1.2, color: v.title }}>{title}</div>
         <div style={{ fontSize: 12.5, lineHeight: 1.6, color: color.ice, marginTop: 8 }}>{message}</div>
 
-        <div style={{ display: "flex", gap: 16, marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,.14)" }}>
+        {/* Numbers live on a solid surface, never on glass (design rule). */}
+        <div
+          style={{
+            display: "flex",
+            gap: 16,
+            marginTop: 14,
+            padding: "10px 12px",
+            background: "var(--surface-alt, #EEF4FC)",
+            border: "1px solid var(--border, #D9E6F7)",
+            borderRadius: 10,
+          }}
+        >
           {(
             [
-              [T("floor"), fmtPct(r.legacyBreakevenDiscount, locale), "#fff"],
+              [T("floor"), fmtPct(r.legacyBreakevenDiscount, locale), "var(--ink, #16243D)"],
               [
                 T("current"),
                 fmtPct(st.discountPct / 100, locale),
-                state === "blocked" || state === "nobid" ? "#E89B99" : state === "review" ? color.gold : "#fff",
+                state === "blocked" || state === "nobid" ? color.red : state === "review" ? color.goldDeep : "var(--ink, #16243D)",
               ],
-              [T("riskMax"), fmtPct(r.maxSafeDiscount, locale), color.gold],
+              [T("riskMax"), fmtPct(r.maxSafeDiscount, locale), color.goldDeep],
             ] as [string, string, string][]
           ).map(([label, value, ink]) => (
             <div key={label}>
@@ -143,7 +154,7 @@ export function GovernancePanel(props: {
                 style={{
                   fontSize: 9,
                   letterSpacing: ja ? 0 : ".1em",
-                  color: "rgba(217,230,247,.6)",
+                  color: "var(--muted, #6B7A93)",
                   textTransform: ja ? "none" : "uppercase",
                 }}
               >

@@ -65,9 +65,11 @@ function extractSection(md: string, heading: RegExp): string | null {
 /** Structured Markdown analysis computed deterministically from the packaged data. */
 export function mockComplete(req: CompletionRequest): string {
   const { prompt } = req;
-  const passCount = (prompt.match(/\| PASS \|/g) ?? []).length + (prompt.match(/ \| PASS/g) ?? []).length;
-  const failCount = (prompt.match(/FAIL/g) ?? []).length;
-  const warnCount = (prompt.match(/WARNING/g) ?? []).length;
+  // Count only gate-table status cells — "FAILED"/"hard failures" in the verdict
+  // prose must not register as gate failures.
+  const passCount = (prompt.match(/\| PASS \|/g) ?? []).length;
+  const failCount = (prompt.match(/\| FAIL \|/g) ?? []).length;
+  const warnCount = (prompt.match(/\| WARNING \|/g) ?? []).length;
   const headings = (prompt.match(/^#{1,2} .+$/gm) ?? []).map((h) => h.replace(/^#+ /, ""));
   const governance = extractSection(prompt, /^## Governance verdict/);
   const tables = (prompt.match(/^\| /gm) ?? []).length;

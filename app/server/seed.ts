@@ -33,7 +33,8 @@ const SEED_INSIGHT_BUTTONS = [
     prompt_template_md:
       "You are the DealSpine pricing-governance explainer. Using the quote data below, explain the quote's governance state (green / warning / blocked), which gates fired and why, and what would change the verdict. Be concise and concrete.\n\n{{data}}",
     data_scope: "current_quote",
-    allowed_roles: "pricing_owner,sales,deal_desk,delivery,leadership",
+    // Quote scope carries the cost stack → delivery (no quote access, §2) excluded.
+    allowed_roles: "pricing_owner,sales,deal_desk,leadership",
     provider: "anthropic",
     model: "claude-sonnet",
     output_language: "author",
@@ -96,7 +97,7 @@ const SEED_INSIGHT_BUTTONS = [
     prompt_template_md:
       "Summarize this quote's evidence-gate readiness: sample counts vs minimums, data recency, baseline confidence, and which gates still block Production stage. 日本語で回答してください。\n\n{{data}}",
     data_scope: "current_quote",
-    allowed_roles: "pricing_owner,sales,deal_desk,delivery,leadership",
+    allowed_roles: "pricing_owner,sales,deal_desk,leadership",
     provider: "anthropic",
     model: "claude-sonnet",
     output_language: "ja",

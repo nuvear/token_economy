@@ -30,19 +30,52 @@ function baseFromOffering(baseJson: string): PresetBaseInput {
   return out as unknown as PresetBaseInput;
 }
 
-/** Merge client overrides into the engine input — only known keys, same shape. */
-function applyOverrides(input: PresetInput, overrides: unknown): PresetInput {
+// Percentages that are genuinely bounded to 0..100 (many *Pct legitimately
+// exceed 100 — agentOverheadPct, liabilityCapPct, etc. — so this is a whitelist).
+const PCT_0_100 = new Set([
+  "scopePct", "discountPct", "aiCoverage", "effortReduction", "qaAddBack", "openingBandPct",
+]);
+// Roles permitted to verify a competing bid (segregation of duties, PRD §2).
+const BID_VERIFY_ROLES = new Set(["deal_desk", "pricing_owner"]);
+
+class OverrideError extends Error {}
+
+/**
+ * Merge client overrides into the engine input — only known keys, same shape,
+ * with server-side validation: finite numbers, non-negative magnitudes, bounded
+ * percentages, object-only array elements, and SoD on bid verification.
+ */
+function applyOverrides(input: PresetInput, overrides: unknown, callerRole: string): PresetInput {
   if (overrides === null || typeof overrides !== "object" || Array.isArray(overrides)) return input;
   const merged: Record<string, unknown> = { ...(input as unknown as Record<string, unknown>) };
   for (const [k, v] of Object.entries(overrides as Record<string, unknown>)) {
     if (!(k in merged)) continue;
     const current = merged[k];
+
     if (Array.isArray(current)) {
-      if (Array.isArray(v)) merged[k] = v;
+      // Only real objects survive — a null/primitive element would crash the engine.
+      if (Array.isArray(v)) merged[k] = v.filter((x) => x && typeof x === "object" && !Array.isArray(x));
       continue;
     }
+
+    if (typeof v === "number") {
+      if (!Number.isFinite(v)) throw new OverrideError(`non_finite_number:${k}`);
+      if (v < 0) throw new OverrideError(`negative_not_allowed:${k}`);
+      if (PCT_0_100.has(k) && v > 100) throw new OverrideError(`percent_out_of_range:${k}`);
+      merged[k] = v;
+      continue;
+    }
+
     if (typeof v === typeof current || current === null) merged[k] = v;
   }
+
+  // SoD: only the deal desk / pricing owner may mark a competing bid verified.
+  // A non-privileged caller cannot relax the floor by self-attesting.
+  if (!BID_VERIFY_ROLES.has(callerRole) && merged.bidEvidence === "Verified quote") {
+    const prior = (input as unknown as Record<string, unknown>).bidEvidence;
+    merged.bidEvidence = prior === "Verified quote" ? "Procurement claim" : prior ?? "None";
+  }
+
   return merged as unknown as PresetInput;
 }
 
@@ -171,7 +204,16 @@ export function quotesRouter(db: Db): Router {
       baseInput = makePreset(baseFromOffering(offering.base_inputs_json));
     }
 
-    const input = applyOverrides(baseInput, body.input_overrides);
+    let input: PresetInput;
+    try {
+      input = applyOverrides(baseInput, body.input_overrides, u.role);
+    } catch (e) {
+      if (e instanceof OverrideError) {
+        res.status(400).json({ error: "invalid_input", reason: e.message });
+        return;
+      }
+      throw e;
+    }
     // The server re-runs the engine; client-supplied outputs are ignored.
     const result = compute(input);
     const state = governanceState(result);

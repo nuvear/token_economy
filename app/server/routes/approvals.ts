@@ -4,7 +4,7 @@
 import { Router } from "express";
 import type { Db } from "../db";
 import { logEvent } from "../db";
-import { requireAuth, requireRole } from "../auth";
+import { requireRole } from "../auth";
 
 interface ApprovalRow {
   id: number;
@@ -25,7 +25,9 @@ type DecisionAction = (typeof DECISION_ACTIONS)[number];
 export function approvalsRouter(db: Db): Router {
   const router = Router();
 
-  router.get("/approvals", requireAuth, (req, res) => {
+  // §2: delivery has no access to the approvals queue. Sales sees only its own
+  // requested rows (narrowed below); everyone else on this allowlist reads all.
+  router.get("/approvals", requireRole("pricing_owner", "deal_desk", "leadership", "sales"), (req, res) => {
     const u = req.user!;
     const rows = (
       u.role === "sales"
