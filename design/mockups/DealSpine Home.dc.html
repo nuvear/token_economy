@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  .ds-tabbar{display:none}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">{{ avatar }}</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <a href="{{ n.href }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </a>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 72px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+        <div>
+          <div style="{{ kicker }}">{{ dateStr }}</div>
+          <h1 style="{{ h1Style }}">{{ greeting }}</h1>
+          <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ roleLine }}</div>
+        </div>
+        <div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--faint,#9AA9C0);margin-bottom:6px;text-align:right">{{ t.viewingAs }}</div>
+          <div style="display:flex;gap:6px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:4px;flex-wrap:wrap;max-width:520px;justify-content:flex-end">
+            <sc-for list="{{ rolePills }}" as="r" hint-placeholder-count="5">
+              <button onClick="{{ r.onClick }}" aria-pressed="{{ r.active }}" style="{{ r.style }}">{{ r.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <!-- HERO (solid navy panel) -->
+      <section style="background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent);border-radius:16px;padding:26px 28px;color:#fff;position:relative;overflow:hidden">
+        <div style="position:absolute;right:-40px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(232,163,61,.24),transparent 70%)"></div>
+        <div style="position:relative;max-width:680px">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#E8A33D">{{ heroKicker }}</div>
+          <div style="font-size:30px;font-weight:800;letter-spacing:-.01em;margin-top:10px;font-variant-numeric:tabular-nums;line-height:1.15">{{ heroMetric }}</div>
+          <div style="font-size:13.5px;color:#C9D8EE;margin-top:8px;line-height:1.6">{{ heroSub }}</div>
+          <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+            <sc-for list="{{ heroCtas }}" as="c" hint-placeholder-count="2">
+              <a href="{{ c.href }}" style="{{ c.style }}">{{ c.label }}</a>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <!-- YOUR WORK (solid cards) -->
+      <div style="{{ kicker }};margin:24px 0 12px">{{ t.yourWork }}</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <sc-for list="{{ cards }}" as="k" hint-placeholder-count="4">
+          <a href="{{ k.href }}" style="{{ k.style }}">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="{{ k.dotStyle }}"></span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C7D3E4" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </div>
+            <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+            <div style="font-size:12px;font-weight:700;color:var(--ink,#16243D);margin-top:2px">{{ k.label }}</div>
+            <div style="font-size:11px;color:var(--muted,#6B7A93);margin-top:3px">{{ k.sub }}</div>
+          </a>
+        </sc-for>
+      </div>
+
+      <!-- NEEDS ATTENTION (solid) -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px;margin-top:24px" class="ds-attn">
+        <section style="{{ card }}">
+          <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.attention }}</div>
+          <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.attentionSub }}</div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+            <sc-for list="{{ signals }}" as="s" hint-placeholder-count="3">
+              <a href="{{ s.href }}" style="{{ s.style }}">
+                <span style="{{ s.barStyle }}"></span>
+                <span style="flex:1;font-size:12.5px;font-weight:600;color:var(--ink,#16243D);line-height:1.4">{{ s.text }}</span>
+                <span style="{{ s.tagStyle }}">{{ s.tag }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+
+        <section style="{{ card }}">
+          <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.jumpBack }}</div>
+          <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.jumpBackSub }}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px">
+            <sc-for list="{{ quick }}" as="q" hint-placeholder-count="6">
+              <a href="{{ q.href }}" style="display:flex;align-items:center;gap:9px;padding:11px 12px;border-radius:10px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);color:var(--ink,#16243D);font-size:12px;font-weight:700">
+                <span style="width:26px;height:26px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#C77F1A;background:rgba(232,163,61,.14)" data-om-raster>{{ q.icon }}</span>
+                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ q.label }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1080},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;},&quot;role&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sales&quot;,&quot;desk&quot;,&quot;lead&quot;,&quot;owner&quot;,&quot;exec&quot;],&quot;default&quot;:&quot;sales&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Role&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",proposals:"DealSpine Proposal Preview.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",policy:"DealSpine Policy Studio.dc.html",evidence:"DealSpine Evidence.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+const ROLES=[
+  {id:"sales",en:"Sales",ja:"営業",name:"Sam",title:{en:"Account Executive",ja:"アカウントエグゼクティブ"},av:"SK"},
+  {id:"desk",en:"Deal Desk",ja:"ディールデスク",name:"Dana",title:{en:"Deal Desk Analyst",ja:"ディールデスクアナリスト"},av:"DR"},
+  {id:"lead",en:"Engagement Lead",ja:"リード",name:"Aiko",title:{en:"Engagement Lead",ja:"エンゲージメントリード"},av:"AT"},
+  {id:"owner",en:"Pricing Owner",ja:"オーナー",name:"Lena",title:{en:"Pricing Owner",ja:"プライシングオーナー"},av:"LD"},
+  {id:"exec",en:"Leadership",ja:"経営",name:"Chris",title:{en:"VP, Delivery",ja:"デリバリー担当VP"},av:"CN"},
+];
+const HOME={
+  sales:{kicker:{en:"IN FLIGHT",ja:"進行中"},metric:{en:"3 deals in flight · $1.43M weighted",ja:"進行中3案件 · 加重 $1.43M"},sub:{en:"Your pipeline this quarter, priced against the published bands.",ja:"公開バンドに基づいて価格設定された今四半期のパイプライン。"},
+    ctas:[{label:{en:"Start a new deal",ja:"新規案件を作成"},nav:"workspace",primary:true},{label:{en:"Resume Fiori Rollout",ja:"Fiori展開を再開"},nav:"workspace"}],
+    cards:[{label:{en:"My deals",ja:"担当案件"},value:"3",sub:{en:"2 active · 1 draft",ja:"稼働2 · 下書き1"},tint:"neutral",nav:"workspace"},
+      {label:{en:"Awaiting my input",ja:"要対応"},value:"1",sub:{en:"verdict needs review",ja:"判定の確認が必要"},tint:"gold",nav:"workspace"},
+      {label:{en:"Proposals sent",ja:"送付済み提案"},value:"2",sub:{en:"awaiting customer",ja:"顧客の返答待ち"},tint:"neutral",nav:"proposals"},
+      {label:{en:"Win rate",ja:"受注率"},value:"68%",sub:{en:"trailing 90 days",ja:"直近90日"},tint:"green",nav:"portfolio"}],
+    signals:[{text:{en:"DL-0138 Test Automation blocked — GP below floor",ja:"DL-0138 テスト自動化がブロック — 粗利がフロア未満"},tone:"red",nav:"workspace"},
+      {text:{en:"DL-0160 Fiori Rollout verdict passed — ready to send",ja:"DL-0160 Fiori展開の判定が合格 — 送付可能"},tone:"green",nav:"proposals"},
+      {text:{en:"Insights digest ready for your Monday pipeline review",ja:"月曜のパイプラインレビュー用インサイトが準備完了"},tone:"gold",nav:"insights"}]},
+  desk:{kicker:{en:"APPROVAL QUEUE",ja:"承認キュー"},metric:{en:"3 approvals waiting · oldest 6h",ja:"承認待ち3件 · 最古6時間"},sub:{en:"Deals holding for a governance decision from the desk.",ja:"デスクのガバナンス判断を待っている案件。"},
+    ctas:[{label:{en:"Open approvals queue",ja:"承認キューを開く"},nav:"approvals",primary:true},{label:{en:"Review policy bands",ja:"ポリシーバンドを確認"},nav:"policy"}],
+    cards:[{label:{en:"Pending approvals",ja:"承認待ち"},value:"3",sub:{en:"1 breaches floor",ja:"1件がフロア違反"},tint:"gold",nav:"approvals"},
+      {label:{en:"Overrides active",ja:"有効なオーバーライド"},value:"2",sub:{en:"expire within 30 days",ja:"30日以内に失効"},tint:"neutral",nav:"approvals"},
+      {label:{en:"Re-scoped this week",ja:"今週の再スコープ"},value:"1",sub:{en:"DL-0151 Data Migration",ja:"DL-0151 データ移行"},tint:"neutral",nav:"approvals"},
+      {label:{en:"Avg decision time",ja:"平均判断時間"},value:"4.2h",sub:{en:"target under 8h",ja:"目標8時間以内"},tint:"green",nav:"portfolio"}],
+    signals:[{text:{en:"DL-0129 Interface Dev — no-bid recommended by the engine",ja:"DL-0129 インターフェース開発 — エンジンがノービッドを推奨"},tone:"red",nav:"approvals"},
+      {text:{en:"2 overrides expire in 48h — confirm or let lapse",ja:"2件のオーバーライドが48時間で失効 — 確認または失効"},tone:"gold",nav:"approvals"},
+      {text:{en:"DL-0155 BW/4 Upgrade approved by Tom H.",ja:"DL-0155 BW/4アップグレードをTom H.が承認"},tone:"green",nav:"approvals"}]},
+  lead:{kicker:{en:"EVIDENCE",ja:"エビデンス"},metric:{en:"2 units to capture · $126K unbacked",ja:"記録待ち2ユニット · 未裏付け $126K"},sub:{en:"Delivered value that is not yet counted toward your engagements.",ja:"まだエンゲージメントに計上されていない提供価値。"},
+    ctas:[{label:{en:"Capture evidence",ja:"エビデンスを記録"},nav:"evidence",primary:true},{label:{en:"View my engagements",ja:"担当エンゲージメント"},nav:"portfolio"}],
+    cards:[{label:{en:"My engagements",ja:"担当エンゲージメント"},value:"2",sub:{en:"both on track",ja:"いずれも順調"},tint:"neutral",nav:"portfolio"},
+      {label:{en:"Evidence pending",ja:"保留エビデンス"},value:"2",sub:{en:"awaiting your metric",ja:"指標の入力待ち"},tint:"gold",nav:"evidence"},
+      {label:{en:"Sold vs. actual",ja:"受注 対 実績"},value:"+4%",sub:{en:"hours under sold",ja:"受注比で工数少"},tint:"green",nav:"portfolio"},
+      {label:{en:"GP / delivery hr",ja:"提供時間あたり粗利"},value:"$172",sub:{en:"vs. $95 traditional",ja:"従来 $95 との比較"},tint:"green",nav:"portfolio"}],
+    signals:[{text:{en:"EV-205 Data Migration throughput awaiting your metric",ja:"EV-205 データ移行スループットが指標入力待ち"},tone:"gold",nav:"evidence"},
+      {text:{en:"DL-0151 actual hours running 3% under sold",ja:"DL-0151 実績工数が受注比3%減"},tone:"green",nav:"portfolio"},
+      {text:{en:"EV-193 Test coverage evidence disputed — needs re-baseline",ja:"EV-193 テストカバレッジのエビデンスが係争中 — 再ベースライン必要"},tone:"red",nav:"evidence"}]},
+  owner:{kicker:{en:"POLICY",ja:"ポリシー"},metric:{en:"Draft v15 · 2 pending changes",ja:"下書き v15 · 保留中の変更2件"},sub:{en:"Parameter edits staged and not yet published to the deal desk.",ja:"ステージングされ、まだディールデスクに公開されていないパラメータ変更。"},
+    ctas:[{label:{en:"Review & publish",ja:"確認して公開"},nav:"policy",primary:true},{label:{en:"Open LLM price list",ja:"LLM価格表を開く"},nav:"policy"}],
+    cards:[{label:{en:"Draft changes",ja:"下書きの変更"},value:"2",sub:{en:"remediation · migration",ja:"改修 · 移行"},tint:"gold",nav:"policy"},
+      {label:{en:"LLM entries stale",ja:"陳腐化したLLM"},value:"2",sub:{en:"past 90-day reprice",ja:"90日リプライス超過"},tint:"gold",nav:"policy"},
+      {label:{en:"Band adherence",ja:"バンド遵守"},value:"100%",sub:{en:"across signed deals",ja:"成約案件全体"},tint:"green",nav:"portfolio"},
+      {label:{en:"Last publish",ja:"最終公開"},value:"v14",sub:{en:"Jun 30 · L. Duarte",ja:"6月30日 · L. Duarte"},tint:"neutral",nav:"policy"}],
+    signals:[{text:{en:"Gemini 3 Pro reprice overdue — 185 days old",ja:"Gemini 3 Pro のリプライス超過 — 185日経過"},tone:"red",nav:"policy"},
+      {text:{en:"GPT-5.2 price is 100+ days old — reprice due",ja:"GPT-5.2 の価格が100日超 — リプライス期限"},tone:"gold",nav:"policy"},
+      {text:{en:"All opening bands verified against Q2 realization data",ja:"全オープニングバンドがQ2実現データと照合済み"},tone:"green",nav:"portfolio"}]},
+  exec:{kicker:{en:"Q3 FY26",ja:"Q3 FY26"},metric:{en:"$2.46M signed · GP/hr $170",ja:"成約 $2.46M · 粗利/時 $170"},sub:{en:"Governed value pricing is holding the floor and lifting margin.",ja:"ガバナンス下の価値ベース価格がフロアを維持し、マージンを押し上げています。"},
+    ctas:[{label:{en:"Open portfolio",ja:"ポートフォリオを開く"},nav:"portfolio",primary:true},{label:{en:"Ask Insights",ja:"インサイトに質問"},nav:"insights"}],
+    cards:[{label:{en:"Signed revenue",ja:"契約売上"},value:"$2.46M",sub:{en:"4 of 6 deals signed",ja:"6案件中4件成約"},tint:"neutral",nav:"portfolio"},
+      {label:{en:"Floor adherence",ja:"フロア遵守"},value:"100%",sub:{en:"no deal below floor",ja:"フロア未満なし"},tint:"green",nav:"portfolio"},
+      {label:{en:"Reinvestment",ja:"再投資"},value:"71%",sub:{en:"$212K of $300K",ja:"$300K中 $212K"},tint:"gold",nav:"portfolio"},
+      {label:{en:"Exceptions",ja:"例外"},value:"1",sub:{en:"blocked, below floor",ja:"ブロック・フロア未満"},tint:"red",nav:"approvals"}],
+    signals:[{text:{en:"1 deal blocked below floor — DL-0138 Test Automation",ja:"1案件がフロア未満でブロック — DL-0138 テスト自動化"},tone:"red",nav:"approvals"},
+      {text:{en:"Reinvestment fund 71% to target, tracking Q3 plan",ja:"再投資ファンドは目標の71%、Q3計画通り"},tone:"gold",nav:"portfolio"},
+      {text:{en:"GP per delivery hour up from $158 to $170 QoQ",ja:"提供時間あたり粗利が $158 から $170 に前四半期比で上昇"},tone:"green",nav:"portfolio"}]},
+};
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      role:["sales","desk","lead","owner","exec"].includes(props.role)?props.role:"sales",
+    };
+  }
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+
+  renderVals(){
+    const{lang,glass,role,theme}=this.state;const ja=lang==="ja";const dark=theme==="dark";const gb=this.glassBase();
+    const L=(o)=>o?(ja?o.ja:o.en):"";
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",viewingAs:"Viewing as",yourWork:"YOUR WORK",attention:"Needs attention",attentionSub:"Signals routed to your role, most urgent first.",jumpBack:"Jump back in",jumpBackSub:"The surfaces you use most."},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",viewingAs:"表示ロール",yourWork:"あなたの作業",attention:"要対応",attentionSub:"あなたのロール向けのシグナル、緊急度順。",jumpBack:"作業に戻る",jumpBackSub:"よく使う画面。"}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const navItems=NAV.map(n=>{const a=n.id==="home";return{...n,label:ja?n.ja:n.en,href:n.id==="home"?"#":hrefFor(n.id),current:a?"page":undefined,style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;text-decoration:none;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);const a=id==="home";return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":hrefFor(id),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+    const rolePills=ROLES.map(r=>{const a=r.id===role;return{label:ja?r.ja:r.en,active:a,onClick:()=>this.setState({role:r.id}),style:"border:none;cursor:pointer;font-family:inherit;white-space:nowrap;font-size:11.5px;font-weight:"+(a?"800":"600")+";padding:6px 13px;border-radius:99px;color:"+(a?"#16243D":"#6B7A93")+";background:"+(a?"var(--surface,#fff)":"transparent")+(a?";box-shadow:0 1px 3px rgba(11,18,32,.16)":"")};});
+
+    const R=ROLES.find(r=>r.id===role);const H=HOME[role];
+    const greeting=(ja?("こんにちは、"+R.name+"さん"):("Good morning, "+R.name));
+    const roleLine=L(R.title)+" · "+(ja?"DealSpine ワークスペース":"DealSpine workspace");
+    const dateStr=ja?"2026年7月22日 水曜日":"Wednesday, July 22, 2026";
+
+    const ctaBase="display:inline-flex;align-items:center;gap:8px;text-decoration:none;border-radius:99px;padding:11px 22px;font-size:13px;font-weight:800;font-family:inherit;";
+    const heroCtas=H.ctas.map(c=>({label:L(c.label),href:hrefFor(c.nav),style:c.primary?ctaBase+"background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;box-shadow:0 4px 14px rgba(199,127,26,.34)":ctaBase+"background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.24);color:#fff"}));
+
+    const tintC={neutral:"var(--ink,#16243D)",gold:GOLDD,green:GREEN,red:RED};
+    const cards=H.cards.map(k=>{const c=tintC[k.tint];return{label:L(k.label),value:k.value,sub:L(k.sub),href:hrefFor(k.nav),
+      style:"display:block;text-decoration:none;border-radius:12px;padding:16px;background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);box-shadow:0 1px 2px rgba(11,18,32,0.06)",
+      dotStyle:"width:9px;height:9px;border-radius:50%;background:"+c,
+      valueStyle:"margin-top:12px;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;color:"+c};});
+
+    const toneMeta={red:[RED,"rgba(192,80,77,.12)",ja?"要対応":"Action"],gold:[GOLDD,"rgba(232,163,61,.14)",ja?"確認":"Review"],green:[GREEN,"rgba(78,138,90,.12)",ja?"良好":"On track"]};
+    const signals=H.signals.map(s=>{const[c,bg,tg]=toneMeta[s.tone];return{text:L(s.text),href:hrefFor(s.nav),tag:tg,
+      style:"display:flex;align-items:center;gap:11px;text-decoration:none;padding:12px 14px;border-radius:11px;background:"+bg+";border:1px solid "+bg.replace("12","28").replace("14","30"),
+      barStyle:"width:4px;align-self:stretch;min-height:22px;border-radius:99px;flex:none;background:"+c,
+      tagStyle:"flex:none;font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:99px;color:"+c+";background:rgba(255,255,255,.6)"};});
+
+    const quick=[["workspace","◱"],["approvals","✓"],["proposals","▤"],["evidence","◈"],["policy","⚙"],["portfolio","▦"]].map(([id,icon])=>{const n=NAV.find(x=>x.id===id);return{label:ja?n.ja:n.en,icon,href:hrefFor(id)};});
+
+    return{
+      t:T,kicker,card,gBar,gRail,gTab,navItems,tabItems,langs,glassStops,themeStops,rolePills,avatar:R.av,
+      pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--row:#182A47;--row-alt:#1D3053;--th:#21365A;--track:#263C5F;--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--row:#ffffff;--row-alt:#FBFDFF;--th:#EEF4FC;--track:#EEF4FC;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:28px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      greeting,roleLine,dateStr,
+      heroKicker:L(H.kicker),heroMetric:L(H.metric),heroSub:L(H.sub),heroCtas,
+      cards,signals,quick,
+    };
+  }
+}
+</script>
+</body>
+</html>

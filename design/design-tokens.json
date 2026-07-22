@@ -1,0 +1,89 @@
+{
+  "$meta": {
+    "product": "DealSpine",
+    "design_language": "Apple Liquid Glass — iOS 27 generation (WWDC 2026), adapted for web",
+    "source": "Claude-Design-UIUX-Brief.md §2 (palette lifted from AI-SAP-Pricing-Framework.pptx); do not invent colors",
+    "grid": "4px spacing base"
+  },
+  "color": {
+    "navy":     { "hex": "#16243D", "role": "Primary brand surface — chrome backdrop, hero panels, dark sections. 60–70% of visual weight." },
+    "navy-2":   { "hex": "#24385C", "role": "Secondary panels, hover on navy" },
+    "slate":    { "hex": "#3C4C66", "role": "Body text on light" },
+    "muted":    { "hex": "#6B7A93", "role": "Captions, hints, disabled, published-band marker" },
+    "ice":      { "hex": "#D9E6F7", "role": "Light panel fill, text on navy, card borders" },
+    "ice-2":    { "hex": "#EEF4FC", "role": "Page background, card fill (light)" },
+    "gold":     { "hex": "#E8A33D", "role": "THE accent — primary actions, active states, key numbers, focus rings. Keep < ~10% of a screen." },
+    "gold-deep":{ "hex": "#C77F1A", "role": "Section kickers, gold hover, deal-desk/warning" },
+    "red":      { "hex": "#C0504D", "role": "Semantic: blocked / hard failure / destructive ONLY" },
+    "green":    { "hex": "#4E8A5A", "role": "Semantic: pass / within policy ONLY (+ the one sanctioned non-semantic use: on-device privacy chip)" },
+    "gridline": { "hex": "#E4E9F2", "role": "Chart gridlines, table borders" }
+  },
+  "tint_semantics_glass": {
+    "note": "Fixed list — a fifth tint requires the architect's sign-off",
+    "neutral": "untinted regular glass over navy",
+    "gold": "primary action / active / deal-desk",
+    "green": "governance pass",
+    "red": "governance block / destructive"
+  },
+  "typography": {
+    "family_latin": "Inter (or SF-equivalent)",
+    "family_ja": "Noto Sans JP (or Hiragino Sans)",
+    "family_serif_proposal": "Noto Serif / Noto Serif JP (customer paper document only)",
+    "family_mono": "JetBrains Mono (what-was-sent, prompt editor, code)",
+    "weights": [400, 500, 600, 800],
+    "scale": { "display": "26–32px/800", "section": "20px", "body": "14–15px", "caption": "11–12px" },
+    "rules": [
+      "tabular numerals on EVERY figure (font-variant-numeric:tabular-nums)",
+      "Uppercase tracked labels (letter-spacing:.14em) for section kickers only — never body",
+      "JA kicker: same gold-deep + size, NORMAL tracking, no uppercase; optional leading dot ・",
+      "JA body line-height 1.7 (vs 1.5 Latin); no italics in JA (use weight/color)",
+      "Numerals stay Latin + tabular in both locales"
+    ]
+  },
+  "radius": { "capsule": "99px", "card": "12px", "sheet": "16px", "paper": "6px", "field": "8-10px", "pill": "99px" },
+  "elevation": {
+    "card": "0 1px 2px rgba(22,36,61,.05)",
+    "chrome_bar": "0 6px 24px rgba(11,18,32,.20)",
+    "rail": "0 8px 30px rgba(11,18,32,.18)",
+    "cluster": "0 16px 44px rgba(11,18,32,.30)",
+    "sheet": "-20px 0 70px rgba(11,18,32,.45)",
+    "modal": "0 30px 90px rgba(11,18,32,.5)"
+  },
+  "glass": {
+    "note": "Navigation-layer material ONLY. Dark navy chrome. Three user-controlled intensity stops (iOS 27 slider). All glass flows from these tokens so a future tuning pass edits tokens, not components.",
+    "full":    { "backdrop-filter": "blur(22px) saturate(160%)", "background": "rgba(22,36,61,0.55)", "border": "1px solid rgba(255,255,255,0.14)" },
+    "reduced": { "backdrop-filter": "blur(10px) saturate(130%)", "background": "rgba(22,36,61,0.82)", "border": "1px solid rgba(255,255,255,0.12)" },
+    "opaque":  { "backdrop-filter": "none", "background": "rgba(22,36,61,0.98)", "border": "1px solid rgba(255,255,255,0.10)", "note": "reuses the reduced-transparency fallback — OS setting and app 'Opaque' stop converge on one look" },
+    "dimming_tiers": { "over-calm": "0.55 alpha at Full", "over-busy": "step up dimming over charts/dense tables so text-on-glass keeps WCAG AA" }
+  },
+  "reduced_transparency_fallback": {
+    "dark_chrome": "navy #16243D at 98%  (rgba(22,36,61,0.98))",
+    "light_chrome": "#EEF4FC",
+    "trigger": "prefers-reduced-transparency OR in-app 'Opaque' intensity stop"
+  },
+  "focus_ring": { "color": "#E8A33D (gold)", "width": "2px", "offset": "2px" },
+  "i18n": {
+    "locales": ["en-US", "ja-JP"],
+    "currency": "follows the DEAL, not the UI language (USD $1,234,567 ; JPY ¥1,234,567 no decimals)",
+    "formatting": "always via Intl.* APIs, never hand-drawn; timestamps store UTC, display in user tz",
+    "proposal": "renders in the CUSTOMER's locale independent of author UI language"
+  },
+  "themes": {
+    "note": "Content-surface tokens per theme (chrome glass is theme-independent — see glass{}). Each screen sets these as CSS custom properties on the page root via the pageStyle hole; content styles use var(--token, <light fallback>). Architect-approved (2026-07): dark stays navy-anchored, no new hues, gold + red/green semantics unchanged, re-prove AA both glass extremes in the annex.",
+    "light": { "surface":"#ffffff","surface-alt":"#EEF4FC","border":"#D9E6F7","ink":"#16243D","ink-2":"#3C4C66","muted":"#6B7A93","faint":"#9AA9C0","hairline":"#F0F4FA","row":"#ffffff","row-alt":"#FBFDFF","th":"#EEF4FC","track":"#EEF4FC","panel-border":"transparent","pass-ink":"#3B6E47","warn-ink":"#8A5A12","page-bg":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)" },
+    "dark":  { "surface":"#182A47","surface-alt":"#1E3152","border":"rgba(255,255,255,.10)","ink":"#EAF1FB","ink-2":"#C3D2E8","muted":"#93A6C4","faint":"#708AAE","hairline":"rgba(255,255,255,.07)","row":"#182A47","row-alt":"#1D3053","th":"#21365A","track":"#263C5F","panel-border":"rgba(232,163,61,.28)","pass-ink":"#8FD3A0","warn-ink":"#E8B765","page-bg":"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)" },
+    "chart_navy_on_dark": { "note":"navy-2 (#24385C) is invisible on dark content surfaces — data-viz navy uses these, readable on both themes", "bar":"#3A5F94","bar-alt":"#5A72A4","tier-balanced":"#6E8CBE" }
+  },
+  "responsive": {
+    "breakpoints": { "rail_collapse":"860px","search_hide":"620px","two_col_stack":"980–1180px (per screen)" },
+    "mobile": "glass bottom tab bar (.ds-tabbar) replaces the rail; ≤5 simultaneous glass surfaces (architect cap — consolidate IA, never raise); tables scroll via .ds-tablewrap/.ds-mxwrap; Evidence capture rises as a bottom sheet (morph #4)"
+  },
+  "motion": {
+    "easing": "cubic-bezier(.2,.7,.2,1)", "duration": "~.3s", "reduced_motion": "morphs degrade to cross-fades / none",
+    "morphs": ["#1 verdict banner → gate list (Deal Workspace)", "#2 capsule → packaging → streaming → solid Markdown card (Insights)", "#3 action cluster → generate sheet (Proposal)", "#4 mobile capture FAB → bottom sheet (Evidence)"]
+  },
+  "risk_adjusted_max": {
+    "value_shown": "12.5%",
+    "binding": "PLACEHOLDER ONLY. Engine-bound — computed per deal by compute(); never a fixed policy constant. Per architect ruling 2026-07, screens showing it (Deal Workspace governance banner, Approvals metric grid) must annotate 'engine-bound · per-deal' in redlines."
+  }
+}

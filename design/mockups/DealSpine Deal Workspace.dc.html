@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:99px;background:#D9E6F7;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:#E8A33D;border:2px solid #fff;box-shadow:0 1px 3px rgba(22,36,61,.35);cursor:pointer}
+  input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(232,163,61,.4)}
+  input[type=number],input[type=text]{font-family:inherit}
+  input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  @keyframes ds-pop{0%{transform:translateY(8px) scale(.98);opacity:0}100%{transform:none;opacity:1}}
+  .ds-grid{display:grid;grid-template-columns:322px minmax(0,1fr) 330px;gap:20px;align-items:start}
+  .ds-gov{position:sticky;top:88px}
+  @media(max-width:1180px){
+    .ds-grid{grid-template-columns:300px minmax(0,1fr)}
+    .ds-gov{grid-column:1 / -1;position:static}
+    .ds-gov > section:first-child{position:sticky;top:76px;z-index:20}
+  }
+  .ds-tabbar{display:none}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){
+    .ds-grid{grid-template-columns:1fr}
+    .ds-rail{display:none !important}
+    .ds-tabbar{display:flex}
+    .ds-main{padding-bottom:150px !important}
+    .ds-fab{bottom:84px !important}
+  }
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <!-- ============ GLASS APP BAR (navigation layer) ============ -->
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:14px;min-width:210px">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+        <div style="font-weight:800;font-size:16px;letter-spacing:.02em;color:#fff">DealSpine</div>
+      </div>
+    </div>
+
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+        <kbd style="font-family:inherit;font-size:10px;color:#6B7A93;border:1px solid #D9E6F7;border-radius:5px;padding:1px 5px">⌘K</kbd>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:14px;min-width:210px;justify-content:flex-end">
+      <!-- provider status cluster -->
+      <div style="display:flex;align-items:center;gap:6px" title="LLM providers online">
+        <sc-for list="{{ providers }}" as="p" hint-placeholder-count="5">
+          <span style="{{ p.style }}">{{ p.short }}</span>
+        </sc-for>
+      </div>
+      <!-- language quick switch -->
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">RA</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <!-- ============ GLASS NAV RAIL (navigation layer) ============ -->
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <button onClick="{{ n.onClick }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap;overflow:hidden">{{ n.label }}</span>
+        </button>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ============ MAIN — CONTENT LAYER (solid) ============ -->
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 120px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+          <div style="{{ kicker }}">{{ t.dealWorkspace }} · {{ dealId }}</div>
+          <h1 style="{{ h1Style }}">{{ dealName }}</h1>
+          <div style="display:flex;align-items:center;gap:12px;margin-top:6px;color:var(--muted,#6B7A93);font-size:12.5px;flex-wrap:wrap">
+            <span>{{ t.owner }}: Raj A.</span><span style="opacity:.4">•</span>
+            <span>{{ t.updated }} {{ dateStr }}</span><span style="opacity:.4">•</span>
+            <span style="font-variant-numeric:tabular-nums">{{ unitsScopeLabel }}</span>
+          </div>
+        </div>
+        <button style="display:flex;align-items:center;gap:7px;background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ink2,#3C4C66);cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+          {{ t.copyMd }}
+        </button>
+      </div>
+
+      <!-- 3-column workspace: inputs · results/charts · governance -->
+      <div class="ds-grid">
+
+        <!-- ---- COLUMN A · INPUTS (solid cards) ---- -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <section style="{{ card }}">
+            <div style="{{ kicker }}">{{ t.step1 }}</div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <label style="{{ lbl }}">{{ t.population }}</label>
+                  <input type="number" step="100" value="{{ st.totalUnits }}" onChange="{{ h.totalUnits }}" style="{{ numInput }}">
+                </div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <label style="{{ lbl }}">{{ t.scope }}</label>
+                  <span style="{{ valNum }}">{{ st.scopePct }}%</span>
+                </div>
+                <input type="range" min="5" max="100" value="{{ st.scopePct }}" onChange="{{ h.scopePct }}" style="width:100%;margin-top:8px" aria-label="{{ t.scope }}">
+                <div style="{{ hint }}">{{ unitsScopeLabel }}</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <label style="{{ lbl }}">{{ t.hrsPerUnit }}</label>
+                <input type="number" step="0.5" value="{{ st.hrsPerUnit }}" onChange="{{ h.hrsPerUnit }}" style="{{ numInput }}">
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <label style="{{ lbl }}">{{ t.billRate }}</label>
+                <input type="number" value="{{ st.billRate }}" onChange="{{ h.billRate }}" style="{{ numInput }}">
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <label style="{{ lbl }}">{{ t.costRate }}</label>
+                <input type="number" value="{{ st.costRate }}" onChange="{{ h.costRate }}" style="{{ numInput }}">
+              </div>
+            </div>
+          </section>
+
+          <section style="{{ card }}">
+            <div style="{{ kicker }}">{{ t.step2 }}</div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <label style="{{ lbl }}">{{ t.coverage }}</label><span style="{{ valNum }}">{{ st.aiCoverage }}%</span>
+                </div>
+                <input type="range" min="0" max="100" value="{{ st.aiCoverage }}" onChange="{{ h.aiCoverage }}" style="width:100%;margin-top:8px" aria-label="{{ t.coverage }}">
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <label style="{{ lbl }}">{{ t.effort }}</label><span style="{{ valNum }}">{{ st.effortReduction }}%</span>
+                </div>
+                <input type="range" min="0" max="90" value="{{ st.effortReduction }}" onChange="{{ h.effortReduction }}" style="width:100%;margin-top:8px" aria-label="{{ t.effort }}">
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline">
+                  <label style="{{ lbl }}">{{ t.qa }}</label><span style="{{ valNum }}">{{ st.qaAddBack }}%</span>
+                </div>
+                <input type="range" min="0" max="40" value="{{ st.qaAddBack }}" onChange="{{ h.qaAddBack }}" style="width:100%;margin-top:8px" aria-label="{{ t.qa }}">
+              </div>
+              <div style="background:var(--surface-alt,#EEF4FC);border-radius:10px;padding:12px">
+                <div style="{{ kickerSm }}">{{ t.llm }}</div>
+                <label style="{{ lbl }};display:block;margin-top:8px">{{ t.tier }}</label>
+                <select onChange="{{ h.tier }}" style="width:100%;margin-top:5px;border:1px solid var(--border,#C9D6EA);border-radius:8px;padding:7px 9px;font-size:12.5px;font-weight:600;color:var(--ink,#16243D);background:var(--surface,#fff)">
+                  <sc-for list="{{ tierOpts }}" as="o" hint-placeholder-count="4">
+                    <option value="{{ o.id }}" selected="{{ o.selected }}">{{ o.name }}</option>
+                  </sc-for>
+                </select>
+                <div style="display:flex;gap:8px;margin-top:10px">
+                  <div style="flex:1">
+                    <label style="{{ hint }}">{{ t.tokIn }}</label>
+                    <input type="number" step="10" value="{{ st.tokensInK }}" onChange="{{ h.tokensInK }}" style="{{ numInputSm }}">
+                  </div>
+                  <div style="flex:1">
+                    <label style="{{ hint }}">{{ t.tokOut }}</label>
+                    <input type="number" step="5" value="{{ st.tokensOutK }}" onChange="{{ h.tokensOutK }}" style="{{ numInputSm }}">
+                  </div>
+                </div>
+                <div style="margin-top:10px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline">
+                    <label style="{{ hint }}">{{ t.overhead }}</label><span style="{{ valNumSm }}">{{ st.agentOverheadPct }}%</span>
+                  </div>
+                  <input type="range" min="0" max="200" value="{{ st.agentOverheadPct }}" onChange="{{ h.agentOverheadPct }}" style="width:100%;margin-top:6px" aria-label="{{ t.overhead }}">
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;background:#16243D;border:1px solid var(--panel-border,transparent);border-radius:8px;padding:8px 11px;margin-top:11px">
+                  <span style="font-size:10px;font-weight:800;letter-spacing:.08em;color:#E8A33D">{{ t.tokenCostLabel }}</span>
+                  <span style="font-size:13px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums">{{ tokenPerUnitStr }}</span>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <label style="{{ lbl }}">{{ t.platform }}</label>
+                <input type="number" step="5000" value="{{ st.platformCost }}" onChange="{{ h.platformCost }}" style="{{ numInput }}">
+              </div>
+            </div>
+          </section>
+
+          <section style="{{ card }}">
+            <div style="{{ kicker }}">{{ t.step3 }}</div>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+              <sc-for list="{{ models }}" as="m" hint-placeholder-count="3">
+                <button onClick="{{ m.onClick }}" aria-pressed="{{ m.active }}" style="{{ m.style }}">
+                  <div style="font-size:13px;font-weight:700;color:var(--ink,#16243D)">{{ m.label }}</div>
+                  <div style="font-size:11px;color:var(--muted,#6B7A93);margin-top:2px">{{ m.note }}</div>
+                </button>
+              </sc-for>
+            </div>
+            <div style="margin-top:14px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline">
+                <label style="{{ lbl }}">{{ t.discount }}</label><span style="{{ valNum }}">{{ st.discountPct }}%</span>
+              </div>
+              <input type="range" min="0" max="50" step="0.5" value="{{ st.discountPct }}" onChange="{{ h.discountPct }}" style="width:100%;margin-top:8px" aria-label="{{ t.discount }}">
+              <div style="{{ hint }}">{{ floorHint }}</div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:12px">
+                <label style="{{ lbl }}">{{ t.band }}</label><span style="{{ valNum }}">{{ st.openingBandPct }}%</span>
+              </div>
+              <input type="range" min="0" max="40" step="0.5" value="{{ st.openingBandPct }}" onChange="{{ h.openingBandPct }}" style="width:100%;margin-top:8px" aria-label="{{ t.band }}">
+            </div>
+          </section>
+        </div>
+
+        <!-- ---- COLUMN B · RESULTS + CHARTS (solid) ---- -->
+        <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+          <!-- baseline strip -->
+          <section style="{{ card }}">
+            <div style="{{ kicker }}">{{ t.baseline }}</div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:12px;margin-top:12px">
+              <sc-for list="{{ baselineStrip }}" as="b" hint-placeholder-count="5">
+                <div>
+                  <div style="font-size:18px;font-weight:800;color:var(--ink,#16243D);font-variant-numeric:tabular-nums">{{ b.value }}</div>
+                  <div style="font-size:11px;color:var(--muted,#6B7A93);margin-top:2px">{{ b.label }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <!-- selected scenario header + delta -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+            <h2 style="{{ h2Style }}">{{ scenarioTitle }}</h2>
+            <span style="{{ deltaStyle }}">{{ deltaLabel }}</span>
+          </div>
+
+          <!-- KPI grid (solid tiles) -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:12px">
+            <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="8">
+              <div style="{{ k.style }}">
+                <div style="{{ k.labelStyle }}">{{ k.label }}</div>
+                <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+                <div style="{{ k.subStyle }}">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- comparison chart -->
+          <section style="{{ card }}">
+            <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.fourChoices }}</div>
+            <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.fourChoicesSub }}</div>
+            <div style="display:flex;gap:18px;align-items:flex-end;height:190px;margin-top:18px;padding:0 4px">
+              <sc-for list="{{ compareBars }}" as="grp" hint-placeholder-count="4">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;height:100%;justify-content:flex-end">
+                  <div style="display:flex;align-items:flex-end;gap:5px;height:150px">
+                    <sc-for list="{{ grp.bars }}" as="bar" hint-placeholder-count="3">
+                      <div title="{{ bar.title }}" style="{{ bar.style }}"></div>
+                    </sc-for>
+                  </div>
+                  <div style="font-size:10.5px;color:var(--ink2,#3C4C66);text-align:center;line-height:1.3;font-weight:600">{{ grp.name }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+              <sc-for list="{{ chartLegend }}" as="lg" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)">
+                  <span style="{{ lg.swatch }}"></span>{{ lg.label }}
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <!-- gain-share curve -->
+          <section style="{{ card }}">
+            <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.gainShare }}</div>
+            <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ gainShareSub }}</div>
+            <div style="margin-top:12px">{{ curveChart }}</div>
+          </section>
+        </div>
+
+        <!-- ---- COLUMN C · GOVERNANCE (hero glass banner) ---- -->
+        <div class="ds-gov" style="display:flex;flex-direction:column;gap:16px">
+          <section style="{{ gBanner }}">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="{{ verdictDot }}"></span>
+              <span style="font-size:10px;font-weight:800;letter-spacing:.14em;color:rgba(255,255,255,.7)">{{ t.governance }}</span>
+            </div>
+            <div style="{{ verdictTitleStyle }}">{{ verdict.title }}</div>
+            <div style="font-size:12.5px;line-height:1.6;color:#D9E6F7;margin-top:8px">{{ verdict.msg }}</div>
+            <div style="display:flex;gap:16px;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)">
+              <div>
+                <div style="font-size:9px;letter-spacing:.1em;color:rgba(217,230,247,.6);text-transform:uppercase">{{ t.floor }} d*</div>
+                <div style="font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums">{{ floorStr }}</div>
+              </div>
+              <div>
+                <div style="font-size:9px;letter-spacing:.1em;color:rgba(217,230,247,.6);text-transform:uppercase">{{ t.current }} d</div>
+                <div style="{{ currentDStyle }}">{{ st.discountPct }}%</div>
+              </div>
+              <div>
+                <div style="font-size:9px;letter-spacing:.1em;color:rgba(217,230,247,.6);text-transform:uppercase">{{ t.riskMax }}</div>
+                <div style="font-size:16px;font-weight:800;color:#E8A33D;font-variant-numeric:tabular-nums">12.5%</div>
+              </div>
+            </div>
+            <button onClick="{{ toggleBanner }}" aria-expanded="{{ bannerOpen }}" style="{{ bannerBtnStyle }}">
+              {{ bannerBtnLabel }}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="{{ chevronStyle }}"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </section>
+
+          <!-- gate list appears on SOLID surface (morph target — content layer) -->
+          <sc-if value="{{ bannerOpen }}" hint-placeholder-val="{{ false }}">
+            <section style="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:16px;padding:16px;box-shadow:0 12px 40px rgba(11,18,32,.16);animation:ds-pop .28s cubic-bezier(.2,.7,.2,1)">
+              <div style="display:flex;align-items:baseline;justify-content:space-between">
+                <div style="{{ kicker }}">{{ t.gates }}</div>
+                <span style="font-size:11px;color:var(--muted,#6B7A93);font-variant-numeric:tabular-nums">{{ gateSummary }}</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:2px;margin-top:12px">
+                <sc-for list="{{ gates }}" as="gate" hint-placeholder-count="8">
+                  <div style="display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid var(--hairline,#F0F4FA)">
+                    <span style="{{ gate.pill }}">{{ gate.stateLabel }}</span>
+                    <span style="font-size:12.5px;color:var(--ink2,#3C4C66);flex:1">{{ gate.name }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:11px;color:var(--muted,#6B7A93);margin-top:10px">{{ gateMore }}</div>
+            </section>
+          </sc-if>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+
+  <!-- ============ FLOATING ACTION CLUSTER (glass) ============ -->
+  <div class="ds-fab" style="{{ gCluster }}">
+    <button style="{{ fabSecondary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      {{ t.save }}
+    </button>
+    <button style="{{ fabSecondary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      {{ t.export }}
+    </button>
+    <button style="{{ fabPrimary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+      {{ t.generate }}
+    </button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const FILEMAP={home:"DealSpine Home.dc.html",workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",policy:"DealSpine Policy Studio.dc.html",proposals:"DealSpine Proposal Preview.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",settings:"DealSpine Settings.dc.html",help:"DealSpine Help.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+
+const PRESETS={
+  remediation:{name:"Custom Code Remediation — ECC → S/4HANA",nameJa:"カスタムコード改修 — ECC → S/4HANA",unit:"object",unitPlural:"objects",unitJa:"オブジェクト",totalUnits:12000,scopePct:30,hrsPerUnit:3.5,billRate:95,costRate:62,aiCoverage:85,effortReduction:70,qaAddBack:10,platformCost:25000,teamFtes:8,openingBandPct:25,priceIn:3,priceOut:15,tokensInK:200,tokensOutK:30,agentOverheadPct:50,tokenDiscountPct:5,pricingModel:"value",premiumPct:15,discountPct:30,llmTier:"workhorse"},
+};
+
+const TIERS={frontier:{name:"Frontier — Opus / GPT-5 class",pin:5,pout:25},workhorse:{name:"Workhorse — Sonnet / Gemini Pro class",pin:3,pout:15},efficient:{name:"Efficient — Haiku / Flash class",pin:1,pout:5},saphub:{name:"SAP GenAI Hub (AI Units)",pin:3,pout:15}};
+
+const PROVIDERS=[{short:"Claude"},{short:"GPT"},{short:"Gemini"},{short:"Grok"},{short:"Gemma"}];
+
+function compute(p){
+  const unitsInScope=Math.round(p.totalUnits*(p.scopePct/100));
+  const tradHours=unitsInScope*p.hrsPerUnit;
+  const tradRevenue=tradHours*p.billRate;
+  const tradCost=tradHours*p.costRate;
+  const tradProfit=tradRevenue-tradCost;
+  const coveredUnits=unitsInScope*(p.aiCoverage/100);
+  const tokenPerUnit=((p.tokensInK*p.priceIn+p.tokensOutK*p.priceOut)/1000)*(1+p.agentOverheadPct/100)*(1-p.tokenDiscountPct/100);
+  const savedHours=tradHours*(p.aiCoverage/100)*(p.effortReduction/100);
+  const qaHours=savedHours*(p.qaAddBack/100);
+  const aiHours=tradHours-savedHours+qaHours;
+  const tokenCost=coveredUnits*tokenPerUnit;
+  const aiCost=aiHours*p.costRate+tokenCost+p.platformCost;
+  const revenueFor=(m)=>m==="tm"?aiHours*p.billRate:m==="premium"?aiHours*p.billRate*(1+p.premiumPct/100):tradRevenue*(1-p.discountPct/100);
+  const scen=(m)=>{const revenue=revenueFor(m);const profit=revenue-aiCost;return{revenue,cost:aiCost,profit,marginPct:revenue>0?profit/revenue:0,revPerHour:aiHours>0?revenue/aiHours:0,pricePerUnit:unitsInScope>0?revenue/unitsInScope:0,customerSavings:tradRevenue-revenue};};
+  const HPM=140;
+  const tradMonths=tradHours/Math.max(p.teamFtes*HPM,1);
+  const aiMonths=aiHours/Math.max(p.teamFtes*HPM,1);
+  const breakevenDiscount=tradRevenue>0?1-(tradProfit+aiCost)/tradRevenue:0;
+  return{unitsInScope,tradHours,tradRevenue,tradCost,tradProfit,tradMarginPct:tradRevenue>0?tradProfit/tradRevenue:0,tradPricePerUnit:unitsInScope>0?tradRevenue/unitsInScope:0,aiHours,tokenCost,aiCost,tokenPerUnit,tradMonths,aiMonths,aiCostPerUnit:unitsInScope>0?aiCost/unitsInScope:0,selected:scen(p.pricingModel),tm:scen("tm"),premium:scen("premium"),value:scen("value"),breakevenDiscount};
+}
+
+const S={
+  en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",dealWorkspace:"DEAL WORKSPACE",owner:"Owner",updated:"Updated",step1:"Step 1 · Baseline",step2:"Step 2 · AI cost of delivery",step3:"Step 3 · Pricing model",population:"Custom objects in estate",scope:"Objects in scope",hrsPerUnit:"Trad. effort / object (h)",billRate:"Blended bill rate ($/h)",costRate:"Loaded delivery cost ($/h)",coverage:"AI coverage of objects (c)",effort:"Effort reduction (e)",qa:"Human QA add-back (q)",llm:"LLM ASSUMPTIONS → t",tier:"Model tier",tokIn:"K tokens in / obj",tokOut:"K tokens out / obj",overhead:"Agentic retry overhead",tokenCostLabel:"AI TOKEN COST / OBJECT (t)",platform:"Platform & tooling (P)",discount:"Customer discount vs. traditional (d)",band:"Published opening band",baseline:"TRADITIONAL BASELINE (NO AI) · U × h × Rb",fourChoices:"Same engagement, four pricing choices",fourChoicesSub:"All AI scenarios share one cost of delivery — only the pricing logic changes.",gainShare:"Gain-share curve — profit vs. customer discount",governance:"DEAL GOVERNANCE",floor:"Breakeven floor",current:"Current",riskMax:"Risk-adj. max",gates:"34 GOVERNANCE GATES",save:"Save",export:"Export",generate:"Generate proposal",copyMd:"Copy as Markdown",owner_v:"Raj A.",rev:"Revenue",cost:"Cost of delivery",gp:"Gross profit",margin:"Gross margin",revHr:"Rev / delivery hour",saves:"Customer saves",aiEffort:"Effort with AI",duration:"Delivery duration",perObj:"per object",vsTradHr:"vs $%b traditional",belowTrad:"below traditional",vsMonths:"vs %m mo traditional",within:"WITHIN POLICY",dealdesk:"DEAL DESK APPROVAL REQUIRED",blocked:"BLOCKED — BELOW FLOOR",msgWithin:"Sales may sign. Attach this simulation to the quote and log the deal parameters.",msgDeal:"Above the published band but under the breakeven floor. Route to the deal desk with strategic rationale — this does not dead-end.",msgBlock:"At this discount the deal earns less than the traditional project. Tighten the gain-share or improve coverage / effort with evidence before quoting.",showGates:"Show gate detail",hideGates:"Hide gate detail",gatePass:"PASS",gateWarn:"WARN",gateFail:"FAIL",priceHr:"Rev / delivery hour"},
+  ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",dealWorkspace:"案件ワークスペース",owner:"担当",updated:"更新",step1:"ステップ1 ・ ベースライン",step2:"ステップ2 ・ AI提供コスト",step3:"ステップ3 ・ 価格モデル",population:"対象システムのカスタムオブジェクト数",scope:"改修対象オブジェクト",hrsPerUnit:"従来工数 / オブジェクト (h)",billRate:"ブレンド請求単価 ($/h)",costRate:"提供コスト単価 ($/h)",coverage:"AIカバレッジ (c)",effort:"工数削減率 (e)",qa:"人手QA戻し (q)",llm:"LLM前提 → t",tier:"モデルティア",tokIn:"入力Kトークン / obj",tokOut:"出力Kトークン / obj",overhead:"エージェント再試行オーバーヘッド",tokenCostLabel:"AIトークンコスト / オブジェクト (t)",platform:"プラットフォーム & ツール (P)",discount:"従来価格に対する顧客割引 (d)",band:"公開オープニングバンド",baseline:"従来ベースライン（AIなし）・ U × h × Rb",fourChoices:"同一案件、4つの価格選択",fourChoicesSub:"すべてのAIシナリオは同じ提供コスト。価格ロジックのみが異なります。",gainShare:"ゲインシェア曲線 — 利益 対 顧客割引",governance:"案件ガバナンス",floor:"損益分岐フロア",current:"現在",riskMax:"リスク調整上限",gates:"34 ガバナンスゲート",save:"保存",export:"エクスポート",generate:"提案書を生成",copyMd:"Markdownでコピー",owner_v:"Raj A.",rev:"売上",cost:"提供コスト",gp:"粗利",margin:"粗利率",revHr:"売上 / 提供時間",saves:"顧客の削減額",aiEffort:"AI適用後の工数",duration:"提供期間",perObj:"／オブジェクト",vsTradHr:"従来 $%b との比較",belowTrad:"従来価格を下回る",vsMonths:"従来 %m ヶ月との比較",within:"ポリシー適合",dealdesk:"ディールデスク承認が必要",blocked:"ブロック — フロア未満",msgWithin:"営業は署名可能。このシミュレーションを見積に添付し、案件パラメータを記録してください。",msgDeal:"公開バンドを超過しますが損益分岐フロア内です。戦略的根拠とともにディールデスクへ。行き止まりではありません。",msgBlock:"この割引率では従来案件を下回る利益です。ゲインシェアを引き締めるか、カバレッジ／工数をエビデンスで改善してから見積を。",showGates:"ゲート詳細を表示",hideGates:"ゲート詳細を隠す",gatePass:"適合",gateWarn:"警告",gateFail:"不可",priceHr:"売上 / 提供時間"},
+};
+
+const NAV=[
+  {id:"home",en:"Home",ja:"ホーム",icon:"⌂"},
+  {id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},
+  {id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},
+  {id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},
+  {id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},
+  {id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},
+  {id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},
+  {id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},
+  {id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},
+  {id:"settings",en:"Settings",ja:"設定",icon:"⚒"},
+  {id:"help",en:"Help",ja:"ヘルプ",icon:"?"},
+];
+
+const GATE_SEED=[
+  {en:"Senior review attestation",ja:"シニアレビュー宣誓",st:"pass"},
+  {en:"ATC scan complete",ja:"ATCスキャン完了",st:"pass"},
+  {en:"Token reconciliation logged",ja:"トークン照合記録",st:"pass"},
+  {en:"Discount within risk-adj. floor",ja:"割引がリスク調整フロア内",st:"warn"},
+  {en:"Evidence-graded anchor present",ja:"エビデンス評価アンカー有り",st:"warn"},
+  {en:"Warranty reserve funded",ja:"保証準備金の手当",st:"pass"},
+  {en:"Config version stamped",ja:"構成バージョン刻印",st:"pass"},
+  {en:"Author ≠ sole approver",ja:"起票者 ≠ 単独承認者",st:"pass"},
+];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      st:{...PRESETS.remediation},
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"workspace",
+      bannerOpen:false,
+    };
+  }
+  set(k,v){this.setState(s=>({st:{...s.st,[k]:v}}));}
+  num(k,e){this.set(k,Number(e.target.value)||0);}
+
+  glassBase(){
+    const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};
+  }
+
+  curveSvg(r){
+    const cdark=this.state.theme==="dark";
+    const W=560,H=224,pl=52,pr=14,pt=16,pb=34;
+    const pts=[];for(let d=0;d<=50;d+=2.5)pts.push({d,gp:Math.round(r.tradRevenue*(1-d/100)-r.aiCost)});
+    const gps=pts.map(p=>p.gp).concat([r.tradProfit]);
+    const mn=Math.min(...gps),mx=Math.max(...gps);
+    const xs=d=>pl+(d/50)*(W-pl-pr);
+    const ys=v=>pt+(1-(v-mn)/Math.max(mx-mn,1))*(H-pt-pb);
+    const line=pts.map((p,i)=>(i?"L":"M")+xs(p.d).toFixed(1)+" "+ys(p.gp).toFixed(1)).join(" ");
+    const h=React.createElement;
+    const floor=r.breakevenDiscount*100, cur=this.state.st.discountPct;
+    const grid=[0,0.25,0.5,0.75,1].map((f,i)=>{const y=pt+f*(H-pt-pb);return h("line",{key:"g"+i,x1:pl,y1:y,x2:W-pr,y2:y,stroke:cdark?"rgba(255,255,255,.09)":"#E4E9F2",strokeWidth:1});});
+    const xticks=[0,10,20,30,40,50].map(d=>h("text",{key:"x"+d,x:xs(d),y:H-12,fontSize:10,fill:cdark?"#93A6C4":MUTED,textAnchor:"middle"},d+"%"));
+    return h("svg",{viewBox:"0 0 "+W+" "+H,width:"100%",style:{display:"block",maxWidth:"100%"}},[
+      ...grid,...xticks,
+      h("line",{key:"fl",x1:pl,y1:ys(r.tradProfit),x2:W-pr,y2:ys(r.tradProfit),stroke:GOLDD,strokeWidth:2,strokeDasharray:"6 4"}),
+      floor>0&&floor<50?h("line",{key:"dstar",x1:xs(floor),y1:pt,x2:xs(floor),y2:H-pb,stroke:RED,strokeWidth:1.5,strokeDasharray:"4 4"}):null,
+      h("line",{key:"cur",x1:xs(cur),y1:pt,x2:xs(cur),y2:H-pb,stroke:cdark?"#C3D2E8":NAVY,strokeWidth:2}),
+      h("path",{key:"curve",d:line,fill:"none",stroke:GOLD,strokeWidth:3,strokeLinejoin:"round",strokeLinecap:"round"}),
+    ]);
+  }
+
+  renderVals(){
+    const {st,lang,glass,bannerOpen}=this.state;const theme=this.state.theme;const dark=theme==="dark";
+    const t=S[lang];
+    const ja=lang==="ja";
+    const r=compute(st);
+    const sel=r.selected;
+    const usd=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+    const money=v=>usd.format(Math.round(v));
+    const short=v=>Math.abs(v)>=1e6?"$"+(v/1e6).toFixed(2)+"M":"$"+Math.round(v/1000).toLocaleString("en-US")+"K";
+    const pct=v=>isFinite(v)?(v*100).toFixed(1)+"%":"—";
+    const num=v=>Math.round(v).toLocaleString(ja?"ja-JP":"en-US");
+    const dateStr=new Intl.DateTimeFormat(ja?"ja-JP":"en-US",{year:"numeric",month:ja?"long":"short",day:"numeric"}).format(new Date(2026,6,22));
+
+    // shared style tokens
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700;letter-spacing:0":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const kickerSm=ja?"color:#C77F1A;font-size:10.5px;font-weight:700":"color:#C77F1A;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase";
+    const lbl="font-size:12.5px;font-weight:500;color:var(--ink2,#3C4C66);line-height:1.4";
+    const hint="font-size:11px;color:var(--muted,#6B7A93);margin-top:5px;line-height:1.5";
+    const valNum="font-size:13px;font-weight:800;color:var(--ink,#16243D);font-variant-numeric:tabular-nums";
+    const valNumSm="font-size:11.5px;font-weight:700;color:var(--ink,#16243D);font-variant-numeric:tabular-nums";
+    const numInput="width:110px;text-align:right;border:1px solid var(--border,#C9D6EA);border-radius:8px;padding:6px 9px;font-size:12.5px;font-weight:700;color:var(--ink,#16243D);font-variant-numeric:tabular-nums;background:var(--surface,#fff)";
+    const numInputSm="width:100%;text-align:right;border:1px solid var(--border,#C9D6EA);border-radius:7px;padding:5px 7px;font-size:11.5px;font-weight:700;color:var(--ink,#16243D);font-variant-numeric:tabular-nums;background:var(--surface,#fff);margin-top:3px";
+
+    // glass surfaces
+    const gb=this.glassBase();
+    const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);const a=id===this.state.nav;return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":hrefFor(id),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+
+    // verdict logic
+    const d=st.discountPct/100, band=st.openingBandPct/100, floor=r.breakevenDiscount;
+    const vstate=d>floor?"blocked":d>Math.min(band,floor)?"dealdesk":"within";
+    const vmap={within:{title:t.within,msg:t.msgWithin,tint:GREEN,tintBg:"rgba(78,138,90,0.16)"},dealdesk:{title:t.dealdesk,msg:t.msgDeal,tint:GOLD,tintBg:"rgba(232,163,61,0.16)"},blocked:{title:t.blocked,msg:t.msgBlock,tint:RED,tintBg:"rgba(192,80,77,0.18)"}};
+    const verdict=vmap[vstate];
+    const gBanner=toStr(gb)+";border-radius:16px;padding:18px;box-shadow:0 14px 44px rgba(11,18,32,.24);border-top:3px solid "+verdict.tint+";background-image:linear-gradient(180deg,"+verdict.tintBg+",transparent 120px)";
+
+    // nav
+    const navItems=NAV.map(n=>{const active=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,current:active?"page":undefined,onClick:()=>this.setState({nav:n.id}),
+      style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;font-size:13px;font-weight:"+(active?"700":"500")+";font-family:inherit;color:"+(active?"#16243D":"#D9E6F7")+";background:"+(active?GOLD:"transparent")+";position:relative",
+      dotStyle:active?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const active=l.id===lang;return{...l,active,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(active?"#16243D":"#D9E6F7")+";background:"+(active?GOLD:"transparent")};});
+
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const active=g.id===glass;return{label:ja?g.ja:g.en,active,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(active?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(active?"#16243D":"#D9E6F7")+";background:"+(active?GOLD:"transparent")};});
+
+    const providers=PROVIDERS.map(p=>({...p,style:"display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#D9E6F7;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:99px;padding:3px 8px 3px 6px"}));
+
+    const tierOpts=Object.entries(TIERS).map(([id,tt])=>({id,name:tt.name,selected:id===st.llmTier?"selected":undefined}));
+
+    const models=[{id:"tm",label:ja?"T&M パススルー":"T&M pass-through",note:ja?"AI時間 × 旧単価 — マージンの罠":"AI hours × old rate — the margin trap"},{id:"premium",label:ja?"プレミアム T&M":"Premium-rate T&M",note:ja?"AI時間 × 単価 + プレミアム":"AI hours × rate + premium"},{id:"value",label:ja?"オブジェクト単位バリュー価格":"Per-unit value price",note:ja?"従来価格 − 顧客割引":"Traditional price − customer discount"}].map(m=>{const active=m.id===st.pricingModel;return{...m,active,onClick:()=>this.set("pricingModel",m.id),style:"width:100%;text-align:left;border:1px solid "+(active?GOLD:"var(--border,#DCE4F0)")+";background:"+(active?"rgba(232,163,61,.16)":"var(--surface,#fff)")+";border-radius:10px;padding:10px 12px;cursor:pointer;font-family:inherit"};});
+
+    // baseline strip
+    const baselineStrip=[[t.rev,short(r.tradRevenue)],[t.cost,short(r.tradCost)],[t.gp,short(r.tradProfit)],[t.margin,pct(r.tradMarginPct)],[ja?"価格/obj":"Price / obj",money(r.tradPricePerUnit)]].map(([label,value])=>({label,value}));
+
+    // KPIs
+    const kL="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase";
+    const mk=(label,value,sub,opt={})=>{const dark=opt.dark;return{label,value,sub:sub||"",style:"border-radius:12px;padding:14px;"+(dark?"background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent)":"background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7)"),labelStyle:kL+";color:"+(dark?GOLD:GOLDD),valueStyle:"margin-top:5px;font-size:21px;font-weight:800;font-variant-numeric:tabular-nums;color:"+(opt.accent?GOLD:dark?"#fff":"var(--ink,#16243D)"),subStyle:"margin-top:4px;font-size:11px;color:"+(dark?ICE:"var(--muted,#6B7A93)")+(sub?"":";display:none")};};
+    const kpis=[
+      mk(t.rev,short(sel.revenue),money(sel.pricePerUnit)+" "+t.perObj),
+      mk(t.cost,short(sel.cost),num(r.aiHours)+" h · "+short(r.tokenCost)+" tok"),
+      mk(t.gp,short(sel.profit),"",{dark:true,accent:true}),
+      mk(t.margin,pct(sel.marginPct),"",{dark:true}),
+      mk(t.revHr,money(sel.revPerHour),t.vsTradHr.replace("%b",st.billRate)),
+      mk(t.saves,short(sel.customerSavings),pct(sel.customerSavings/Math.max(r.tradRevenue,1))+" "+t.belowTrad),
+      mk(t.aiEffort,num(r.aiHours)+" h","−"+pct(1-r.aiHours/Math.max(r.tradHours,1))+" vs "+num(r.tradHours)+" h"),
+      mk(t.duration,r.aiMonths.toFixed(1)+" mo",t.vsMonths.replace("%m",r.tradMonths.toFixed(1))),
+    ];
+
+    // comparison bars
+    const scen=[["Traditional",r.tradRevenue,r.tradCost,r.tradProfit],["AI + T&M",r.tm.revenue,r.tm.cost,r.tm.profit],["AI + Premium",r.premium.revenue,r.premium.cost,r.premium.profit],["AI + Value −"+st.discountPct+"%",r.value.revenue,r.value.cost,r.value.profit]];
+    const allVals=scen.flatMap(s=>[s[1],s[2],s[3]]);
+    const mxv=Math.max(...allVals,1);
+    const barH=v=>Math.max(2,(v/mxv)*150);
+    const compareBars=scen.map((s,i)=>{const gpColor=s[3]>=r.tradProfit&&i>0?GOLD:i===0?"#B9A26B":RED;return{name:s[0],bars:[
+      {title:t.rev+": "+money(s[1]),style:"width:14px;border-radius:3px 3px 0 0;background:#7A93B8;height:"+barH(s[1])+"px"},
+      {title:t.cost+": "+money(s[2]),style:"width:14px;border-radius:3px 3px 0 0;background:#5A72A4;height:"+barH(s[2])+"px"},
+      {title:t.gp+": "+money(s[3]),style:"width:14px;border-radius:3px 3px 0 0;background:"+gpColor+";height:"+barH(s[3])+"px"},
+    ]};});
+    const chartLegend=[[t.rev,"#7A93B8"],[t.cost,"#5A72A4"],[t.gp,GOLD]].map(([label,c])=>({label,swatch:"width:11px;height:11px;border-radius:3px;background:"+c}));
+
+    // gates
+    const gates=GATE_SEED.map(g=>{const map={pass:[GREEN,"rgba(78,138,90,.14)",t.gatePass],warn:[GOLDD,"rgba(232,163,61,.16)",t.gateWarn],fail:[RED,"rgba(192,80,77,.14)",t.gateFail]};const[c,bg,label]=map[g.st];return{name:ja?g.ja:g.en,stateLabel:label,pill:"font-size:9.5px;font-weight:800;letter-spacing:.06em;padding:3px 7px;border-radius:99px;color:"+c+";background:"+bg+";min-width:44px;text-align:center"};});
+
+    return{
+      t,card,kicker,kickerSm,lbl,hint,valNum,valNumSm,numInput,numInputSm,
+      st,dealId:"DL-2026-0142",
+      dealName:ja?PRESETS.remediation.nameJa:PRESETS.remediation.name,
+      dateStr,unitsScopeLabel:num(r.unitsInScope)+" "+(ja?"オブジェクト対象":"objects in scope"),
+      pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      kickerStyle:kicker,
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      h2Style:"font-size:16px;font-weight:800;margin:0;color:var(--ink,#16243D)",
+      gBar,gRail,gTab,navItems,tabItems,themeStops,langs,glassStops,providers,tierOpts,models,
+      baselineStrip,kpis,compareBars,chartLegend,
+      scenarioTitle:(ja?"選択シナリオ：":"Selected: ")+models.find(m=>m.active).label,
+      deltaLabel:(sel.profit-r.tradProfit>=0?"▲ ":"▼ ")+short(Math.abs(sel.profit-r.tradProfit))+" "+(ja?"従来比":"vs traditional"),
+      deltaStyle:"font-size:12px;font-weight:700;padding:5px 12px;border-radius:99px;font-variant-numeric:tabular-nums;"+(sel.profit-r.tradProfit>=0?"background:#E6F1E9;color:"+GREEN:"background:#F9E7E6;color:"+RED),
+      gainShareSub:(ja?"金色の破線は現在の従来利益（":"Gold dashes = today's traditional profit (")+short(r.tradProfit)+(ja?"）。曲線が交わる d* = ":"). The crossover d* = ")+pct(r.breakevenDiscount)+(ja?" が最大割引。":" is the max discount before AI erodes value."),
+      curveChart:this.curveSvg(r),
+      floorHint:(ja?"損益分岐フロア d* = ":"Breakeven floor d* = ")+pct(r.breakevenDiscount)+(ja?" — これを超えるとAIが価値を毀損":" — beyond this, AI destroys value"),
+      tokenPerUnitStr:"$"+r.tokenPerUnit.toFixed(2),
+      gBanner,verdict,
+      verdictDot:"width:9px;height:9px;border-radius:50%;background:"+verdict.tint+";box-shadow:0 0 0 4px "+verdict.tintBg,
+      verdictTitleStyle:"font-size:19px;font-weight:800;margin-top:10px;line-height:1.2;color:"+(vstate==="within"?"#8FD3A0":vstate==="dealdesk"?GOLD:"#E89B99"),
+      floorStr:pct(r.breakevenDiscount),
+      currentDStyle:"font-size:16px;font-weight:800;font-variant-numeric:tabular-nums;color:"+(vstate==="blocked"?"#E89B99":vstate==="dealdesk"?GOLD:"#fff"),
+      bannerOpen,toggleBanner:()=>this.setState(s=>({bannerOpen:!s.bannerOpen})),
+      bannerBtnLabel:bannerOpen?t.hideGates:t.showGates,
+      bannerBtnStyle:"display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:700;color:#fff",
+      chevronStyle:"transition:transform .2s;transform:rotate("+(bannerOpen?"180deg":"0")+")",
+      gates,gateSummary:ja?"6 適合 · 2 警告":"6 pass · 2 warn",
+      gateMore:ja?"+ 26 ゲートがポリシー適合（自動）":"+ 26 more gates within policy (auto-checked)",
+      gCluster:toStr(gb)+";position:fixed;right:26px;bottom:24px;z-index:50;display:flex;gap:8px;padding:8px;border-radius:99px;box-shadow:0 16px 44px rgba(11,18,32,.30)",
+      fabSecondary:"display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:10px 16px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:#D9E6F7",
+      fabPrimary:"display:flex;align-items:center;gap:7px;background:"+GOLD+";border:none;border-radius:99px;padding:10px 18px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;color:#16243D",
+    };
+  }
+}
+</script>
+</body>
+</html>

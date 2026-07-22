@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#E8A33D;text-decoration:none}
+  a:hover{color:#F2BC63}
+  ::selection{background:rgba(232,163,61,0.3)}
+  input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  input::placeholder{color:#9AA9C0}
+  @keyframes ds-spin{to{transform:rotate(360deg)}}
+  @keyframes ds-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes ds-orb{0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-18px)}}
+  .ds-auth{display:grid;grid-template-columns:1.05fr .95fr;min-height:100vh}
+  .ds-brand{padding:52px 56px}
+  @media(max-width:900px){.ds-auth{grid-template-columns:1fr}.ds-brand{display:none !important}}
+  @media(prefers-reduced-motion:reduce){.ds-anim,.ds-orbEl{animation:none !important}}
+</style>
+</helmet>
+<div style="{{ pageStyle }}">
+  <div class="ds-orbEl" style="position:absolute;top:-120px;right:8%;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(232,163,61,.28),transparent 68%);filter:blur(10px);animation:ds-orb 14s ease-in-out infinite;pointer-events:none"></div>
+  <div class="ds-orbEl" style="position:absolute;bottom:-160px;left:-60px;width:480px;height:480px;border-radius:50%;background:radial-gradient(circle,rgba(58,96,158,.4),transparent 66%);filter:blur(12px);animation:ds-orb 18s ease-in-out infinite reverse;pointer-events:none"></div>
+
+  <!-- FLOATING CONTROLS (glass chrome) -->
+  <div style="position:absolute;top:22px;right:26px;z-index:20;display:flex;gap:10px;align-items:center">
+    <div style="{{ gPill }}">
+      <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+        <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+      </sc-for>
+    </div>
+    <div style="{{ gPill }}">
+      <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+        <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+      </sc-for>
+    </div>
+    <div style="{{ gPill }}">
+      <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2">
+        <button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button>
+      </sc-for>
+    </div>
+  </div>
+
+  <div class="ds-auth">
+    <!-- BRAND PANEL (solid) -->
+    <div class="ds-brand" style="position:relative;display:flex;flex-direction:column;justify-content:space-between">
+      <div style="display:flex;align-items:center;gap:11px">
+        <div style="width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:20px">D</div>
+        <div style="font-weight:800;font-size:20px;color:var(--brand-ink,#fff)">DealSpine</div>
+      </div>
+      <div style="max-width:460px">
+        <div style="{{ brandKicker }}">{{ t.kicker }}</div>
+        <h1 style="font-size:40px;line-height:1.12;font-weight:800;letter-spacing:-.02em;color:var(--brand-ink,#fff);margin:14px 0 0">{{ t.headline }}</h1>
+        <p style="font-size:15px;line-height:1.65;color:var(--brand-sub,#B7C6DE);margin:16px 0 0">{{ t.blurb }}</p>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-top:28px">
+          <sc-for list="{{ trust }}" as="b" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:11px">
+              <span style="width:26px;height:26px;flex:none;border-radius:8px;background:rgba(232,163,61,.16);display:flex;align-items:center;justify-content:center">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg>
+              </span>
+              <span style="font-size:13.5px;color:var(--brand-sub2,#D9E6F7);font-weight:500">{{ b }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--brand-foot,#8093AE)">{{ t.tenantFoot }}</div>
+    </div>
+
+    <!-- AUTH PANEL -->
+    <div style="position:relative;display:flex;align-items:center;justify-content:center;padding:40px 32px">
+      <div style="{{ gCard }}">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#E8A33D">{{ t.workspace }}</span>
+        </div>
+        <h2 style="font-size:23px;font-weight:800;color:#fff;margin:0;letter-spacing:-.01em">{{ t.signIn }}</h2>
+        <div style="font-size:13px;color:#C3D2E8;margin-top:6px">{{ t.tenant }}</div>
+
+        <!-- FORM -->
+        <sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+          <div class="ds-anim" style="animation:ds-fade .3s ease;margin-top:22px">
+            <button onClick="{{ onSSO }}" disabled="{{ ssoDisabled }}" style="{{ ssoStyle }}">
+              <sc-if value="{{ ssoLoading }}" hint-placeholder-val="{{ false }}">
+                <span style="width:16px;height:16px;border:2px solid rgba(22,36,61,.3);border-top-color:#16243D;border-radius:50%;display:inline-block;animation:ds-spin .7s linear infinite"></span>
+              </sc-if>
+              <span>{{ ssoLabel }}</span>
+            </button>
+
+            <div style="display:flex;align-items:center;gap:12px;margin:18px 0">
+              <span style="flex:1;height:1px;background:rgba(255,255,255,.16)"></span>
+              <span style="font-size:11px;color:#9FB1CC;font-weight:600">{{ t.or }}</span>
+              <span style="flex:1;height:1px;background:rgba(255,255,255,.16)"></span>
+            </div>
+
+            <label style="display:block">
+              <span style="font-size:11.5px;font-weight:700;color:#C3D2E8">{{ t.email }}</span>
+              <input type="email" value="{{ email }}" onInput="{{ onEmail }}" placeholder="{{ t.emailPh }}" autocomplete="email" style="{{ emailStyle }}">
+              <sc-if value="{{ emailError }}" hint-placeholder-val="{{ false }}">
+                <span style="display:block;font-size:11.5px;color:#F0A6A3;margin-top:6px;font-weight:600">{{ t.emailErr }}</span>
+              </sc-if>
+            </label>
+
+            <button onClick="{{ onContinue }}" disabled="{{ sendDisabled }}" style="{{ continueStyle }}">
+              <sc-if value="{{ sending }}" hint-placeholder-val="{{ false }}">
+                <span style="width:15px;height:15px;border:2px solid rgba(22,36,61,.3);border-top-color:#16243D;border-radius:50%;display:inline-block;animation:ds-spin .7s linear infinite"></span>
+              </sc-if>
+              <span>{{ continueLabel }}</span>
+            </button>
+
+            <button onClick="{{ onPasskey }}" style="width:100%;margin-top:12px;background:transparent;border:none;color:#C3D2E8;font-family:inherit;font-size:12.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="9" r="4"/><path d="M13 12l6 6M16 15l2-2M19 18l1.5-1.5"/></svg>
+              {{ t.passkey }}
+            </button>
+          </div>
+        </sc-if>
+
+        <!-- SENT STATE -->
+        <sc-if value="{{ showSent }}" hint-placeholder-val="{{ false }}">
+          <div class="ds-anim" style="animation:ds-fade .3s ease;margin-top:26px;text-align:center">
+            <div style="width:58px;height:58px;border-radius:50%;margin:0 auto;background:rgba(78,138,90,.2);border:1px solid rgba(143,211,160,.4);display:flex;align-items:center;justify-content:center">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.4"><path d="M4 7l8 6 8-6M4 5h16v14H4z"/></svg>
+            </div>
+            <div style="font-size:17px;font-weight:800;color:#fff;margin-top:16px">{{ t.sentTitle }}</div>
+            <div style="font-size:13px;color:#C3D2E8;margin-top:8px;line-height:1.6">{{ sentBody }}</div>
+            <button onClick="{{ onReset }}" style="margin-top:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:10px 18px;font-size:12.5px;font-weight:700;font-family:inherit;color:#fff;cursor:pointer">{{ t.differentEmail }}</button>
+          </div>
+        </sc-if>
+
+        <div style="margin-top:24px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);font-size:11.5px;color:#9FB1CC;line-height:1.6;text-align:center">{{ t.legal }} · <a href="#">{{ t.contactAdmin }}</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:860},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const GOLD="#E8A33D",GOLDD="#C77F1A";
+const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      email:"",stage:"idle",
+    };
+  }
+  glassCard(){const g=this.state.glass;const light=this.state.theme!=="dark";
+    if(light){
+      if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+      if(g==="reduced")return{backdropFilter:"blur(14px) saturate(150%)",WebkitBackdropFilter:"blur(14px) saturate(150%)",background:"rgba(22,36,61,0.86)",border:"1px solid rgba(255,255,255,0.14)"};
+      return{backdropFilter:"blur(28px) saturate(160%)",WebkitBackdropFilter:"blur(28px) saturate(160%)",background:"rgba(22,36,61,0.62)",border:"1px solid rgba(255,255,255,0.16)"};
+    }
+    if(g==="opaque")return{background:"rgba(20,32,54,0.97)",border:"1px solid rgba(255,255,255,0.12)"};
+    if(g==="reduced")return{backdropFilter:"blur(14px) saturate(150%)",WebkitBackdropFilter:"blur(14px) saturate(150%)",background:"rgba(255,255,255,0.14)",border:"1px solid rgba(255,255,255,0.20)"};
+    return{backdropFilter:"blur(30px) saturate(170%)",WebkitBackdropFilter:"blur(30px) saturate(170%)",background:"rgba(255,255,255,0.11)",border:"1px solid rgba(255,255,255,0.22)"};}
+  glassPillBase(){const g=this.state.glass;const light=this.state.theme!=="dark";
+    if(light){
+      if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.12)"};
+      if(g==="reduced")return{backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.16)"};
+      return{backdropFilter:"blur(20px) saturate(160%)",WebkitBackdropFilter:"blur(20px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.18)"};
+    }
+    if(g==="opaque")return{background:"rgba(20,32,54,0.97)",border:"1px solid rgba(255,255,255,0.12)"};
+    if(g==="reduced")return{backdropFilter:"blur(12px)",WebkitBackdropFilter:"blur(12px)",background:"rgba(255,255,255,0.14)",border:"1px solid rgba(255,255,255,0.20)"};
+    return{backdropFilter:"blur(20px) saturate(160%)",WebkitBackdropFilter:"blur(20px) saturate(160%)",background:"rgba(255,255,255,0.10)",border:"1px solid rgba(255,255,255,0.20)"};}
+
+  onEmail(v){this.setState({email:v,stage:this.state.stage==="error"?"idle":this.state.stage});}
+  sso(){if(this.state.stage==="sso")return;this.setState({stage:"sso"});this._g=(this._g||0)+1;const t=this._g;setTimeout(()=>{if(this._g===t)this.setState({stage:"sent"});},1500);}
+  cont(){const ok=EMAIL_RE.test(this.state.email.trim());if(!ok){this.setState({stage:"error"});return;}this.setState({stage:"sending"});this._g=(this._g||0)+1;const t=this._g;setTimeout(()=>{if(this._g===t)this.setState({stage:"sent"});},1200);}
+  componentWillUnmount(){this._g=-1;}
+
+  renderVals(){
+    const{lang,glass,stage}=this.state;const ja=lang==="ja";const dark=this.state.theme==="dark";
+    const T={en:{kicker:"AI-NATIVE PRICING",headline:"Governed pricing, backed by evidence.",blurb:"Price every SAP engagement against published bands, defend the floor automatically, and prove delivered value — one workspace.",
+      t1:"SAP S/4HANA connected",t2:"SOC 2 · SSO enforced",t3:"Every price defensible",tenantFoot:"nuvear.com · Tokyo region · v2.6",
+      workspace:"WORKSPACE",signIn:"Sign in",tenant:"You're signing in to nuvear.com",sso:"Continue with Okta SSO",ssoLoading:"Redirecting to Okta…",or:"or use email",email:"Work email",emailPh:"you@nuvear.com",emailErr:"Enter a valid work email address.",cont:"Send magic link",sending:"Sending…",passkey:"Use a passkey instead",
+      sentTitle:"Check your email",differentEmail:"Use a different email",legal:"Protected by SSO and device trust",contactAdmin:"Contact your admin"},
+      ja:{kicker:"AIネイティブ価格設定",headline:"ガバナンスされた価格を、エビデンスで裏付ける。",blurb:"すべてのSAP案件を公開バンドに照らして価格設定し、フロアを自動で防衛し、提供価値を証明する — ひとつのワークスペースで。",
+      t1:"SAP S/4HANA 連携済み",t2:"SOC 2 · SSO 必須",t3:"すべての価格に根拠",tenantFoot:"nuvear.com · 東京リージョン · v2.6",
+      workspace:"ワークスペース",signIn:"サインイン",tenant:"nuvear.com にサインインします",sso:"Okta SSO で続行",ssoLoading:"Okta にリダイレクト中…",or:"またはメールで",email:"業務用メール",emailPh:"you@nuvear.com",emailErr:"有効な業務用メールアドレスを入力してください。",cont:"マジックリンクを送信",sending:"送信中…",passkey:"パスキーを使用",
+      sentTitle:"メールを確認してください",differentEmail:"別のメールを使う",legal:"SSO とデバイス信頼で保護",contactAdmin:"管理者に問い合わせ"}}[lang];
+
+    const gc=this.glassCard();const gp=this.glassPillBase();
+    const gCard=toStr(gc)+";width:100%;max-width:400px;border-radius:20px;padding:32px 30px;box-shadow:0 30px 80px rgba(6,12,24,.5);position:relative;z-index:5";
+    const gPill=toStr(gp)+";display:flex;gap:2px;border-radius:99px;padding:3px";
+    const pillBtn=(a)=>"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"800":"600")+";padding:5px 11px;border-radius:99px;color:"+(a?"#16243D":"#E8EEF7")+";background:"+(a?GOLD:"transparent");
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{label:l.label,active:a,onClick:()=>this.setState({lang:l.id}),style:pillBtn(a)};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:pillBtn(a)};});
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===(dark?"dark":"light");return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:pillBtn(a)};});
+
+    const ssoLoading=stage==="sso";const sending=stage==="sending";
+    const ssoStyle="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;border:none;border-radius:12px;padding:13px;font-size:13.5px;font-weight:800;font-family:inherit;cursor:"+(ssoLoading?"wait":"pointer")+";background:#fff;color:#16243D;box-shadow:0 4px 14px rgba(0,0,0,.18)";
+    const emailBad=stage==="error";
+    const emailStyle="width:100%;margin-top:7px;background:rgba(255,255,255,.94);border:1px solid "+(emailBad?"#E0908C":"rgba(255,255,255,.4)")+";border-radius:11px;padding:12px 14px;font-size:14px;font-family:inherit;color:#16243D";
+    const continueStyle="width:100%;margin-top:16px;display:flex;align-items:center;justify-content:center;gap:9px;border:none;border-radius:12px;padding:13px;font-size:13.5px;font-weight:800;font-family:inherit;cursor:"+(sending?"wait":"pointer")+";background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;box-shadow:0 6px 18px rgba(199,127,26,.4)";
+
+    return{
+      pageStyle:(dark?"--brand-ink:#ffffff;--brand-sub:#B7C6DE;--brand-sub2:#D9E6F7;--brand-foot:#8093AE":"--brand-ink:#16243D;--brand-sub:#3C4C66;--brand-sub2:#3C4C66;--brand-foot:#6B7A93")+";position:relative;min-height:100vh;overflow:hidden;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1200px 700px at 78% -10%, #22375C, #101B30 60%),linear-gradient(160deg,#16243D,#0C1526)":"radial-gradient(1200px 700px at 78% -10%, #dbe8f8, #EEF4FC 60%)")+";color:#16243D;line-height:"+(ja?"1.7":"1.5"),
+      t:T,gCard,gPill,langs,glassStops,themeStops,
+      brandKicker:"color:#E8A33D;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase",
+      trust:[T.t1,T.t2,T.t3],
+      showForm:stage==="idle"||stage==="error"||stage==="sso"||stage==="sending",
+      showSent:stage==="sent",
+      email:this.state.email,onEmail:e=>this.onEmail(e.target.value),emailStyle,emailError:emailBad,
+      ssoStyle,ssoLabel:ssoLoading?T.ssoLoading:T.sso,ssoLoading,ssoDisabled:ssoLoading?"":undefined,
+      continueStyle,continueLabel:sending?T.sending:T.cont,sending,sendDisabled:sending?"":undefined,
+      onSSO:()=>this.sso(),onContinue:()=>this.cont(),onPasskey:()=>this.sso(),
+      onReset:()=>this.setState({stage:"idle",email:""}),
+      sentBody:ja?("認証リンクを "+(this.state.email||"your inbox")+" に送信しました。リンクは10分間有効です。"):("We sent a sign-in link to "+(this.state.email||"your inbox")+". It expires in 10 minutes."),
+    };
+  }
+}
+</script>
+</body>
+</html>

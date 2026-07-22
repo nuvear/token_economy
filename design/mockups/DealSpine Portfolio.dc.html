@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  .ds-charts{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .ds-tablewrap{overflow-x:auto}
+  .ds-tabbar{display:none}
+  @media(max-width:1080px){.ds-charts{grid-template-columns:1fr}}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:140px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:140px;justify-content:flex-end;flex:1">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">LD</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <a href="{{ n.href }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </a>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2">
+              <button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 60px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+          <div style="{{ kicker }}">{{ t.leadership }}</div>
+          <h1 style="{{ h1Style }}">{{ t.portfolio }}</h1>
+          <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ t.period }}</div>
+        </div>
+        <button style="display:flex;align-items:center;gap:7px;white-space:nowrap;background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:8px 14px;font-size:12.5px;font-weight:600;color:var(--ink2,#3C4C66);cursor:pointer">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6M9 16h6M9 8h6"/><rect x="4" y="3" width="16" height="18" rx="2"/></svg>
+          {{ t.copyMd }}
+        </button>
+      </div>
+
+      <!-- KPI STRIP (solid) -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="5">
+          <div style="{{ k.style }}">
+            <div style="{{ k.labelStyle }}">{{ k.label }}</div>
+            <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+            <div style="{{ k.subStyle }}">{{ k.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- CHARTS -->
+      <div class="ds-charts" style="margin-top:18px">
+        <section style="{{ card }}">
+          <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.revVsFloor }}</div>
+          <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.revVsFloorSub }}</div>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-top:16px">
+            <sc-for list="{{ revBars }}" as="b" hint-placeholder-count="6">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                  <span style="font-size:11.5px;font-weight:600;color:var(--ink2,#3C4C66)">{{ b.name }}</span>
+                  <span style="font-size:11px;color:var(--ink,#16243D);font-variant-numeric:tabular-nums;font-weight:700">{{ b.value }}</span>
+                </div>
+                <div style="position:relative;height:16px;background:var(--track,#EEF4FC);border-radius:5px;overflow:hidden">
+                  <div style="{{ b.barStyle }}"></div>
+                  <div title="floor" style="{{ b.floorStyle }}"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#3A5F94"></span>{{ t.contracted }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:3px;height:12px;background:#E8A33D"></span>{{ t.floorRev }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#C0504D"></span>{{ t.belowFloor }}</div>
+          </div>
+        </section>
+
+        <section style="{{ card }}">
+          <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.gpHrTrend }}</div>
+          <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.gpHrSub }}</div>
+          <div style="margin-top:12px">{{ trendChart }}</div>
+        </section>
+
+        <section style="{{ card }}">
+          <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D)">{{ t.discVsBand }}</div>
+          <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.discVsBandSub }}</div>
+          <div style="display:flex;flex-direction:column;gap:11px;margin-top:16px">
+            <sc-for list="{{ discBars }}" as="b" hint-placeholder-count="6">
+              <div>
+                <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+                  <span style="font-size:11.5px;font-weight:600;color:var(--ink2,#3C4C66)">{{ b.name }}</span>
+                  <span style="font-size:11px;color:{{ b.valColor }};font-variant-numeric:tabular-nums;font-weight:700">{{ b.value }}</span>
+                </div>
+                <div style="position:relative;height:16px;background:var(--track,#EEF4FC);border-radius:5px;overflow:hidden">
+                  <div style="{{ b.barStyle }}"></div>
+                  <div title="band" style="{{ b.bandStyle }}"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#3A5F94"></span>{{ t.withinBand }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#E8A33D"></span>{{ t.aboveBand }}</div>
+            <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:3px;height:12px;background:#6B7A93"></span>{{ t.publishedBand }}</div>
+          </div>
+        </section>
+
+        <!-- REINVESTMENT FUND -->
+        <section style="background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent);border-radius:12px;padding:20px;color:#fff;display:flex;flex-direction:column">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#E8A33D">{{ t.reinvest }}</div>
+          <div style="display:flex;align-items:baseline;gap:10px;margin-top:10px">
+            <div style="font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1">{{ fund.accrued }}</div>
+            <div style="font-size:13px;color:#9FB1CC;font-variant-numeric:tabular-nums">/ {{ fund.target }} {{ t.target }}</div>
+          </div>
+          <div style="height:10px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:14px">
+            <div style="{{ fund.barStyle }}"></div>
+          </div>
+          <div style="font-size:12px;color:#C9D8EE;margin-top:12px;line-height:1.6">{{ fund.note }}</div>
+          <div style="display:flex;gap:14px;margin-top:auto;padding-top:16px">
+            <div>
+              <div style="font-size:9px;letter-spacing:.1em;color:#9FB1CC;text-transform:uppercase">{{ t.thisQuarter }}</div>
+              <div style="font-size:15px;font-weight:800;color:#8FD3A0;font-variant-numeric:tabular-nums">{{ fund.qtr }}</div>
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:.1em;color:#9FB1CC;text-transform:uppercase">{{ t.dealsFunding }}</div>
+              <div style="font-size:15px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums">{{ fund.deals }}</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- DEALS TABLE -->
+      <section style="{{ card }};margin-top:18px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <div style="{{ kicker }}">{{ t.dealsTable }}</div>
+          <span style="font-size:11px;color:var(--muted,#6B7A93);font-variant-numeric:tabular-nums">{{ dealsCount }}</span>
+        </div>
+        <div class="ds-tablewrap" style="margin-top:12px">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;min-width:640px">
+            <thead>
+              <tr>
+                <sc-for list="{{ cols }}" as="c" hint-placeholder-count="7">
+                  <th style="{{ c.style }}">{{ c.label }}</th>
+                </sc-for>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="6">
+                <tr style="{{ r.trStyle }}">
+                  <td style="text-align:left;padding:10px;color:var(--ink,#16243D)">
+                    <div style="font-weight:700">{{ r.name }}</div>
+                    <div style="font-size:10.5px;color:var(--faint,#9AA9C0)">{{ r.id }}</div>
+                  </td>
+                  <td style="text-align:left;padding:10px;color:var(--muted,#6B7A93)">{{ r.owner }}</td>
+                  <td style="text-align:right;padding:10px;color:var(--ink,#16243D);font-weight:600">{{ r.rev }}</td>
+                  <td style="text-align:right;padding:10px;color:{{ r.gpColor }};font-weight:700">{{ r.gp }}</td>
+                  <td style="text-align:right;padding:10px;color:var(--ink,#16243D)">{{ r.gphr }}</td>
+                  <td style="text-align:right;padding:10px;color:var(--ink,#16243D)">{{ r.disc }}</td>
+                  <td style="text-align:center;padding:10px"><span style="{{ r.statusPill }}">{{ r.statusLabel }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:var(--faint,#9AA9C0);margin-top:10px">{{ t.mobileNote }}</div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MOBILE BOTTOM TAB (glass) -->
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5">
+      <a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}">
+        <span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span>
+        <span style="font-size:9px;font-weight:700">{{ tb.label }}</span>
+      </a>
+    </sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1120},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A",BARNAVY="#3A5F94";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={home:"DealSpine Home.dc.html",workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",policy:"DealSpine Policy Studio.dc.html",proposals:"DealSpine Proposal Preview.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",settings:"DealSpine Settings.dc.html",help:"DealSpine Help.dc.html"};
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+const DEALS=[
+  {id:"DL-0142",name:"Code Remediation",nameJa:"コード改修",owner:"Priya S.",rev:837900,floorRev:808000,gp:289000,gphr:186,disc:30,band:25,status:"approved"},
+  {id:"DL-0155",name:"BW/4 Upgrade",nameJa:"BW/4 アップグレード",owner:"Tom H.",rev:721600,floorRev:607000,gp:262000,gphr:158,disc:18,band:20,status:"approved"},
+  {id:"DL-0151",name:"Data Migration",nameJa:"データ移行",owner:"Aiko T.",rev:460800,floorRev:415000,gp:172000,gphr:172,disc:28,band:20,status:"approved"},
+  {id:"DL-0160",name:"Fiori Rollout",nameJa:"Fiori 展開",owner:"Lena M.",rev:440300,floorRev:361000,gp:168000,gphr:164,disc:14,band:20,status:"approved"},
+  {id:"DL-0138",name:"Test Automation",nameJa:"テスト自動化",owner:"Marco R.",rev:157000,floorRev:163000,gp:22000,gphr:98,disc:34,band:25,status:"blocked"},
+  {id:"DL-0129",name:"Interface Dev",nameJa:"インターフェース開発",owner:"Sam K.",rev:231000,floorRev:259000,gp:-8000,gphr:-4,disc:41,band:20,status:"nobid"},
+];
+const TREND=[["Apr",132],["May",141],["Jun",150],["Jul",158],["Aug",166],["Sep",178]];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={lang:props.locale==="ja"?"ja":"en",glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",theme:props.theme==="dark"?"dark":"light",nav:"portfolio"};
+  }
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+
+  trendSvg(){
+    const h=React.createElement;const dark=this.state.theme==="dark";const W=520,H=200,pl=44,pr=14,pt=16,pb=30;
+    const vals=TREND.map(p=>p[1]).concat([95]);const mn=Math.min(...vals)-10,mx=Math.max(...vals)+8;
+    const xs=i=>pl+(i/(TREND.length-1))*(W-pl-pr);
+    const ys=v=>pt+(1-(v-mn)/(mx-mn))*(H-pt-pb);
+    const line=TREND.map((p,i)=>(i?"L":"M")+xs(i).toFixed(1)+" "+ys(p[1]).toFixed(1)).join(" ");
+    const gridC=dark?"rgba(255,255,255,.09)":"#E4E9F2";const txtC=dark?"#93A6C4":MUTED;
+    const grid=[0,.25,.5,.75,1].map((f,i)=>{const y=pt+f*(H-pt-pb);return h("line",{key:"g"+i,x1:pl,y1:y,x2:W-pr,y2:y,stroke:gridC,strokeWidth:1});});
+    const xt=TREND.map((p,i)=>h("text",{key:"x"+i,x:xs(i),y:H-10,fontSize:10,fill:txtC,textAnchor:"middle"},p[0]));
+    const dots=TREND.map((p,i)=>h("circle",{key:"d"+i,cx:xs(i),cy:ys(p[1]),r:3.5,fill:GOLD,stroke:dark?"#182A47":"#fff",strokeWidth:1.5}));
+    return h("svg",{viewBox:"0 0 "+W+" "+H,width:"100%",style:{display:"block",maxWidth:"100%"}},[
+      ...grid,...xt,
+      h("line",{key:"base",x1:pl,y1:ys(95),x2:W-pr,y2:ys(95),stroke:GOLDD,strokeWidth:1.5,strokeDasharray:"6 4"}),
+      h("text",{key:"bl",x:W-pr,y:ys(95)-6,fontSize:9.5,fill:GOLDD,textAnchor:"end"},"$95 T&M"),
+      h("path",{key:"ln",d:line,fill:"none",stroke:GOLD,strokeWidth:3,strokeLinejoin:"round",strokeLinecap:"round"}),
+      ...dots,
+    ]);
+  }
+
+  renderVals(){
+    const{lang,glass,theme}=this.state;const ja=lang==="ja";const dark=theme==="dark";const gb=this.glassBase();
+    const short=v=>(v<0?"-":"")+"$"+(Math.abs(v)>=1e6?(Math.abs(v)/1e6).toFixed(2)+"M":Math.round(Math.abs(v)/1000)+"K");
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",leadership:"LEADERSHIP",portfolio:"Portfolio",period:"Q3 FY26 · 6 active deals · updated Jul 22, 2026",copyMd:"Copy as Markdown",revVsFloor:"Revenue vs. floor",revVsFloorSub:"Contracted revenue against each deal's minimum-at-floor.",contracted:"Contracted",floorRev:"Floor",belowFloor:"Below floor",gpHrTrend:"GP per delivery hour",gpHrSub:"The north-star metric — trending vs. the $95 T&M baseline.",discVsBand:"Discount vs. published bands",discVsBandSub:"Where each deal sits against its opening band.",withinBand:"Within band",aboveBand:"Above band (governed)",publishedBand:"Published band",reinvest:"REINVESTMENT FUND",target:"target",thisQuarter:"This quarter",dealsFunding:"Deals funding",dealsTable:"ALL DEALS",mobileNote:"On mobile this table becomes one card per deal.",colDeal:"Deal",colOwner:"Owner",colRev:"Revenue",colGp:"Gross profit",colGpHr:"GP / hr",colDisc:"Discount",colStatus:"Status"},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",leadership:"リーダーシップ",portfolio:"ポートフォリオ",period:"Q3 FY26 ・ 稼働案件6件 ・ 2026年7月22日更新",copyMd:"Markdownでコピー",revVsFloor:"売上 対 フロア",revVsFloorSub:"各案件の契約売上とフロア最小売上の比較。",contracted:"契約売上",floorRev:"フロア",belowFloor:"フロア未満",gpHrTrend:"提供時間あたり粗利",gpHrSub:"ノーススター指標 — $95 T&M基準との推移。",discVsBand:"割引 対 公開バンド",discVsBandSub:"各案件のオープニングバンドに対する位置。",withinBand:"バンド内",aboveBand:"バンド超過（ガバナンス下）",publishedBand:"公開バンド",reinvest:"再投資ファンド",target:"目標",thisQuarter:"今四半期",dealsFunding:"拠出案件",dealsTable:"全案件",mobileNote:"モバイルでは各案件が1カードになります。",colDeal:"案件",colOwner:"担当",colRev:"売上",colGp:"粗利",colGpHr:"粗利/時",colDisc:"割引",colStatus:"状態"}}[lang];
+
+    const vars=dark
+      ?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--row:#182A47;--row-alt:#1D3053;--th:#21365A;--track:#263C5F;--panel-border:rgba(232,163,61,.28)"
+      :"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--row:#ffffff;--row-alt:#FBFDFF;--th:#EEF4FC;--track:#EEF4FC;--panel-border:transparent";
+    const bg=dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)";
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,href:a?"#":(FILEMAP[n.id]||"#"),current:a?"page":undefined,style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;text-decoration:none;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const tabDef=["home","workspace","approvals","evidence","portfolio"];
+    const tabItems=tabDef.map(id=>{const n=NAV.find(x=>x.id===id);const a=id===this.state.nav;return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":(FILEMAP[id]||"#"),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const signed=DEALS.filter(d=>d.status==="approved");
+    const signedRev=signed.reduce((a,d)=>a+d.rev,0);
+    const kL="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase";
+    const mk=(label,value,sub,opt={})=>{const dk=opt.dark;return{label,value,sub:sub||"",style:"border-radius:12px;padding:16px;"+(dk?"background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent)":"background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7)"),labelStyle:kL+";color:"+(dk?GOLD:GOLDD),valueStyle:"margin-top:6px;font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;color:"+(opt.accent?GOLD:dk?"#fff":"var(--ink,#16243D)"),subStyle:"margin-top:4px;font-size:11px;color:"+(dk?ICE:"var(--muted,#6B7A93)")+(sub?"":";display:none")};};
+    const kpis=[
+      mk(ja?"契約売上":"Signed revenue",short(signedRev),signed.length+(ja?" 件成約":" deals signed")),
+      mk(ja?"GP 対 T&M":"GP vs. T&M","+$1.12M",ja?"ガバナンス価格設定による":"from governed value pricing"),
+      mk(ja?"フロア遵守":"Floor adherence","100%","",{dark:true,accent:true}),
+      mk(ja?"提供時間あたりGP":"GP / delivery hr","$170",ja?"従来 $95 との比較":"vs. $95 traditional"),
+      mk(ja?"再投資":"Reinvestment","$212K",ja?"目標 $300K の 71%":"71% of $300K target"),
+    ];
+
+    const maxRev=Math.max(...DEALS.map(d=>d.rev));
+    const revBars=DEALS.map(d=>{const below=d.rev<d.floorRev;const pct=d.rev/maxRev*100;const fpct=d.floorRev/maxRev*100;return{name:ja?d.nameJa:d.name,value:short(d.rev),
+      barStyle:"position:absolute;left:0;top:0;height:100%;width:"+pct.toFixed(1)+"%;background:"+(below?RED:BARNAVY)+";border-radius:5px 0 0 5px",
+      floorStyle:"position:absolute;top:-2px;bottom:-2px;left:"+fpct.toFixed(1)+"%;width:3px;background:"+GOLD};});
+
+    const discBars=DEALS.map(d=>{const over=d.disc>d.band;const pct=d.disc/50*100;const bpct=d.band/50*100;return{name:ja?d.nameJa:d.name,value:d.disc+"%",valColor:over?GOLDD:"var(--ink2,#3C4C66)",
+      barStyle:"position:absolute;left:0;top:0;height:100%;width:"+pct.toFixed(1)+"%;background:"+(over?GOLD:BARNAVY)+";border-radius:5px 0 0 5px",
+      bandStyle:"position:absolute;top:-2px;bottom:-2px;left:"+bpct.toFixed(1)+"%;width:3px;background:"+MUTED};});
+
+    const statusMeta=s=>({approved:[GREEN,"rgba(78,138,90,.16)",ja?"成約":"Signed"],blocked:[RED,"rgba(192,80,77,.16)",ja?"ブロック":"Blocked"],nobid:[MUTED,"rgba(107,122,147,.2)",ja?"ノービッド":"No-bid"]}[s]);
+    const cols=[["colDeal","left"],["colOwner","left"],["colRev","right"],["colGp","right"],["colGpHr","right"],["colDisc","right"],["colStatus","center"]].map(([k,al])=>({label:T[k],style:"text-align:"+al+";padding:9px 10px;background:var(--th,#EEF4FC);color:var(--ink,#16243D);font-weight:700;font-size:10.5px;letter-spacing:.03em;border-bottom:2px solid var(--border,#D9E6F7);white-space:nowrap"}));
+    const rows=DEALS.map((d,i)=>{const[c,bg2,lb]=statusMeta(d.status);return{id:d.id,name:ja?d.nameJa:d.name,owner:d.owner,rev:short(d.rev),gp:short(d.gp),gpColor:d.gp<0?RED:"var(--ink,#16243D)",gphr:d.gphr<0?"—":"$"+d.gphr,disc:d.disc+"%",statusLabel:lb,
+      trStyle:"border-bottom:1px solid var(--hairline,#F0F4FA);background:"+(i%2?"var(--row-alt,#FBFDFF)":"var(--row,#fff)"),
+      statusPill:"font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:99px;color:"+c+";background:"+bg2};});
+
+    return{
+      t:T,kicker,card,pageStyle:vars+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+bg+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      gBar,gRail,gTab,navItems,tabItems,langs,glassStops,themeStops,kpis,revBars,discBars,cols,rows,
+      trendChart:this.trendSvg(),
+      dealsCount:DEALS.length+(ja?" 件":" deals"),
+      fund:{accrued:"$212K",target:"$300K",barStyle:"height:100%;width:71%;background:linear-gradient(90deg,#C77F1A,#E8A33D);border-radius:99px",note:ja?"成約案件ごとにリスク調整後スプレッドから積み立て。次モデル世代の再校正とアクセラレータに充当。":"Accrues from the risk-adjusted spread on each signed deal — funds next-gen recalibration and accelerators.",qtr:"+$74K",deals:signed.length},
+    };
+  }
+}
+</script>
+</body>
+</html>

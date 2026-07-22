@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  .ds-help{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+  .ds-tabbar{display:none}
+  @media(max-width:1040px){.ds-help{grid-template-columns:1fr}}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">SK</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <a href="{{ n.href }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </a>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 72px">
+      <!-- HERO SEARCH (solid navy) -->
+      <section style="background:linear-gradient(135deg,#16243D,#24385C);border-radius:16px;padding:30px 30px 26px;color:#fff;position:relative;overflow:hidden;margin-bottom:22px;border:1px solid var(--panel-border,transparent)">
+        <div style="position:absolute;right:-30px;top:-50px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(232,163,61,.22),transparent 70%)"></div>
+        <div style="position:relative;max-width:620px">
+          <div style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#E8A33D">{{ t.kickerLbl }}</div>
+          <h1 style="font-size:27px;font-weight:800;letter-spacing:-.01em;margin:10px 0 0">{{ t.headline }}</h1>
+          <div style="display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px 16px;margin-top:18px;box-shadow:0 8px 24px rgba(6,12,24,.3)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+            <input type="text" value="{{ query }}" onInput="{{ onQuery }}" placeholder="{{ t.searchPh }}" style="border:none;outline:none;flex:1;font-size:14.5px;font-family:inherit;color:#16243D;background:transparent">
+            <sc-if value="{{ query }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ onClear }}" aria-label="clear" style="border:none;background:#EEF4FC;color:#6B7A93;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center">×</button>
+            </sc-if>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+            <span style="font-size:11.5px;color:#9FB1CC;align-self:center">{{ t.popular }}</span>
+            <sc-for list="{{ popular }}" as="p" hint-placeholder-count="4">
+              <button onClick="{{ p.onClick }}" style="border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#E8EEF7;font-family:inherit;font-size:11.5px;font-weight:600;padding:5px 12px;border-radius:99px;cursor:pointer">{{ p.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <div class="ds-help">
+        <div>
+          <!-- CATEGORY FILTER -->
+          <div style="display:flex;gap:4px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:4px;margin-bottom:16px;overflow-x:auto">
+            <sc-for list="{{ cats }}" as="c" hint-placeholder-count="7">
+              <button onClick="{{ c.onClick }}" aria-pressed="{{ c.active }}" style="{{ c.style }}">{{ c.label }}</button>
+            </sc-for>
+          </div>
+
+          <!-- ARTICLES ACCORDION (solid) -->
+          <section style="{{ card }};padding:6px 8px">
+            <sc-for list="{{ articles }}" as="a" hint-placeholder-count="6">
+              <div style="border-bottom:1px solid var(--hairline,#F0F4FA)">
+                <button onClick="{{ a.onToggle }}" aria-expanded="{{ a.open }}" style="width:100%;display:flex;align-items:center;gap:12px;text-align:left;background:transparent;border:none;cursor:pointer;font-family:inherit;padding:15px 12px">
+                  <span style="{{ a.catBadge }}">{{ a.catLabel }}</span>
+                  <span style="flex:1;font-size:13.5px;font-weight:700;color:var(--ink,#16243D)">{{ a.q }}</span>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9AA9C0" stroke-width="2.2" style="{{ a.chevStyle }}"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
+                <div style="{{ a.bodyStyle }}">
+                  <div style="padding:0 12px 16px 12px;font-size:13px;color:var(--ink2,#3C4C66);line-height:1.7;white-space:pre-line;max-width:640px">{{ a.answer }}</div>
+                  <sc-if value="{{ a.hasLink }}" hint-placeholder-val="{{ false }}">
+                    <a href="{{ a.href }}" style="display:inline-flex;align-items:center;gap:6px;margin:0 12px 16px;font-size:12.5px;font-weight:700">{{ a.linkLabel }}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                    </a>
+                  </sc-if>
+                </div>
+              </div>
+            </sc-for>
+            <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}">
+              <div style="text-align:center;padding:40px 12px;color:var(--faint,#9AA9C0);font-size:13px">{{ t.noResults }}</div>
+            </sc-if>
+          </section>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <section style="{{ card }}">
+            <div style="font-size:13px;font-weight:800;color:var(--ink,#16243D)">{{ t.tours }}</div>
+            <div style="display:flex;flex-direction:column;gap:14px;margin-top:14px">
+              <sc-for list="{{ tours }}" as="v" hint-placeholder-count="3">
+                <a href="{{ v.href }}" style="text-decoration:none;display:block">
+                  <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+                    <span style="font-size:12.5px;font-weight:700;color:var(--ink,#16243D)">{{ v.title }}</span>
+                    <span style="font-size:10.5px;font-weight:700;color:{{ v.pctColor }};font-variant-numeric:tabular-nums">{{ v.pctText }}</span>
+                  </div>
+                  <div style="height:6px;background:var(--track,#EEF4FC);border-radius:99px;overflow:hidden;margin-top:6px"><div style="{{ v.barStyle }}"></div></div>
+                  <div style="font-size:11px;color:var(--faint,#9AA9C0);margin-top:5px">{{ v.meta }}</div>
+                </a>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="{{ card }}">
+            <div style="font-size:13px;font-weight:800;color:var(--ink,#16243D)">{{ t.shortcuts }}</div>
+            <div style="display:flex;flex-direction:column;gap:2px;margin-top:12px">
+              <sc-for list="{{ shortcuts }}" as="s" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--hairline,#F5F8FC)">
+                  <span style="font-size:12px;color:var(--ink2,#3C4C66)">{{ s.action }}</span>
+                  <span style="{{ s.keyStyle }}" data-om-raster>{{ s.keys }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent);border-radius:12px;padding:18px;color:#fff">
+            <div style="font-size:13px;font-weight:800">{{ t.stillStuck }}</div>
+            <div style="font-size:12px;color:#C9D8EE;margin-top:6px;line-height:1.6">{{ t.stuckSub }}</div>
+            <a href="{{ insightsHref }}" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;border-radius:10px;padding:10px;font-size:12.5px;font-weight:800">{{ t.askInsights }}</a>
+            <a href="#" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:9px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:10px;padding:10px;font-size:12.5px;font-weight:700">{{ t.emailDesk }}</a>
+            <div style="font-size:11px;color:#9FB1CC;margin-top:10px;text-align:center">{{ t.responseTime }}</div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1120},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",proposals:"DealSpine Proposal Preview.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",policy:"DealSpine Policy Studio.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",home:"DealSpine Home.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+const CATS=[{id:"start",en:"Getting started",ja:"はじめに"},{id:"pricing",en:"Pricing & bands",ja:"価格・バンド"},{id:"approvals",en:"Approvals",ja:"承認"},{id:"evidence",en:"Evidence",ja:"エビデンス"},{id:"policy",en:"Policy Studio",ja:"ポリシー"},{id:"proposals",en:"Proposals",ja:"提案書"}];
+const ART=[
+  {cat:"start",qen:"What does DealSpine actually do?",qja:"DealSpine とは何ですか？",nav:"home",
+    aen:"DealSpine prices every SAP engagement against governed bands, defends a minimum-margin floor automatically, and captures the evidence that proves the value you delivered.\n\nThe Deal Workspace is where you build and price a deal; the verdict banner tells you in plain language whether it passes governance before it can be sent.",
+    aja:"DealSpine はすべての SAP 案件を統制されたバンドに照らして価格設定し、最低マージンのフロアを自動で防衛し、提供した価値を証明するエビデンスを記録します。\n\n案件ワークスペースで案件を作成・価格設定し、判定バナーがガバナンスに合格するかを分かりやすく示します。"},
+  {cat:"pricing",qen:"How is the discount floor calculated?",qja:"割引フロアはどのように計算されますか？",nav:"workspace",
+    aen:"The floor is the largest discount that still clears the offering's floor margin after delivery cost. It is set per offering in Policy Studio, never hand-entered on a deal.\n\n• Above the opening band → passes automatically\n• Between band and floor → needs deal-desk approval\n• Below the floor → structurally blocked",
+    aja:"フロアは、デリバリーコスト差引後もオファリングのフロアマージンを確保できる最大の割引です。案件ごとに手入力するのではなく、ポリシースタジオでオファリング単位に設定されます。\n\n・オープニングバンド超 → 自動承認\n・バンドとフロアの間 → ディールデスクの承認が必要\n・フロア未満 → 構造的にブロック"},
+  {cat:"approvals",qen:"When does a deal need deal-desk approval?",qja:"案件はいつディールデスクの承認が必要ですか？",nav:"approvals",
+    aen:"Any discount deeper than the published opening band routes to the desk. The desk can approve, re-scope, or record a no-bid — every override requires a written rationale and an expiry date, and lands in the append-only audit trail.",
+    aja:"公開オープニングバンドを超える割引はすべてデスクに回されます。デスクは承認・再スコープ・ノービッドを記録でき、すべてのオーバーライドには記述された根拠と有効期限が必要で、追記専用の監査証跡に残ります。"},
+  {cat:"evidence",qen:"What counts as a unit of evidence?",qja:"エビデンスのユニットとは何ですか？",nav:"evidence",
+    aen:"Anything that quantifies delivered value: hours saved, defects prevented, throughput gained, downtime avoided, automation coverage, or risk reduced.\n\nUnits log as Pending and only count toward the portfolio once the engagement lead or deal desk verifies them.",
+    aja:"提供価値を定量化するもの全般です：削減工数、未然に防いだ欠陥、スループット向上、回避したダウンタイム、自動化カバレッジ、低減したリスクなど。\n\nユニットは保留として記録され、エンゲージメントリードまたはディールデスクが検証して初めてポートフォリオに計上されます。"},
+  {cat:"policy",qen:"Who can change bands, floors and rates?",qja:"バンド・フロア・レートは誰が変更できますか？",nav:"policy",
+    aen:"Only the pricing owner. Everyone else sees Policy Studio read-only. Changes are staged in a draft, shown as a diff (old → new), and published as a new version with full history and rollback.",
+    aja:"プライシングオーナーのみです。他の全員はポリシースタジオを読み取り専用で閲覧します。変更は下書きにステージングされ、差分（旧→新）として表示され、完全な履歴とロールバックを備えた新バージョンとして公開されます。"},
+  {cat:"policy",qen:"Why is an LLM price flagged in gold or red?",qja:"LLM価格が金色や赤色で表示されるのはなぜですか？",nav:"policy",
+    aen:"Token prices are repriced quarterly. The staleness clock flags any entry past 90 days in gold (reprice due) and past 180 days in red (overdue), so the AI cost line in every deal stays accurate.",
+    aja:"トークン価格は四半期ごとに再設定されます。陳腐化クロックは90日超のエントリを金色（リプライス期限）、180日超を赤色（超過）で表示し、各案件のAIコスト行を正確に保ちます。"},
+  {cat:"proposals",qen:"Can a customer ever see our cost or floor?",qja:"顧客がコストやフロアを見ることはありますか？",nav:"proposals",
+    aen:"No. The proposal is structurally incapable of rendering internal cost, margin or floor — it is enforced in code and tested in CI. The proposal locale (English / Japanese) is also independent of your interface language.",
+    aja:"いいえ。提案書は内部コスト・マージン・フロアを構造的に表示できず、コードで強制され CI でテストされています。提案書のロケール（英語/日本語）はインターフェース言語とは独立しています。"},
+  {cat:"start",qen:"How do I switch between English and Japanese?",qja:"英語と日本語はどう切り替えますか？",nav:"home",
+    aen:"Use the EN / 日本語 switch in the top bar of any screen. It changes the whole interface instantly. Proposals carry their own separate language setting so you can send Japanese proposals from an English workspace.",
+    aja:"どの画面でも上部バーの EN / 日本語 スイッチを使います。インターフェース全体が即座に切り替わります。提案書は独自の言語設定を持つため、英語のワークスペースから日本語の提案書を送ることができます。"},
+  {cat:"pricing",qen:"What is GP per delivery hour?",qja:"提供時間あたり粗利とは？",nav:"portfolio",
+    aen:"The north-star metric: gross profit divided by the hours it took to deliver. Value pricing lifts it well above the traditional $95 time-and-materials baseline — the Portfolio trend tracks it over time.",
+    aja:"ノーススター指標：粗利を提供にかかった時間で割った値。価値ベース価格は従来の $95 の時間精算基準を大きく上回ります — ポートフォリオの推移で経時的に追跡します。"},
+  {cat:"start",qen:"What do Full, Reduced and Opaque glass mean?",qja:"フル・低減・不透明ガラスとは？",nav:"home",
+    aen:"They control the translucency of the app's navigation surfaces. Reduced and Opaque increase contrast and remove blur for readability or performance. DealSpine also honors your OS reduced-transparency setting automatically.",
+    aja:"アプリのナビゲーション面の透明度を制御します。低減と不透明はコントラストを上げ、可読性やパフォーマンスのためにぼかしを除去します。DealSpine は OS の透明度低減設定も自動的に尊重します。"},
+];
+const TOURS=[{ten:"Price your first deal",tja:"最初の案件を価格設定",done:5,steps:5,nav:"workspace"},{ten:"Capture & verify evidence",tja:"エビデンスの記録と検証",done:2,steps:4,nav:"evidence"},{ten:"Publish a policy change",tja:"ポリシー変更を公開",done:0,steps:3,nav:"policy"}];
+const KEYS=[["⌘K",{en:"Global search",ja:"全体検索"}],["G D",{en:"Go to Deal Workspace",ja:"案件ワークスペースへ"}],["G A",{en:"Go to Approvals",ja:"承認へ"}],["N",{en:"New deal",ja:"新規案件"}],["E",{en:"Capture evidence",ja:"エビデンス記録"}],["?",{en:"Open this help",ja:"このヘルプを開く"}]];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"help",cat:"all",query:"",open:ART[0].qen,
+    };
+  }
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+
+  renderVals(){
+    const{lang,glass,cat,query}=this.state;const ja=lang==="ja";const theme=this.state.theme;const dark=theme==="dark";const gb=this.glassBase();const q=query.trim().toLowerCase();
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",kickerLbl:"HELP & TRAINING",headline:"How can we help?",searchPh:"Search help articles…",popular:"Popular:",noResults:"No articles match your search.",all:"All",
+      tours:"Guided tours",shortcuts:"Keyboard shortcuts",stillStuck:"Still stuck?",stuckSub:"Ask Insights in plain language, or reach the deal desk directly.",askInsights:"Ask Insights",emailDesk:"Email the deal desk",responseTime:"Deal desk replies within 4 business hours",readMore:"Open the screen",stepsDone:"of",done:"done"},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",kickerLbl:"ヘルプ・トレーニング",headline:"どんなことでお困りですか？",searchPh:"ヘルプ記事を検索…",popular:"人気:",noResults:"検索に一致する記事はありません。",all:"すべて",
+      tours:"ガイドツアー",shortcuts:"キーボードショートカット",stillStuck:"解決しませんか？",stuckSub:"インサイトに普通の言葉で質問するか、ディールデスクに直接連絡できます。",askInsights:"インサイトに質問",emailDesk:"ディールデスクにメール",responseTime:"ディールデスクは営業4時間以内に返信します",readMore:"画面を開く",stepsDone:"/",done:"完了"}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,href:n.id==="help"?"#":hrefFor(n.id),current:a?"page":undefined,style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;text-decoration:none;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);return{icon:n.icon,label:ja?n.ja:n.en,href:hrefFor(id),current:undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:#C3D2E8;font-family:inherit"};});
+    const catName=id=>{const c=CATS.find(x=>x.id===id);return c?(ja?c.ja:c.en):id;};
+    const cats=[{id:"all",label:T.all}].concat(CATS.map(c=>({id:c.id,label:ja?c.ja:c.en}))).map(c=>{const a=c.id===cat;return{label:c.label,active:a,onClick:()=>this.setState({cat:c.id}),style:"border:none;cursor:pointer;font-family:inherit;white-space:nowrap;font-size:12px;font-weight:"+(a?"800":"600")+";padding:7px 14px;border-radius:9px;color:"+(a?"#16243D":"#6B7A93")+";background:"+(a?"var(--surface,#fff)":"transparent")+(a?";box-shadow:0 1px 3px rgba(11,18,32,.16)":"")};});
+
+    const popular=[{en:"discount floor",ja:"割引フロア"},{en:"approval",ja:"承認"},{en:"evidence",ja:"エビデンス"},{en:"glass",ja:"ガラス"}].map(p=>({label:ja?p.ja:p.en,onClick:()=>this.setState({query:ja?p.ja:p.en,cat:"all"})}));
+
+    const filtered=ART.filter(a=>{if(cat!=="all"&&a.cat!==cat)return false;if(!q)return true;const hay=((ja?a.qja:a.qen)+" "+(ja?a.aja:a.aen)+" "+(a.qen+" "+a.aen)).toLowerCase();return hay.includes(q);});
+    const articles=filtered.map(a=>{const open=this.state.open===a.qen;return{q:ja?a.qja:a.qen,answer:ja?a.aja:a.aen,open:open?"true":"false",
+      onToggle:()=>this.setState({open:open?null:a.qen}),
+      catLabel:catName(a.cat),catBadge:"flex:none;font-size:9px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:99px;color:"+GOLDD+";background:rgba(232,163,61,.12);white-space:nowrap",
+      chevStyle:"flex:none;transition:transform .2s;transform:rotate("+(open?"180deg":"0")+")",
+      bodyStyle:"overflow:hidden;transition:none;display:"+(open?"block":"none"),
+      hasLink:!!a.nav,href:hrefFor(a.nav),linkLabel:T.readMore};});
+
+    const tours=TOURS.map(v=>{const pct=Math.round(v.done/v.steps*100);const complete=v.done>=v.steps;return{title:ja?v.tja:v.ten,href:hrefFor(v.nav),
+      pctText:complete?(ja?"完了":"Done"):pct+"%",pctColor:complete?GREEN:GOLDD,
+      barStyle:"height:100%;width:"+pct+"%;border-radius:99px;background:"+(complete?GREEN:"linear-gradient(90deg,#C77F1A,#E8A33D)"),
+      meta:v.done+" "+T.stepsDone+" "+v.steps+" "+(ja?"ステップ":"steps")};});
+    const shortcuts=KEYS.map(([k,a])=>({keys:k,action:ja?a.ja:a.en,keyStyle:"font-size:10.5px;font-weight:700;font-family:ui-monospace,monospace;color:var(--ink2,#3C4C66);background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:6px;padding:3px 8px;white-space:nowrap"}));
+
+    return{
+      t:T,kicker,card,gBar,gRail,gTab,navItems,tabItems,langs,glassStops,themeStops,cats,popular,articles,tours,shortcuts,
+      pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--row:#182A47;--row-alt:#1D3053;--th:#21365A;--track:#263C5F;--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--row:#ffffff;--row-alt:#FBFDFF;--th:#EEF4FC;--track:#EEF4FC;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      query:this.state.query,onQuery:e=>this.setState({query:e.target.value}),onClear:()=>this.setState({query:""}),
+      empty:filtered.length===0,insightsHref:hrefFor("insights"),
+    };
+  }
+}
+</script>
+</body>
+</html>

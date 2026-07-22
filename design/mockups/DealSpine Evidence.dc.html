@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  .ds-tablewrap{overflow-x:auto}
+  .ds-tabbar{display:none}
+  @keyframes ds-scrim{from{opacity:0}to{opacity:1}}
+  @keyframes ds-sheet{from{transform:translateX(34px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes ds-pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @keyframes ds-rise{from{transform:translateY(100%)}to{transform:translateY(0)}}
+  .ds-capfab{display:none}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}.ds-capfab{display:flex}.ds-capsheet{left:0 !important;right:0 !important;top:auto !important;bottom:0 !important;height:auto !important;max-height:90vh !important;width:100% !important;border-radius:22px 22px 0 0 !important;animation:ds-rise .34s cubic-bezier(.2,.7,.2,1) !important}}
+  @media(prefers-reduced-motion:reduce){.ds-anim{animation:none !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">PS</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <button onClick="{{ n.onClick }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </button>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 72px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+          <div style="{{ kicker }}">{{ t.kickerLbl }}</div>
+          <h1 style="{{ h1Style }}">{{ t.evidence }}</h1>
+          <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ sub }}</div>
+        </div>
+        <button onClick="{{ onCapture }}" style="display:flex;align-items:center;gap:8px;white-space:nowrap;border:none;border-radius:99px;padding:10px 20px;font-size:13px;font-weight:800;font-family:inherit;background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;cursor:pointer;box-shadow:0 4px 14px rgba(199,127,26,.34)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          {{ t.captureUnit }}
+        </button>
+      </div>
+
+      <!-- KPI STRIP (solid) -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="4">
+          <div style="{{ k.style }}">
+            <div style="{{ k.labelStyle }}">{{ k.label }}</div>
+            <div style="{{ k.valueStyle }}">{{ k.value }}</div>
+            <div style="{{ k.subStyle }}">{{ k.sub }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- LEDGER (solid) -->
+      <section style="{{ card }};margin-top:18px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <div style="display:flex;gap:4px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:4px;overflow-x:auto">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="4">
+              <button onClick="{{ f.onClick }}" aria-pressed="{{ f.active }}" style="{{ f.style }}">{{ f.label }}<span style="{{ f.countStyle }}">{{ f.count }}</span></button>
+            </sc-for>
+          </div>
+          <span style="font-size:11px;color:var(--faint,#9AA9C0);font-variant-numeric:tabular-nums">{{ shownCount }}</span>
+        </div>
+
+        <div class="ds-tablewrap" style="margin-top:14px">
+          <table style="width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums;min-width:820px">
+            <thead>
+              <tr>
+                <sc-for list="{{ cols }}" as="c" hint-placeholder-count="6">
+                  <th style="{{ c.style }}">{{ c.label }}</th>
+                </sc-for>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ rows }}" as="r" hint-placeholder-count="7">
+                <tr style="{{ r.trStyle }}">
+                  <td style="text-align:left;padding:12px;color:var(--ink,#16243D)">
+                    <div style="display:flex;align-items:center;gap:10px">
+                      <span style="{{ r.iconWrap }}" data-om-raster>{{ r.icon }}</span>
+                      <div>
+                        <div style="font-weight:700">{{ r.type }}</div>
+                        <div style="font-size:10.5px;color:var(--faint,#9AA9C0)">{{ r.metaLine }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style="text-align:left;padding:12px;color:var(--ink2,#3C4C66);max-width:280px">{{ r.metric }}</td>
+                  <td style="text-align:left;padding:12px;color:var(--muted,#6B7A93);white-space:nowrap">{{ r.engagement }}</td>
+                  <td style="text-align:right;padding:12px;color:var(--ink,#16243D);font-weight:700">{{ r.value }}</td>
+                  <td style="text-align:center;padding:12px"><span style="{{ r.statusPill }}">{{ r.statusLabel }}</span></td>
+                  <td style="text-align:center;padding:12px"><button onClick="{{ r.onAction }}" style="{{ r.actionStyle }}">{{ r.actionLabel }}</button></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:14px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#4E8A5A"></span>{{ t.verified }}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#E8A33D"></span>{{ t.pending }}</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted,#6B7A93)"><span style="width:11px;height:11px;border-radius:3px;background:#C0504D"></span>{{ t.disputed }}</div>
+          <div style="font-size:11px;color:var(--faint,#9AA9C0);margin-left:auto">{{ t.mobileNote }}</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+
+  <!-- CAPTURE DRAWER (glass, fade) -->
+  <sc-if value="{{ capturing }}" hint-placeholder-val="{{ false }}">
+    <div class="ds-anim" onClick="{{ onCloseCapture }}" style="position:fixed;inset:0;background:rgba(11,18,32,.42);z-index:55;animation:ds-scrim .25s ease"></div>
+    <aside class="ds-anim ds-scroll ds-capsheet" role="dialog" aria-modal="true" style="{{ gSheet }}">
+      <div class="ds-capfab-only" style="display:flex;justify-content:center;padding:10px 0 0"><span style="width:38px;height:4px;border-radius:99px;background:rgba(255,255,255,.28)"></span></div>
+      <div style="padding:20px 22px;border-bottom:1px solid rgba(255,255,255,.12)">
+        <div style="font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#E8A33D">{{ t.captureKicker }}</div>
+        <div style="font-size:18px;font-weight:800;color:#fff;margin-top:4px">{{ t.captureTitle }}</div>
+        <div style="font-size:12px;color:#C9D8EE;margin-top:4px">{{ t.captureSub }}</div>
+      </div>
+      <div style="padding:20px 22px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:16px">
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fType }}</span>
+          <select value="{{ cfType }}" onChange="{{ hType }}" style="background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:11px 12px;font-size:13px;font-family:inherit;color:#16243D;font-weight:600">
+            <sc-for list="{{ typeOptions }}" as="o" hint-placeholder-count="6">
+              <option value="{{ o.id }}">{{ o.label }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fEng }}</span>
+          <select value="{{ cfEng }}" onChange="{{ hEng }}" style="background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:11px 12px;font-size:13px;font-family:inherit;color:#16243D;font-weight:600">
+            <sc-for list="{{ engOptions }}" as="o" hint-placeholder-count="5">
+              <option value="{{ o.id }}">{{ o.label }}</option>
+            </sc-for>
+          </select>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fMetric }}</span>
+          <input type="text" value="{{ cfMetric }}" onInput="{{ hMetric }}" placeholder="{{ t.metricPh }}" style="background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:11px 12px;font-size:13px;font-family:inherit;color:#16243D">
+        </label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fBaseline }}</span>
+            <input type="text" value="{{ cfBaseline }}" onInput="{{ hBaseline }}" placeholder="{{ t.baselinePh }}" style="background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:11px 12px;font-size:13px;font-family:inherit;color:#16243D">
+          </label>
+          <label style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fValue }}</span>
+            <div style="display:flex;align-items:center;background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:0 12px">
+              <span style="color:#9AA9C0;font-size:14px;font-weight:700">$</span>
+              <input type="number" value="{{ cfDollar }}" onInput="{{ hDollar }}" placeholder="0" style="border:none;outline:none;flex:1;padding:11px 6px;font-size:15px;font-weight:700;font-family:inherit;color:#16243D;background:transparent;font-variant-numeric:tabular-nums;width:100%">
+            </div>
+          </label>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:11px;font-weight:700;color:#C9D8EE">{{ t.fNote }}</span>
+          <textarea value="{{ cfNote }}" onInput="{{ hNote }}" placeholder="{{ t.notePh }}" style="min-height:88px;resize:vertical;background:#fff;border:1px solid #D9E6F7;border-radius:9px;padding:11px 12px;font-size:13px;font-family:inherit;color:#16243D;line-height:1.6"></textarea>
+          <span style="font-size:10.5px;color:#9FB1CC">{{ t.noteHint }}</span>
+        </label>
+        <div style="display:flex;align-items:flex-start;gap:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:12px 14px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2" style="flex:none;margin-top:1px"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+          <span style="font-size:11.5px;color:#C9D8EE;line-height:1.55">{{ t.captureHint }}</span>
+        </div>
+      </div>
+      <div style="padding:16px 22px;border-top:1px solid rgba(255,255,255,.12);display:flex;gap:10px;justify-content:flex-end">
+        <button onClick="{{ onCloseCapture }}" style="border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.08);color:#fff;font-family:inherit;font-size:13px;font-weight:700;padding:10px 18px;border-radius:10px;cursor:pointer">{{ t.cancel }}</button>
+        <button onClick="{{ onSaveCapture }}" disabled="{{ saveDisabled }}" style="{{ saveStyle }}">{{ t.logUnit }}</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <!-- MOBILE CAPTURE FAB (morph #4 source) -->
+  <button class="ds-capfab ds-anim" onClick="{{ onCapture }}" aria-label="{{ t.captureUnit }}" style="{{ capFabStyle }}">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <!-- TOAST (glass pill) -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div class="ds-anim" role="status" style="{{ toastStyle }}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+      <span>{{ toast }}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1120},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={home:"DealSpine Home.dc.html",workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",policy:"DealSpine Policy Studio.dc.html",proposals:"DealSpine Proposal Preview.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",settings:"DealSpine Settings.dc.html",help:"DealSpine Help.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+const ETYPES=[
+  {id:"hours",en:"Hours saved",ja:"削減工数",icon:"◷"},
+  {id:"defects",en:"Defects prevented",ja:"欠陥の未然防止",icon:"◈"},
+  {id:"throughput",en:"Throughput gain",ja:"スループット向上",icon:"▲"},
+  {id:"downtime",en:"Downtime avoided",ja:"ダウンタイム回避",icon:"⏻"},
+  {id:"automation",en:"Automation coverage",ja:"自動化カバレッジ",icon:"⚙"},
+  {id:"risk",en:"Risk reduced",ja:"リスク低減",icon:"⚑"},
+];
+const ENGS=[
+  {id:"DL-0142",en:"Code Remediation",ja:"コード改修"},
+  {id:"DL-0155",en:"BW/4 Upgrade",ja:"BW/4 アップグレード"},
+  {id:"DL-0151",en:"Data Migration",ja:"データ移行"},
+  {id:"DL-0160",en:"Fiori Rollout",ja:"Fiori 展開"},
+  {id:"DL-0138",en:"Test Automation",ja:"テスト自動化"},
+];
+const SEED=[
+  {id:"EV-201",type:"hours",eng:"DL-0142",metricEn:"1,240 delivery hours automated away",metricJa:"提供工数1,240時間を自動化で削減",dollar:210800,by:"Priya S.",at:"2026-07-14",status:"verified"},
+  {id:"EV-198",type:"defects",eng:"DL-0155",metricEn:"312 regressions caught before cutover",metricJa:"移行前に312件のリグレッションを検出",dollar:96000,by:"Tom H.",at:"2026-07-08",status:"verified"},
+  {id:"EV-205",type:"throughput",eng:"DL-0151",metricEn:"Batch load 5.1h → 47m",metricJa:"バッチロード 5.1時間 → 47分",dollar:54000,by:"Aiko T.",at:"2026-07-19",status:"pending"},
+  {id:"EV-190",type:"downtime",eng:"DL-0160",metricEn:"Zero unplanned downtime at go-live",metricJa:"本番移行時の計画外ダウンタイムゼロ",dollar:128000,by:"Lena M.",at:"2026-07-02",status:"verified"},
+  {id:"EV-193",type:"automation",eng:"DL-0138",metricEn:"Test coverage 41% → 88%",metricJa:"テストカバレッジ 41% → 88%",dollar:38000,by:"Marco R.",at:"2026-07-11",status:"disputed"},
+  {id:"EV-206",type:"risk",eng:"DL-0142",metricEn:"Audit findings 14 → 2",metricJa:"監査指摘 14件 → 2件",dollar:72000,by:"Priya S.",at:"2026-07-20",status:"pending"},
+  {id:"EV-186",type:"hours",eng:"DL-0151",metricEn:"Manual reconciliation eliminated (380 hrs/qtr)",metricJa:"手動照合を撤廃（四半期380時間）",dollar:64600,by:"Aiko T.",at:"2026-06-28",status:"verified"},
+];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"evidence",filter:"all",capturing:false,toast:null,
+      units:SEED.slice(),
+      cf:{type:"hours",eng:"DL-0142",metric:"",baseline:"",dollar:"",note:""},
+      seq:207,
+    };
+  }
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+
+  updCf(k,v){this.setState(s=>({cf:{...s.cf,[k]:v}}));}
+  save(){const cf=this.state.cf;const d=parseFloat(cf.dollar);if(!cf.metric.trim()||isNaN(d)||d<=0)return;
+    const id="EV-"+this.state.seq;const ja=this.state.lang==="ja";
+    const unit={id,type:cf.type,eng:cf.eng,metricEn:cf.metric,metricJa:cf.metric,dollar:Math.round(d),by:"You",at:"2026-07-22",status:"pending"};
+    this.setState(s=>({units:[unit,...s.units],seq:s.seq+1,capturing:false,cf:{type:"hours",eng:"DL-0142",metric:"",baseline:"",dollar:"",note:""}}));
+    this.toastMsg(ja?(id+" を保留として記録"):("Logged "+id+" — pending verification"));}
+  verify(id){const ja=this.state.lang==="ja";this.setState(s=>({units:s.units.map(u=>u.id===id?{...u,status:"verified"}:u)}));this.toastMsg(ja?(id+" を検証済みにしました"):(id+" marked verified"));}
+  toastMsg(m){this._tt=(this._tt||0)+1;const t=this._tt;this.setState({toast:m});setTimeout(()=>{if(this._tt===t)this.setState({toast:null});},2800);}
+  componentWillUnmount(){this._tt=-1;}
+
+  renderVals(){
+    const{lang,glass,filter}=this.state;const ja=lang==="ja";const theme=this.state.theme;const dark=theme==="dark";const gb=this.glassBase();
+    const short=v=>"$"+(Math.abs(v)>=1e6?(v/1e6).toFixed(2)+"M":Math.round(v/1000)+"K");
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",kickerLbl:"DELIVERY EVIDENCE",evidence:"Evidence",captureUnit:"Capture unit",
+      verified:"Verified",pending:"Pending",disputed:"Disputed",mobileNote:"On mobile, capture opens from the bottom tab bar.",
+      captureKicker:"NEW EVIDENCE UNIT",captureTitle:"Capture a unit of value",captureSub:"Each unit backs the value-priced narrative and feeds GP per delivery hour.",
+      fType:"Evidence type",fEng:"Engagement",fMetric:"What was delivered",metricPh:"e.g. Batch load 5.1h → 47m",fBaseline:"Baseline / prior state",baselinePh:"e.g. 5.1h manual",fValue:"Estimated value",fNote:"Note",notePh:"Context, method, who can confirm…",noteHint:"Markdown supported. Shown to the verifier.",
+      captureHint:"Units log as Pending. The engagement lead or deal desk verifies before the value counts toward the portfolio.",
+      cancel:"Cancel",logUnit:"Log unit",verify:"Verify",review:"Review",colUnit:"Unit",colMetric:"What was delivered",colEng:"Engagement",colValue:"Value",colStatus:"Status",colAction:""},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",kickerLbl:"デリバリーエビデンス",evidence:"エビデンス",captureUnit:"ユニットを記録",
+      verified:"検証済み",pending:"保留中",disputed:"係争中",mobileNote:"モバイルでは下部タブバーから記録します。",
+      captureKicker:"新規エビデンスユニット",captureTitle:"価値のユニットを記録",captureSub:"各ユニットは価値ベース価格の根拠となり、提供時間あたり粗利に反映されます。",
+      fType:"エビデンス種別",fEng:"エンゲージメント",fMetric:"提供内容",metricPh:"例：バッチロード 5.1時間 → 47分",fBaseline:"ベースライン / 従来状態",baselinePh:"例：手動5.1時間",fValue:"推定価値",fNote:"メモ",notePh:"背景・手法・確認者…",noteHint:"Markdown対応。検証者に表示されます。",
+      captureHint:"ユニットは保留として記録されます。ポートフォリオに計上される前に、エンゲージメントリードまたはディールデスクが検証します。",
+      cancel:"キャンセル",logUnit:"ユニットを記録",verify:"検証",review:"確認",colUnit:"ユニット",colMetric:"提供内容",colEng:"エンゲージメント",colValue:"価値",colStatus:"状態",colAction:""}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const gSheet=toStr(gb)+";position:fixed;top:0;right:0;height:100vh;width:min(460px,94vw);z-index:60;display:flex;flex-direction:column;box-shadow:-14px 0 44px rgba(11,18,32,.34);animation:ds-sheet .3s cubic-bezier(.2,.7,.2,1)";
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,current:a?"page":undefined,onClick:()=>this.setState({nav:n.id}),style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);const a=id===this.state.nav;return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":hrefFor(id),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+    const units=this.state.units;
+    const vSum=units.filter(u=>u.status==="verified").reduce((a,u)=>a+u.dollar,0);
+    const pSum=units.filter(u=>u.status==="pending").reduce((a,u)=>a+u.dollar,0);
+    const vCount=units.filter(u=>u.status==="verified").length;
+    const pCount=units.filter(u=>u.status==="pending").length;
+    const dCount=units.filter(u=>u.status==="disputed").length;
+    const rate=Math.round(vCount/units.length*100);
+    const kL="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase";
+    const mk=(label,value,sub,opt={})=>{const dark=opt.dark;return{label,value,sub,style:"border-radius:12px;padding:16px;"+(dark?"background:linear-gradient(135deg,#16243D,#24385C);border:1px solid var(--panel-border,transparent)":"background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7)"),labelStyle:kL+";color:"+(dark?GOLD:GOLDD),valueStyle:"margin-top:6px;font-size:23px;font-weight:800;font-variant-numeric:tabular-nums;color:"+(opt.accent?GOLD:dark?"#fff":"var(--ink,#16243D)"),subStyle:"margin-top:4px;font-size:11px;color:"+(dark?ICE:"var(--muted,#6B7A93)")};};
+    const kpis=[
+      mk(ja?"検証済み価値":"Verified value",short(vSum),vCount+(ja?" 件確認済み":" units confirmed")),
+      mk(ja?"レビュー待ち":"Awaiting review",short(pSum),pCount+(ja?" 件保留":" pending"),{accent:true}),
+      mk(ja?"検証率":"Verification rate",rate+"%",vCount+" / "+units.length+(ja?" ユニット":" units"),{dark:true}),
+      mk(ja?"記録ユニット":"Units logged",String(units.length),ja?"今四半期":"this quarter"),
+    ];
+
+    const fCounts={all:units.length,verified:vCount,pending:pCount,disputed:dCount};
+    const filters=[{id:"all",en:"All",ja:"すべて"},{id:"verified",en:"Verified",ja:"検証済み"},{id:"pending",en:"Pending",ja:"保留中"},{id:"disputed",en:"Disputed",ja:"係争中"}].map(f=>{const a=f.id===filter;return{label:ja?f.ja:f.en,active:a,count:fCounts[f.id],onClick:()=>this.setState({filter:f.id}),
+      style:"display:flex;align-items:center;gap:7px;border:none;cursor:pointer;font-family:inherit;white-space:nowrap;font-size:12.5px;font-weight:"+(a?"800":"600")+";padding:7px 14px;border-radius:9px;color:"+(a?"#16243D":"var(--muted,#6B7A93)")+";background:"+(a?"var(--surface,#fff)":"transparent")+(a?";box-shadow:0 1px 3px rgba(11,18,32,.16)":""),
+      countStyle:"font-size:10px;font-weight:800;font-variant-numeric:tabular-nums;padding:1px 7px;border-radius:99px;color:"+(a?"#fff":"var(--muted,#6B7A93)")+";background:"+(a?NAVY:"rgba(120,140,170,.18)")};});
+
+    const statusMeta=s=>({verified:[GREEN,"rgba(78,138,90,.14)",ja?"検証済み":"Verified"],pending:[GOLDD,"rgba(232,163,61,.16)",ja?"保留中":"Pending"],disputed:[RED,"rgba(192,80,77,.14)",ja?"係争中":"Disputed"]}[s]);
+    const th="padding:9px 12px;background:var(--th,#EEF4FC);color:var(--ink,#16243D);font-weight:700;font-size:10.5px;letter-spacing:.03em;border-bottom:2px solid var(--border,#D9E6F7);white-space:nowrap";
+    const cols=[["colUnit","left"],["colMetric","left"],["colEng","left"],["colValue","right"],["colStatus","center"],["colAction","center"]].map(([k,al])=>({label:T[k],style:"text-align:"+al+";"+th}));
+
+    const tmap=Object.fromEntries(ETYPES.map(e=>[e.id,e]));
+    const emap=Object.fromEntries(ENGS.map(e=>[e.id,e]));
+    const shown=filter==="all"?units:units.filter(u=>u.status===filter);
+    const rows=shown.map((u,i)=>{const[c,bg,lb]=statusMeta(u.status);const et=tmap[u.type];const eg=emap[u.eng];const canVerify=u.status==="pending";
+      return{id:u.id,type:ja?et.ja:et.en,icon:et.icon,metaLine:u.id+" · "+u.by+" · "+u.at,
+        iconWrap:"width:30px;height:30px;flex:none;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;color:"+GOLDD+";background:rgba(232,163,61,.12)",
+        metric:ja?u.metricJa:u.metricEn,engagement:(eg?(ja?eg.ja:eg.en):u.eng)+" · "+u.eng,value:short(u.dollar),
+        statusLabel:lb,statusPill:"font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:99px;color:"+c+";background:"+bg,
+        trStyle:"border-bottom:1px solid var(--hairline,#F0F4FA);background:"+(i%2?"var(--row-alt,#FBFDFF)":"var(--row,#fff)"),
+        onAction:()=>{if(canVerify)this.verify(u.id);},
+        actionLabel:canVerify?(ja?"検証":"Verify"):(ja?"開く":"Open"),
+        actionStyle:canVerify?"border:1px solid rgba(78,138,90,.4);background:rgba(78,138,90,.1);color:#3B6E47;font-family:inherit;font-size:11px;font-weight:700;padding:5px 12px;border-radius:99px;cursor:pointer":"border:1px solid var(--border,#D9E6F7);background:var(--surface,#fff);color:var(--muted,#6B7A93);font-family:inherit;font-size:11px;font-weight:600;padding:5px 12px;border-radius:99px;cursor:pointer"};});
+    const shownCount=shown.length+(ja?" 件表示":" shown")+" · "+short(shown.reduce((a,u)=>a+u.dollar,0));
+
+    const typeOptions=ETYPES.map(e=>({id:e.id,label:ja?e.ja:e.en}));
+    const engOptions=ENGS.map(e=>({id:e.id,label:(ja?e.ja:e.en)+" · "+e.id}));
+    const cf=this.state.cf;const d=parseFloat(cf.dollar);const valid=cf.metric.trim()&&!isNaN(d)&&d>0;
+    const saveBase="border:none;border-radius:10px;padding:10px 20px;font-size:13px;font-weight:800;font-family:inherit;";
+    const saveStyle=valid?saveBase+"background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;cursor:pointer":saveBase+"background:rgba(255,255,255,.14);color:rgba(255,255,255,.45);cursor:not-allowed";
+    const toastStyle=toStr(gb)+";position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:9px;padding:12px 20px;border-radius:99px;color:#fff;font-size:13px;font-weight:700;box-shadow:0 10px 34px rgba(11,18,32,.4);animation:ds-pop .3s cubic-bezier(.2,.7,.2,1)";
+
+    return{
+      t:T,kicker,card,gBar,gRail,gSheet,gTab,navItems,tabItems,themeStops,langs,glassStops,
+      pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--row:#182A47;--row-alt:#1D3053;--th:#21365A;--track:#263C5F;--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--row:#ffffff;--row-alt:#FBFDFF;--th:#EEF4FC;--track:#EEF4FC;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      sub:ja?("価値の証拠台帳 · "+units.length+"ユニット · "+short(vSum)+" 検証済み"):("Value evidence ledger · "+units.length+" units · "+short(vSum)+" verified"),
+      kpis,filters,cols,rows,shownCount,
+      onCapture:()=>this.setState({capturing:true}),capturing:this.state.capturing,
+      onCloseCapture:()=>this.setState({capturing:false}),onSaveCapture:()=>this.save(),
+      saveDisabled:valid?undefined:"",saveStyle,
+      typeOptions,engOptions,
+      cfType:cf.type,cfEng:cf.eng,cfMetric:cf.metric,cfBaseline:cf.baseline,cfDollar:cf.dollar,cfNote:cf.note,
+      hType:e=>this.updCf("type",e.target.value),hEng:e=>this.updCf("eng",e.target.value),hMetric:e=>this.updCf("metric",e.target.value),hBaseline:e=>this.updCf("baseline",e.target.value),hDollar:e=>this.updCf("dollar",e.target.value),hNote:e=>this.updCf("note",e.target.value),
+      toast:this.state.toast,toastStyle,
+      capFabStyle:"position:fixed;left:50%;bottom:38px;transform:translateX(-50%);z-index:45;width:58px;height:58px;border-radius:50%;border:3px solid var(--surface,#fff);cursor:pointer;background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(199,127,26,.5)",
+    };
+  }
+}
+</script>
+</body>
+</html>

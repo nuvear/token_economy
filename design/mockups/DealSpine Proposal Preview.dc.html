@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif:wght@400;600&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  @keyframes ds-pop{0%{transform:translateY(10px) scale(.98);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes ds-scrim{0%{opacity:0}100%{opacity:1}}
+  @keyframes ds-spin{to{transform:rotate(360deg)}}
+  .ds-propgrid{display:grid;grid-template-columns:336px minmax(0,1fr);gap:22px;align-items:start}
+  .ds-tabbar{display:none}
+  @media(max-width:1040px){.ds-propgrid{grid-template-columns:1fr}}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:150px !important}.ds-fab{bottom:84px !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">RA</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <button onClick="{{ n.onClick }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </button>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 130px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px">
+        <div>
+          <div style="{{ kicker }}">{{ t.customerOutput }}</div>
+          <h1 style="{{ h1Style }}">{{ t.proposalPreview }}</h1>
+          <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ sourceLine }}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;background:rgba(78,138,90,.12);border:1px solid rgba(78,138,90,.35);border-radius:99px;padding:8px 14px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4E8A5A" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          <span style="font-size:12px;font-weight:700;color:var(--pass-ink,#3B6E47)">{{ t.excludedChip }}</span>
+        </div>
+      </div>
+
+      <div class="ds-propgrid">
+        <!-- CONTROLS (solid) -->
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <section style="{{ card }}">
+            <div style="{{ kickerSm }}">{{ t.sourceQuote }}</div>
+            <div style="font-size:14px;font-weight:700;color:var(--ink,#16243D);margin-top:8px;line-height:1.35">{{ dealName }}</div>
+            <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:4px;font-variant-numeric:tabular-nums">{{ dealId }} · {{ t.engineStamp }} v3.2.1</div>
+            <div style="display:flex;align-items:center;gap:7px;margin-top:10px">
+              <span style="font-size:9.5px;font-weight:800;letter-spacing:.04em;padding:3px 9px;border-radius:99px;color:#4E8A5A;background:rgba(78,138,90,.14)">{{ t.approvedGreen }}</span>
+              <span style="font-size:11px;color:var(--muted,#6B7A93)">{{ t.approvedNote }}</span>
+            </div>
+          </section>
+
+          <section style="{{ card }}">
+            <div style="{{ kickerSm }}">{{ t.proposalLanguage }}</div>
+            <div style="font-size:11px;color:var(--muted,#6B7A93);margin:6px 0 10px;line-height:1.5">{{ t.localeNote }}</div>
+            <div style="display:flex;gap:8px">
+              <sc-for list="{{ propLangs }}" as="p" hint-placeholder-count="2">
+                <button onClick="{{ p.onClick }}" aria-pressed="{{ p.active }}" style="{{ p.style }}">{{ p.label }}</button>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--hairline,#EEF4FC)">
+              <span style="font-size:11.5px;color:var(--muted,#6B7A93)">{{ t.dealCurrency }}</span>
+              <span style="font-size:12.5px;font-weight:700;color:var(--ink,#16243D);font-variant-numeric:tabular-nums">{{ currencyLabel }}</span>
+            </div>
+          </section>
+
+          <section style="{{ card }}">
+            <div style="{{ kickerSm }}">{{ t.included }}</div>
+            <div style="display:flex;flex-direction:column;gap:9px;margin-top:11px">
+              <sc-for list="{{ includedList }}" as="it" hint-placeholder-count="5">
+                <div style="display:flex;align-items:flex-start;gap:9px">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4E8A5A" stroke-width="2.4" style="flex:none;margin-top:1px"><path d="M20 6 9 17l-5-5"/></svg>
+                  <span style="font-size:12.5px;color:var(--ink2,#3C4C66);line-height:1.45">{{ it }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <section style="background:#16243D;border:1px solid var(--panel-border,transparent);border-radius:12px;padding:16px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#E8A33D">{{ t.assuranceTitle }}</span>
+            </div>
+            <div style="font-size:12px;color:#C9D8EE;line-height:1.6;margin-top:9px">{{ t.assuranceBody }}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:11px">
+              <sc-for list="{{ excludedTokens }}" as="x" hint-placeholder-count="3">
+                <span style="font-size:10.5px;font-weight:600;color:#E89B99;background:rgba(192,80,77,.18);border:1px solid rgba(192,80,77,.3);border-radius:7px;padding:3px 9px;text-decoration:line-through">{{ x }}</span>
+              </sc-for>
+            </div>
+          </section>
+        </div>
+
+        <!-- PAPER PREVIEW (solid, content layer) -->
+        <div style="display:flex;justify-content:center">
+          <article style="{{ paperStyle }}">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:18px;border-bottom:2px solid #16243D">
+              <div>
+                <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:17px">N</div>
+                <div style="font-size:15px;font-weight:800;color:#16243D;margin-top:9px;letter-spacing:.01em">{{ p.firm }}</div>
+                <div style="font-size:11px;color:#6B7A93">{{ p.firmSub }}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:11px;color:#6B7A93;font-variant-numeric:tabular-nums">{{ p.dateStr }}</div>
+                <div style="font-size:11px;color:#6B7A93;font-variant-numeric:tabular-nums;margin-top:3px">{{ p.docRef }}</div>
+              </div>
+            </div>
+
+            <div style="font-size:14px;color:#16243D;margin-top:20px;font-weight:600">{{ p.recipient }}</div>
+            <h2 style="{{ paperTitleStyle }}">{{ p.title }}</h2>
+            <p style="{{ paperBody }}">{{ p.intro }}</p>
+
+            <!-- investment hero -->
+            <div style="background:#16243D;border-radius:14px;padding:22px;margin-top:22px;display:flex;flex-wrap:wrap;gap:20px;align-items:baseline;justify-content:space-between">
+              <div>
+                <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#E8A33D">{{ p.investLabel }}</div>
+                <div style="font-size:34px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;margin-top:6px;line-height:1">{{ p.total }}</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:13px;color:#D9E6F7;font-variant-numeric:tabular-nums">{{ p.unitsLine }}</div>
+                <div style="font-size:13px;color:#D9E6F7;font-variant-numeric:tabular-nums;margin-top:3px">{{ p.avgLine }}</div>
+              </div>
+            </div>
+
+            <!-- tier table -->
+            <div style="{{ paperKicker }}">{{ p.tierTitle }}</div>
+            <table style="width:100%;border-collapse:collapse;margin-top:10px;font-size:13px;font-variant-numeric:tabular-nums">
+              <thead>
+                <tr>
+                  <th style="text-align:left;padding:9px 10px;background:#EEF4FC;color:#16243D;font-weight:700;border-bottom:2px solid #D9E6F7">{{ p.colTier }}</th>
+                  <th style="text-align:right;padding:9px 10px;background:#EEF4FC;color:#16243D;font-weight:700;border-bottom:2px solid #D9E6F7">{{ p.colUnits }}</th>
+                  <th style="text-align:right;padding:9px 10px;background:#EEF4FC;color:#16243D;font-weight:700;border-bottom:2px solid #D9E6F7">{{ p.colPer }}</th>
+                  <th style="text-align:right;padding:9px 10px;background:#EEF4FC;color:#16243D;font-weight:700;border-bottom:2px solid #D9E6F7">{{ p.colInvest }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ tiers }}" as="row" hint-placeholder-count="3">
+                  <tr>
+                    <td style="text-align:left;padding:9px 10px;border-bottom:1px solid #EEF4FC;color:#3C4C66;font-weight:600">{{ row.tier }}</td>
+                    <td style="text-align:right;padding:9px 10px;border-bottom:1px solid #EEF4FC;color:#16243D">{{ row.units }}</td>
+                    <td style="text-align:right;padding:9px 10px;border-bottom:1px solid #EEF4FC;color:#16243D">{{ row.per }}</td>
+                    <td style="text-align:right;padding:9px 10px;border-bottom:1px solid #EEF4FC;color:#16243D;font-weight:700">{{ row.invest }}</td>
+                  </tr>
+                </sc-for>
+                <tr>
+                  <td style="text-align:left;padding:10px;color:#16243D;font-weight:800">{{ p.totalRow }}</td>
+                  <td style="text-align:right;padding:10px;color:#16243D;font-weight:800">{{ p.totalUnits }}</td>
+                  <td style="padding:10px"></td>
+                  <td style="text-align:right;padding:10px;color:#C77F1A;font-weight:800">{{ p.total }}</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- savings callout -->
+            <div style="display:flex;align-items:center;gap:14px;background:#FBF3E4;border:1px solid #F0E0C4;border-radius:12px;padding:16px 18px;margin-top:20px">
+              <div style="font-size:26px;font-weight:800;color:#C77F1A;font-variant-numeric:tabular-nums;white-space:nowrap">{{ p.savingsAmt }}</div>
+              <div style="font-size:13px;color:#3C4C66;line-height:1.5">{{ p.savingsText }}</div>
+            </div>
+
+            <!-- warranty & terms -->
+            <div style="{{ paperKicker }}">{{ p.termsTitle }}</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#E4E9F2;border:1px solid #E4E9F2;border-radius:10px;overflow:hidden;margin-top:10px">
+              <sc-for list="{{ terms }}" as="tm" hint-placeholder-count="4">
+                <div style="background:#fff;padding:13px 15px">
+                  <div style="font-size:10.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#C77F1A">{{ tm.label }}</div>
+                  <div style="font-size:12.5px;color:#3C4C66;margin-top:4px;line-height:1.45">{{ tm.value }}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <p style="{{ paperBody }}">{{ p.telemetry }}</p>
+
+            <!-- evidence-grade stamp + signature -->
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:26px;padding-top:20px;border-top:1px solid #E4E9F2">
+              <div style="display:inline-flex;align-items:center;gap:10px;border:2px solid #4E8A5A;border-radius:10px;padding:8px 14px">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4E8A5A" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+                <div>
+                  <div style="font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#3B6E47">{{ p.evidenceLabel }}</div>
+                  <div style="font-size:11px;color:#6B7A93">{{ p.evidenceSub }}</div>
+                </div>
+              </div>
+              <div style="text-align:{{ p.sigAlign }};min-width:180px">
+                <sc-if value="{{ p.seal }}" hint-placeholder-val="{{ false }}">
+                  <span style="display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border:2px solid #C0504D;border-radius:50%;color:#C0504D;font-weight:700;font-size:13px;margin-bottom:8px;font-family:'Noto Serif JP',serif">印</span>
+                </sc-if>
+                <div style="border-top:1px solid #16243D;padding-top:6px;font-size:13px;font-weight:700;color:#16243D">{{ p.sigName }}</div>
+                <div style="font-size:11px;color:#6B7A93">{{ p.sigTitle }}</div>
+              </div>
+            </div>
+
+            <div style="margin-top:22px;padding-top:14px;border-top:1px dashed #D9E6F7;display:flex;align-items:flex-start;gap:8px">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2" style="flex:none;margin-top:2px"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <div style="font-size:10.5px;color:#6B7A93;line-height:1.5">{{ p.footerExcl }}<br>{{ p.footerIllus }}</div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+
+  <!-- FLOATING ACTION CLUSTER (glass) — morph #3 source -->
+  <div class="ds-fab" style="{{ gCluster }}">
+    <button style="{{ fabSecondary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+      {{ t.saveDraft }}
+    </button>
+    <button style="{{ fabSecondary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      {{ t.exportPdf }}
+    </button>
+    <button onClick="{{ openGen }}" style="{{ fabPrimary }}">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m3 3 18 9-18 9 4-9-4-9z"/></svg>
+      {{ t.generateSend }}
+    </button>
+  </div>
+
+  <!-- GENERATE / DOWNLOAD SHEET (morph #3 target) -->
+  <sc-if value="{{ genOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ scrimStyle }}" onClick="{{ closeGen }}"></div>
+    <div role="dialog" aria-label="{{ t.generateSend }}" style="{{ genWrap }}">
+      <div style="{{ genPanel }}">
+        <sc-if value="{{ isGenerating }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:40px 8px;display:flex;flex-direction:column;align-items:center;gap:16px">
+            <div style="width:38px;height:38px;border:3px solid rgba(217,230,247,.25);border-top-color:#E8A33D;border-radius:50%;animation:ds-spin .8s linear infinite"></div>
+            <div style="font-size:14px;font-weight:700;color:#fff">{{ t.assembling }}</div>
+            <div style="font-size:12px;color:#9FB1CC">{{ genStepLabel }}</div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ isReady }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:6px 4px 2px">
+            <div style="width:52px;height:52px;margin:0 auto;border-radius:50%;background:rgba(78,138,90,.16);border:1.5px solid rgba(78,138,90,.5);display:flex;align-items:center;justify-content:center">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <div style="font-size:18px;font-weight:800;color:#fff;margin-top:14px">{{ t.proposalReady }}</div>
+            <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:9px 13px;margin-top:14px">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+              <span style="font-size:12.5px;font-weight:600;color:#EAF1FB;font-family:monospace">{{ fileName }}</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px;padding:10px;background:rgba(78,138,90,.14);border:1px solid rgba(78,138,90,.35);border-radius:9px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <span style="font-size:12px;font-weight:700;color:#A9DDB5">{{ t.excludedVerified }}</span>
+            </div>
+            <div style="text-align:left;margin-top:16px">
+              <div style="font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9FB1CC">{{ t.whatsInFile }}</div>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:9px">
+                <sc-for list="{{ includedList }}" as="it" hint-placeholder-count="5">
+                  <div style="display:flex;align-items:flex-start;gap:8px">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.4" style="flex:none;margin-top:2px"><path d="M20 6 9 17l-5-5"/></svg>
+                    <span style="font-size:12px;color:#C9D8EE;line-height:1.4">{{ it }}</span>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:20px">
+              <button onClick="{{ closeGen }}" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:#D9E6F7">{{ t.close }}</button>
+              <button onClick="{{ download }}" style="flex:1.4;display:flex;align-items:center;justify-content:center;gap:7px;background:#E8A33D;border:none;border-radius:10px;padding:12px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;color:#16243D">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                {{ t.download }}
+              </button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:80;background:#16243D;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:11px 20px;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(11,18,32,.4);animation:ds-pop .3s">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1180},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;},&quot;proposalLocale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={home:"DealSpine Home.dc.html",workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",policy:"DealSpine Policy Studio.dc.html",proposals:"DealSpine Proposal Preview.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",settings:"DealSpine Settings.dc.html",help:"DealSpine Help.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+// tier figures (customer-facing; USD deal currency). No cost/margin/floor anywhere.
+const TIERS=[["Simple",1900,150],["Medium",1200,260],["Complex",500,520]];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"proposals",
+      propLang:props.proposalLocale==="ja"?"ja":"en",
+      genOpen:false,genPhase:null,toast:"",
+    };
+    this._tok=0;
+  }
+  componentWillUnmount(){clearTimeout(this._t);clearTimeout(this._toast);}
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+  showToast(m){clearTimeout(this._toast);this.setState({toast:m});this._toast=setTimeout(()=>this.setState({toast:""}),2400);}
+  openGen(){const tok=++this._tok;this.setState({genOpen:true,genPhase:"gen"});clearTimeout(this._t);this._t=setTimeout(()=>{if(this._tok===tok)this.setState({genPhase:"ready"});},1500);}
+  closeGen(){this._tok++;clearTimeout(this._t);this.setState({genOpen:false,genPhase:null});}
+
+  renderVals(){
+    const{lang,glass,propLang,genOpen,genPhase,toast}=this.state;
+    const ja=lang==="ja";const pja=propLang==="ja";const theme=this.state.theme;const dark=theme==="dark";const gb=this.glassBase();
+    const usd=new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});
+    const totalUnits=TIERS.reduce((a,t)=>a+t[1],0);
+    const totalInvest=TIERS.reduce((a,t)=>a+t[1]*t[2],0);
+    const validatedAlt=1197000;const savings=validatedAlt-totalInvest;const savePct=Math.round(savings/validatedAlt*100);
+    const numloc=pja?"ja-JP":"en-US";const numf=n=>n.toLocaleString(numloc);
+
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",customerOutput:"CUSTOMER OUTPUT",proposalPreview:"Proposal preview",excludedChip:"Internal figures excluded",sourceQuote:"SOURCE QUOTE",engineStamp:"engine",approvedGreen:"APPROVED",approvedNote:"green quote — cleared to generate",proposalLanguage:"PROPOSAL LANGUAGE",localeNote:"Renders in the customer's locale, independent of your UI language.",dealCurrency:"Deal currency",included:"WHAT'S INCLUDED",assuranceTitle:"Structural exclusion",assuranceBody:"Cost, margin, and floor figures are absent from this template by construction — not by discipline. A CI test fails the build if any leak onto a customer surface.",saveDraft:"Save draft",exportPdf:"Export PDF",generateSend:"Generate & send",assembling:"Assembling customer document…",proposalReady:"Proposal ready",excludedVerified:"Floor / cost / margin excluded — verified",whatsInFile:"What's in this file",close:"Close",download:"Download PDF"},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",customerOutput:"顧客向け出力",proposalPreview:"提案書プレビュー",excludedChip:"社内数値は除外済み",sourceQuote:"元となる見積",engineStamp:"エンジン",approvedGreen:"承認済",approvedNote:"グリーン見積 — 生成可能",proposalLanguage:"提案書の言語",localeNote:"UIの言語に関わらず、顧客のロケールで生成されます。",dealCurrency:"案件通貨",included:"含まれる内容",assuranceTitle:"構造的除外",assuranceBody:"コスト・マージン・フロアの数値は、規律ではなくテンプレート構造として存在しません。顧客面に漏れた場合はCIテストがビルドを失敗させます。",saveDraft:"下書き保存",exportPdf:"PDF書き出し",generateSend:"生成して送付",assembling:"顧客向け文書を生成中…",proposalReady:"提案書が完成しました",excludedVerified:"フロア／コスト／マージンを除外 — 検証済み",whatsInFile:"ファイルの内容",close:"閉じる",download:"PDFをダウンロード"}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const kickerSm=ja?"color:#C77F1A;font-size:10.5px;font-weight:700":"color:#C77F1A;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,current:a?"page":undefined,onClick:()=>this.setState({nav:n.id}),style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);const a=id===this.state.nav;return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":hrefFor(id),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+    const propLangs=[{id:"en",label:"English (US)"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===propLang;return{label:l.label,active:a,onClick:()=>this.setState({propLang:l.id}),style:"flex:1;border:1.5px solid "+(a?GOLD:"var(--border,#DCE4F0)")+";background:"+(a?"rgba(232,163,61,.16)":"var(--surface,#fff)")+";cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:"+(a?"700":"500")+";padding:9px;border-radius:9px;color:var(--ink,#16243D)"};});
+
+    const includedList=pja?["公開スコープ：ATCベースの範囲確定と複雑度分類","シニア品質ゲート：全オブジェクトをシニアがレビュー","リワーク保証：不合格オブジェクトは無償修正","オブジェクト単位の予測可能な価格","デリバリー・テレメトリの月次提供"]:["Fixed scope, counted openly — ATC-based scoping & complexity tiers","Senior quality gate — every object reviewed before delivery","Rework warranty — failed objects fixed at no charge","Predictable per-object price — no hourly surprises","Monthly delivery telemetry extract"];
+    const excludedTokens=ja?["コスト","マージン","フロア d*"]:["cost","margin","floor d*"];
+
+    // paper content
+    const dtf=new Intl.DateTimeFormat(numloc,{year:"numeric",month:pja?"long":"short",day:"numeric"});
+    const tierNames=pja?["標準","中","複雑"]:["Simple","Medium","Complex"];
+    const tiers=TIERS.map((t,i)=>({tier:tierNames[i],units:numf(t[1]),per:usd.format(t[2]),invest:usd.format(t[1]*t[2])}));
+    const p=pja?{
+      firm:"Nuvear アドバイザリー",firmSub:"SAP デリバリー・プラクティス",dateStr:dtf.format(new Date(2026,6,22)),docRef:"文書番号 PR-0142",
+      recipient:"株式会社サンプル 御中",title:"ご提案書 — カスタムコード改修（ECC → S/4HANA）",
+      intro:"平素より格別のご高配を賜り、厚く御礼申し上げます。貴社のS/4HANA移行に伴うカスタムコード改修につきまして、下記のとおりご提案申し上げます。",
+      investLabel:"ご投資額",total:usd.format(totalInvest),unitsLine:numf(totalUnits)+" オブジェクト",avgLine:"平均 "+usd.format(Math.round(totalInvest/totalUnits))+" / オブジェクト",
+      tierTitle:"ティア別価格",colTier:"ティア",colUnits:"オブジェクト数",colPer:"単価",colInvest:"金額",totalRow:"合計",totalUnits:numf(totalUnits),
+      savingsAmt:usd.format(savings),savingsText:"従来の工数ベース（検証済みの代替案）と比較して "+savePct+"% の削減となります。",
+      termsTitle:"保証と条件",terms:[{label:"保証期間",value:"納品後 90 日間"},{label:"リワーク",value:"ATC／回帰テスト不合格分は無償修正"},{label:"テストサイクル",value:"ATC・回帰 各 2 サイクル"},{label:"構成比許容",value:"ティア構成 ±10% は公開単価で再計算"}],
+      telemetry:"デリバリー・テレメトリ（進捗・品質指標）を月次でご提供し、透明性を担保いたします。",
+      evidenceLabel:"エビデンス評価：実測",evidenceSub:"直近の実測サンプルに基づく",sigAlign:"right",seal:true,sigName:"ラジャゴパラン A.",sigTitle:"パートナー / SAP アドバイザリー",
+      footerExcl:"本提案書にはコスト・マージン・フロアの社内数値は一切含まれておりません（テンプレートによる構造的除外）。",footerIllus:"金額はATCスキャンによるスコープ確定までの参考値です。"
+    }:{
+      firm:"Nuvear Advisory",firmSub:"SAP Delivery Practice",dateStr:dtf.format(new Date(2026,6,22)),docRef:"Ref. PR-0142",
+      recipient:"To: Contoso Manufacturing K.K.",title:"Proposal — Custom Code Remediation (ECC → S/4HANA)",
+      intro:"Thank you for the opportunity. Set out below is our proposal for remediating your custom ABAP estate as part of the S/4HANA migration, priced per object at published tier rates.",
+      investLabel:"Your investment",total:usd.format(totalInvest),unitsLine:numf(totalUnits)+" objects in scope",avgLine:"avg "+usd.format(Math.round(totalInvest/totalUnits))+" / object",
+      tierTitle:"Per-tier pricing",colTier:"Complexity tier",colUnits:"Objects",colPer:"Price / object",colInvest:"Investment",totalRow:"Total",totalUnits:numf(totalUnits),
+      savingsAmt:usd.format(savings),savingsText:"You save "+savePct+"% versus the validated alternative (the market-standard effort-based approach for this scope).",
+      termsTitle:"Warranty & terms",terms:[{label:"Duration",value:"90 days post-delivery"},{label:"Rework",value:"Objects failing ATC / regression fixed at no charge"},{label:"Test cycles",value:"2 ATC + 2 regression cycles"},{label:"Mix tolerance",value:"±10% tier mix repriced at published rates"}],
+      telemetry:"We commit to a monthly delivery-telemetry extract (progress and quality metrics) for full transparency throughout the engagement.",
+      evidenceLabel:"Evidence-graded: MEASURED",evidenceSub:"based on recent measured samples",sigAlign:"left",seal:false,sigName:"R. Rajagopalan",sigTitle:"Partner, SAP Advisory",
+      footerExcl:"This proposal contains no internal cost, margin, or floor figures — excluded structurally by template.",footerIllus:"Figures are illustrative until scope is confirmed by ATC scan."
+    };
+
+    return{
+      t:T,kicker,kickerSm,card,pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--panel-border:rgba(232,163,61,.28);--pass-ink:#8FD3A0":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--panel-border:transparent;--pass-ink:#3B6E47")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      gBar,gRail,gTab,navItems,tabItems,langs,glassStops,themeStops,propLangs,includedList,excludedTokens,tiers,terms:p.terms,
+      sourceLine:ja?"元見積 DL-2026-0142 · 承認済み（グリーン）":"From quote DL-2026-0142 · approved (green)",
+      dealName:ja?"カスタムコード改修 — ECC → S/4HANA":"Custom Code Remediation — ECC → S/4HANA",
+      dealId:"DL-2026-0142",currencyLabel:"USD ($)",
+      paperStyle:"width:100%;max-width:660px;background:#fff;border:1px solid #E4E9F2;border-radius:6px;box-shadow:0 20px 60px rgba(11,18,32,.16);padding:44px 46px;font-family:"+(pja?"'Noto Serif JP','Noto Sans JP',serif":"'Noto Serif',Georgia,serif")+";line-height:"+(pja?"1.8":"1.6"),
+      paperTitleStyle:"font-size:22px;font-weight:700;color:#16243D;margin:10px 0 14px;line-height:1.3;font-family:"+(pja?"'Noto Serif JP',serif":"'Noto Serif',Georgia,serif"),
+      paperBody:"font-size:13.5px;color:#3C4C66;margin:12px 0 0;line-height:"+(pja?"1.9":"1.7"),
+      paperKicker:"font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#C77F1A;margin-top:24px;font-family:'Inter',sans-serif",
+      p,
+      gCluster:toStr(gb)+";position:fixed;right:26px;bottom:24px;z-index:50;display:flex;gap:8px;padding:8px;border-radius:99px;box-shadow:0 16px 44px rgba(11,18,32,.30)",
+      fabSecondary:"display:flex;align-items:center;gap:7px;white-space:nowrap;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:10px 16px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:#D9E6F7",
+      fabPrimary:"display:flex;align-items:center;gap:7px;white-space:nowrap;background:"+GOLD+";border:none;border-radius:99px;padding:10px 18px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;color:#16243D",
+      openGen:()=>this.openGen(),closeGen:()=>this.closeGen(),genOpen,
+      isGenerating:genPhase==="gen",isReady:genPhase==="ready",
+      genStepLabel:ja?"テンプレート適用 · 社内数値の除外を検証中":"Applying template · verifying internal-figure exclusion",
+      scrimStyle:"position:fixed;inset:0;z-index:60;background:rgba(11,18,32,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:ds-scrim .25s",
+      genWrap:"position:fixed;inset:0;z-index:61;display:flex;align-items:center;justify-content:center;padding:40px 20px",
+      genPanel:toStr(gb)+";width:100%;max-width:440px;border-radius:18px;padding:24px;box-shadow:0 30px 90px rgba(11,18,32,.5);animation:ds-pop .3s cubic-bezier(.2,.7,.2,1)",
+      fileName:pja?"Proposal_DL-2026-0142_ja-JP.pdf":"Proposal_DL-2026-0142_en-US.pdf",
+      download:()=>{this.closeGen();this.showToast(ja?"PDFをダウンロードしました":"PDF downloaded");},
+      toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

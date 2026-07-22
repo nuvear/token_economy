@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  @keyframes ds-pop{0%{transform:translateY(14px) scale(.97);opacity:0}100%{transform:none;opacity:1}}
+  @keyframes ds-scrim{0%{opacity:0}100%{opacity:1}}
+  @keyframes ds-blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+  @keyframes ds-sheet{0%{transform:translateX(30px);opacity:0}100%{transform:none;opacity:1}}
+  .ds-cap{transition:transform .18s cubic-bezier(.2,.7,.2,1),box-shadow .18s}
+  .ds-cap:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(11,18,32,.30)}
+  .ds-grid-btns{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:14px}
+  .ds-tabbar{display:none}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <!-- GLASS APP BAR -->
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">RA</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <!-- GLASS RAIL -->
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <button onClick="{{ n.onClick }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </button>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 60px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:16px">
+        <div>
+          <div style="{{ kicker }}">{{ t.aiNative }}</div>
+          <h1 style="{{ h1Style }}">{{ t.insights }}</h1>
+          <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ t.insightsSub }}</div>
+        </div>
+        <button onClick="{{ openBuilder }}" style="display:flex;align-items:center;gap:8px;white-space:nowrap;background:#16243D;border:none;border-radius:99px;padding:10px 18px;font-size:13px;font-weight:700;color:#fff;cursor:pointer">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>
+          {{ t.newButton }}
+        </button>
+      </div>
+
+      <!-- builder empty-state hint -->
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surface-alt,#FBF3E4);border:1px solid var(--border,#F0E0C4);border-radius:12px;padding:12px 16px;margin-bottom:20px">
+        <span style="font-size:18px" data-om-raster>✦</span>
+        <div style="font-size:12.5px;color:var(--ink2,#3C4C66);line-height:1.5"><strong style="color:var(--ink,#16243D)">{{ t.seedTitle }}</strong> — {{ t.seedBody }}</div>
+      </div>
+
+      <!-- CONTEXT RUN-BAR (glass) -->
+      <div style="{{ gRunbar }}">
+        <div style="display:flex;align-items:center;gap:8px;padding-right:6px;border-right:1px solid rgba(255,255,255,.16)">
+          <span style="width:7px;height:7px;border-radius:50%;background:#E8A33D"></span>
+          <span style="font-size:12px;font-weight:700;color:#fff;white-space:nowrap">{{ t.forThisDeal }}</span>
+          <span style="font-size:11px;color:#9FB1CC;font-variant-numeric:tabular-nums">DL-2026-0142</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{ contextBtns }}" as="c" hint-placeholder-count="3">
+            <button onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:99px;padding:6px 12px;cursor:pointer;font-family:inherit">
+              <span style="font-size:12px;font-weight:600;color:#EAF1FB;white-space:nowrap">{{ c.name }}</span>
+              <span style="{{ c.badge }}">{{ c.provShort }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+
+      <!-- CATEGORY SECTIONS -->
+      <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="4">
+        <div style="margin-top:26px">
+          <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:12px">
+            <div style="{{ kicker }}">{{ cat.label }}</div>
+            <span style="font-size:11px;color:var(--faint,#9AA9C0);font-variant-numeric:tabular-nums">{{ cat.count }}</span>
+          </div>
+          <div class="ds-grid-btns">
+            <sc-for list="{{ cat.buttons }}" as="b" hint-placeholder-count="3">
+              <button class="ds-cap" onClick="{{ b.onClick }}" style="{{ capStyle }}">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                  <div style="font-size:14.5px;font-weight:700;color:#fff;line-height:1.3;text-align:left">{{ b.name }}</div>
+                  <span style="font-size:15px;opacity:.9;flex:none" data-om-raster>{{ b.icon }}</span>
+                </div>
+                <div style="font-size:12px;color:#AEC0DA;line-height:1.5;text-align:left;margin-top:7px;min-height:34px">{{ b.desc }}</div>
+                <div style="display:flex;align-items:center;gap:7px;margin-top:12px;flex-wrap:wrap">
+                  <span style="{{ b.badge }}">{{ b.provLabel }}</span>
+                  <span style="display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;color:#9FB1CC;background:rgba(217,230,247,.1);border:1px solid rgba(217,230,247,.14);border-radius:99px;padding:3px 9px">
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+                    {{ b.scope }}
+                  </span>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </sc-for>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+
+  <!-- ============ MORPH #2 · RESULT OVERLAY ============ -->
+  <sc-if value="{{ overlayOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ scrimStyle }}" onClick="{{ close }}"></div>
+    <div role="dialog" aria-label="{{ activeName }}" style="{{ panelWrap }}">
+      <div style="{{ panelStyle }}">
+        <!-- panel header -->
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid {{ panelBorder }}">
+          <div>
+            <div style="font-size:16px;font-weight:800;color:{{ panelTitleColor }};line-height:1.25">{{ activeName }}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:7px;flex-wrap:wrap">
+              <span style="{{ activeBadge }}">{{ activeProvLabel }}</span>
+              <span style="font-size:11px;color:{{ panelMeta }};font-variant-numeric:tabular-nums">{{ activeModel }} · {{ nowStr }}</span>
+              <sc-if value="{{ activeFallback }}" hint-placeholder-val="{{ false }}">
+                <span style="font-size:10px;font-weight:700;color:#C77F1A;background:rgba(232,163,61,.16);border-radius:99px;padding:3px 8px">{{ activeFallback }}</span>
+              </sc-if>
+            </div>
+          </div>
+          <button onClick="{{ close }}" aria-label="Close" style="flex:none;width:30px;height:30px;border-radius:8px;border:1px solid {{ panelBorder }};background:transparent;cursor:pointer;color:{{ panelMeta }};font-size:16px;line-height:1">✕</button>
+        </div>
+
+        <!-- PACKAGING -->
+        <sc-if value="{{ isPackaging }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:34px 4px;display:flex;flex-direction:column;align-items:center;gap:14px">
+            <div style="width:34px;height:34px;border:3px solid rgba(217,230,247,.25);border-top-color:#E8A33D;border-radius:50%;animation:ds-blink 1s linear infinite"></div>
+            <div style="font-size:13px;color:#D9E6F7;font-weight:600">{{ packagingLabel }}</div>
+            <div style="font-size:11px;color:#9FB1CC;font-family:'JetBrains Mono',monospace">{{ activeScope }}</div>
+          </div>
+        </sc-if>
+
+        <!-- STREAMING (clear glass) -->
+        <sc-if value="{{ isStreaming }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:16px 2px;max-height:52vh;overflow:auto" class="ds-scroll">
+            <div style="font-size:13.5px;line-height:1.7;color:#EAF1FB;white-space:pre-wrap;font-family:'Inter',system-ui">{{ streamed }}<span style="display:inline-block;width:8px;height:16px;background:#E8A33D;vertical-align:-2px;margin-left:2px;animation:ds-blink 1s step-end infinite"></span></div>
+          </div>
+        </sc-if>
+
+        <!-- DONE (solid rendered markdown) -->
+        <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+          <div style="max-height:56vh;overflow:auto;padding:16px 4px 4px" class="ds-scroll">{{ resultNodes }}</div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding-top:14px;margin-top:8px;border-top:1px solid var(--border,#E4E9F2)">
+            <button style="{{ actPrimary }}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>{{ t.shareDeal }}
+            </button>
+            <button style="{{ actSecondary }}">{{ t.copy }}</button>
+            <button style="{{ actSecondary }}">{{ t.saveHist }}</button>
+            <button onClick="{{ rerun }}" style="{{ actSecondary }}">{{ t.rerun }}</button>
+            <button onClick="{{ toggleSent }}" aria-expanded="{{ showSent }}" style="margin-left:auto;background:transparent;border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;color:#6B7A93;display:flex;align-items:center;gap:5px">
+              {{ t.whatSent }}
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="{{ sentChevron }}"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+          <sc-if value="{{ showSent }}" hint-placeholder-val="{{ false }}">
+            <pre style="margin:12px 0 0;background:#16243D;border-radius:10px;padding:14px;overflow:auto;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.6;color:#C9D8EE;white-space:pre-wrap">{{ sentPackage }}</pre>
+          </sc-if>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ============ INSIGHT STUDIO · BUILDER SHEET (glass) ============ -->
+  <sc-if value="{{ builderOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="{{ scrimStyle }}" onClick="{{ closeBuilder }}"></div>
+    <aside role="dialog" aria-label="Insight Studio" style="{{ sheetStyle }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.14)">
+        <div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:.14em;color:#E8A33D;text-transform:uppercase">{{ t.builder }}</div>
+          <div style="font-size:17px;font-weight:800;color:#fff;margin-top:3px">{{ t.newButton }}</div>
+        </div>
+        <button onClick="{{ closeBuilder }}" aria-label="Close" style="width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:transparent;cursor:pointer;color:#D9E6F7;font-size:16px">✕</button>
+      </div>
+      <div style="overflow:auto;padding:16px 2px 2px;display:flex;flex-direction:column;gap:16px" class="ds-scroll">
+        <div>
+          <label style="{{ bLbl }}">{{ t.bName }}</label>
+          <input type="text" value="{{ bName }}" onInput="{{ h.bName }}" placeholder="Explain this quote's risk posture" style="{{ bInput }}">
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="flex:1">
+            <label style="{{ bLbl }}">{{ t.bCat }}</label>
+            <select onChange="{{ h.bCat }}" style="{{ bSelect }}">
+              <sc-for list="{{ catOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.id }}" selected="{{ o.sel }}">{{ o.label }}</option></sc-for>
+            </select>
+          </div>
+          <div style="flex:1">
+            <label style="{{ bLbl }}">{{ t.bProvider }}</label>
+            <select onChange="{{ h.bProv }}" style="{{ bSelect }}">
+              <sc-for list="{{ provOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.id }}" selected="{{ o.sel }}">{{ o.label }}</option></sc-for>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label style="{{ bLbl }}">{{ t.bPrompt }}</label>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px">
+            <sc-for list="{{ varChips }}" as="v" hint-placeholder-count="5">
+              <button onClick="{{ v.onClick }}" style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#16243D;background:#E8A33D;border:none;border-radius:7px;padding:4px 8px;cursor:pointer">{{ v.token }}</button>
+            </sc-for>
+          </div>
+          <textarea onInput="{{ h.bPrompt }}" value="{{ bPrompt }}" rows="5" style="width:100%;background:#fff;border:1px solid #C9D6EA;border-radius:10px;padding:11px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.6;color:#16243D;resize:vertical"></textarea>
+        </div>
+        <div>
+          <label style="{{ bLbl }}">{{ t.bScope }}</label>
+          <div style="display:flex;flex-direction:column;gap:2px;margin-top:6px">
+            <sc-for list="{{ scopeOpts }}" as="s" hint-placeholder-count="5">
+              <button onClick="{{ s.onClick }}" style="display:flex;align-items:center;gap:10px;background:transparent;border:none;cursor:pointer;padding:7px 4px;text-align:left;font-family:inherit;width:100%">
+                <span style="{{ s.box }}">{{ s.check }}</span>
+                <span style="font-size:12.5px;color:#EAF1FB;flex:1">{{ s.label }}</span>
+                <sc-if value="{{ s.restricted }}" hint-placeholder-val="{{ false }}"><span style="font-size:9.5px;font-weight:800;color:#E89B99;background:rgba(192,80,77,.2);border-radius:99px;padding:2px 7px">{{ t.roleLocked }}</span></sc-if>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ showRoleWarn }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;gap:8px;background:rgba(192,80,77,.14);border:1px solid rgba(192,80,77,.3);border-radius:9px;padding:10px 12px;margin-top:8px">
+              <span style="color:#E89B99;font-weight:800">!</span>
+              <div style="font-size:11.5px;color:#EAD3D2;line-height:1.5">{{ t.roleWarn }}</div>
+            </div>
+          </sc-if>
+        </div>
+        <div>
+          <label style="{{ bLbl }}">{{ t.bPreview }}</label>
+          <pre style="margin:6px 0 0;background:#16243D;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.6;color:#9FB1CC;white-space:pre-wrap;max-height:140px;overflow:auto">{{ builderPreview }}</pre>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)">
+        <button onClick="{{ closeBuilder }}" style="flex:1;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:11px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:600;color:#D9E6F7">{{ t.cancel }}</button>
+        <button onClick="{{ publish }}" style="flex:1;background:#E8A33D;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:800;color:#16243D">{{ t.publish }}</button>
+      </div>
+    </aside>
+  </sc-if>
+
+  <!-- toast -->
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:80;background:#16243D;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:11px 20px;font-size:13px;font-weight:600;box-shadow:0 12px 40px rgba(11,18,32,.4);animation:ds-pop .3s">{{ toast }}</div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:960},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={home:"DealSpine Home.dc.html",workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",policy:"DealSpine Policy Studio.dc.html",proposals:"DealSpine Proposal Preview.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",settings:"DealSpine Settings.dc.html",help:"DealSpine Help.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+
+const PROV={
+  claude:{label:"Claude",model:"Sonnet 4.6"},
+  gpt:{label:"GPT",model:"GPT-5.6"},
+  gemini:{label:"Gemini",model:"3.1 Pro"},
+  grok:{label:"Grok",model:"Grok-4"},
+  gemma:{label:"Gemma · on-device",model:"Gemma 4",privacy:true},
+};
+
+const NAV=[
+  {id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},
+  {id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},
+  {id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},
+  {id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},
+  {id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"},
+];
+
+const BTNS=[
+  {id:"gov",cat:"deal",icon:"⚖",name:"Explain this quote's governance state",desc:"Plain-language read of the verdict, floors, and what unblocks it.",prov:"claude",scope:"current quote + gates"},
+  {id:"below",cat:"deal",icon:"⚑",name:"Where is this deal below policy?",desc:"Lists every gate in WARN or FAIL with the reason.",prov:"gpt",scope:"gate results"},
+  {id:"objection",cat:"deal",icon:"⚔",name:"Draft objection-handling talking points",desc:"Sanctioned answers for the contested-bid moments.",prov:"claude",scope:"quote + competitor obs"},
+  {id:"floor",cat:"portfolio",icon:"▦",name:"Summarize portfolio floor adherence",desc:"Exec-meeting summary of floor adherence across active deals.",prov:"gemini",scope:"portfolio summary"},
+  {id:"disc",cat:"portfolio",icon:"◔",name:"Discount distribution vs. bands",desc:"Where the book sits against published opening bands.",prov:"grok",scope:"portfolio summary",fallback:"↳ fell back Grok→GPT"},
+  {id:"variance",cat:"delivery",icon:"◎",name:"Reconcile sold-vs-actual variance",desc:"Named drivers mapped to the reserve that covered them.",prov:"claude",scope:"engagement variance"},
+  {id:"unitlog",cat:"delivery",icon:"◈",name:"Summarize this unit log (private)",desc:"Runs entirely on-device — data never leaves the phone.",prov:"gemma",scope:"current engagement"},
+  {id:"margin",cat:"strategy",icon:"✦",name:"Where are we leaving margin on the table?",desc:"Cross-portfolio read on under-priced scope.",prov:"claude",scope:"portfolio summary"},
+];
+
+const CATS=[{id:"deal",en:"Deal",ja:"案件"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ"},{id:"delivery",en:"Delivery",ja:"デリバリー"},{id:"strategy",en:"Strategy",ja:"戦略"}];
+
+const RESULTS={
+gov:`# Governance verdict: Deal Desk approval required
+**DL-2026-0142 · Custom Code Remediation**
+
+This quote sits **above the 25% published band** but **below the 32.5% breakeven floor**, so it routes to the deal desk rather than blocking.
+
+## Why
+| Metric | Value | Policy |
+|---|---|---|
+| Customer discount (d) | 30.0% | band 25.0% |
+| Breakeven floor (d*) | 32.5% | hard block |
+| Risk-adjusted max | 12.5% | advisory |
+| Gross profit | $416K | ≥ traditional |
+
+## What unblocks it
+- Attach an **evidence-graded anchor** for the discount — 2 gates are WARN.
+- Or tighten the gain-share to **≤ 25%** to sign within band.
+
+> The deal is not underwater — at 30% it still clears traditional profit. Deal desk needs the rationale, not a rescue.`,
+below:`# Policy exceptions on this deal
+Two of 34 gates are in **WARN**; no hard failures.
+
+## Open items
+- **Discount vs. risk-adjusted floor** — d = 30% against the 12.5% advisory ceiling.
+- **Evidence-graded anchor** — anchor confidence is unsourced; clamp applied.
+
+## Clear to proceed
+- Senior review ✓ · ATC scan ✓ · Token reconciliation ✓ · Author ≠ approver ✓
+
+\`26 further gates auto-passed.\``,
+objection:`# Objection playbook — contested bid
+
+## "Your price is just AI markup"
+- We price against **your traditional cost** ($1.20M), not our effort — you keep **$359K**.
+
+## "Competitor X is 15% cheaper"
+- Their quote excludes the **rework warranty** and **senior review**. Quality risk stays with us.
+
+## "Why per-object, not T&M?"
+- Per-object is **predictable** — scope changes reprice at published tier rates, no hourly surprises.`,
+floor:`# Portfolio floor adherence — exec summary
+**Q3 FY26 · 18 active deals**
+
+| Segment | Deals | Below floor | Avg discount |
+|---|---|---|---|
+| Within band | 12 | 0 | 14.2% |
+| Deal desk | 5 | 0 | 27.8% |
+| Blocked (re-scoped) | 1 | 0 | 34.1% |
+
+## Headline
+- **100% of signed deals cleared the floor.** One blocked pre-signature, then re-scoped.
+- Reinvestment fund accrued **$212K** this quarter.`,
+disc:`# Discount distribution vs. published bands
+Most of the book sits **inside band**; the tail is governed, not leaking.
+
+| Band | Deals | Notes |
+|---|---|---|
+| 0–15% | 9 | auto-approved |
+| 15–25% | 3 | within band |
+| 25%+ | 6 | deal-desk logged |
+
+> No signed deal exceeded its breakeven floor this quarter.`,
+variance:`# Sold-vs-actual reconciliation
+**Engagement ENG-0091 · at 62% delivered**
+
+| Driver | Δ GP | Covered by |
+|---|---|---|
+| Mix drift to complex tier | −$18K | mix true-up |
+| Rework above warranty rate | −$7K | warranty reserve |
+| Token repricing | −$3K | platform line |
+| Redeployment shortfall | +$11K | shared-improvement credit |
+
+**Net variance −$17K (−1.4 pts)** — inside the 5-pt target.`,
+unitlog:`# On-device summary — unit log
+_Computed locally with Gemma 4. Nothing was sent to a server._
+
+- **142 objects** logged this week · logger ≠ countersigner on all rows.
+- Median **3.1 min** senior review per complex object.
+- Token source recorded on **100%** of rows; config version stamped.
+
+> Green privacy chip = this insight is safe for pre-countersign data.`,
+margin:`# Where margin is left on the table
+Three patterns across the portfolio:
+
+1. **Under-anchored value deals** — 4 deals priced near cost-plus despite strong validated alternatives.
+2. **Coverage assumptions too conservative** — measured *c* is running 6 pts above quoted.
+3. **Premium-tier objects billed at blended rate** — reclassify to recover ~**$63K**.`,
+};
+
+const VARS=["{{quote}}","{{portfolio_summary}}","{{engagement_variance}}","{{gate_results}}","{{competitor_observations}}"];
+const SCOPES=[{id:"quote",label:"Current quote",restricted:false},{id:"portfolio",label:"Portfolio summary",restricted:false},{id:"variance",label:"Engagement variance",restricted:false},{id:"gates",label:"Gate results",restricted:false},{id:"floorcost",label:"Floor & cost data",restricted:true}];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"insights",
+      active:null,phase:null,streamed:"",showSent:false,
+      builderOpen:false,bName:"",bCat:"deal",bProv:"claude",bPrompt:"Given {{quote}}, ",bScopes:["quote"],userBtns:[],
+      toast:"",
+    };
+    this._runToken=0;
+  }
+  componentWillUnmount(){clearTimeout(this._t);clearInterval(this._iv);clearTimeout(this._toast);}
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+
+  allBtns(){return BTNS.concat(this.state.userBtns);}
+  findBtn(id){return this.allBtns().find(b=>b.id===id);}
+
+  run(id){
+    clearTimeout(this._t); clearInterval(this._iv);
+    const token=++this._runToken;
+    this.setState({active:id,phase:"packaging",streamed:"",showSent:false});
+    this._t=setTimeout(()=>{
+      if(this._runToken!==token)return;
+      const full=RESULTS[id]||("# "+(this.findBtn(id)||{}).name+"\n\nThe packaged data scope was sent with the authored prompt; the model's Markdown response renders here on a solid card.\n\n> Duplicate this button in Insight Studio to tailor prompt, scope and model.");
+      this.setState({phase:"streaming",streamed:""});
+      let i=0;
+      this._iv=setInterval(()=>{
+        if(this._runToken!==token){clearInterval(this._iv);return;}
+        i+=Math.max(4,Math.round(full.length/70));
+        if(i>=full.length){clearInterval(this._iv);this.setState({streamed:full,phase:"done"});}
+        else this.setState({streamed:full.slice(0,i)});
+      },22);
+    },800);
+  }
+  close(){this._runToken++;clearTimeout(this._t);clearInterval(this._iv);this.setState({active:null,phase:null,streamed:""});}
+  showToast(m){clearTimeout(this._toast);this.setState({toast:m});this._toast=setTimeout(()=>this.setState({toast:""}),2200);}
+
+  toggleScope(id){this.setState(s=>{const has=s.bScopes.includes(id);return{bScopes:has?s.bScopes.filter(x=>x!==id):[...s.bScopes,id]};});}
+  publish(){const{bName,bCat,bProv,bScopes}=this.state; if(!bName.trim()){this.showToast("Give the button a name first");return;} const id="u"+Date.now(); const scope=bScopes.map(x=>(SCOPES.find(s=>s.id===x)||{}).label).join(" + ")||"no scope"; this.setState(s=>({userBtns:[...s.userBtns,{id,cat:bCat,icon:"✦",name:bName,desc:"Custom insight — published from Insight Studio.",prov:bProv,scope,restricted:bScopes.includes("floorcost")}],builderOpen:false,bName:"",bPrompt:"Given {{quote}}, ",bScopes:["quote"]})); this.showToast("Published to "+bCat+" · versioned v1");}
+
+  mdNodes(src){
+    const h=React.createElement; const lines=src.split("\n"); const out=[]; let i=0; let key=0;
+    const inline=(txt)=>{const parts=[];let m;const re=/(\*\*[^*]+\*\*|`[^`]+`)/g;let last=0;while((m=re.exec(txt))){if(m.index>last)parts.push(txt.slice(last,m.index));const tok=m[0];if(tok.startsWith("**"))parts.push(h("strong",{key:key++,style:{fontWeight:800,color:"var(--ink,#16243D)"}},tok.slice(2,-2)));else parts.push(h("code",{key:key++,style:{fontFamily:"'JetBrains Mono',monospace",fontSize:"12px",background:"var(--track,#EEF4FC)",padding:"1px 5px",borderRadius:"5px",color:GOLDD}},tok.slice(1,-1)));last=m.index+tok.length;}if(last<txt.length)parts.push(txt.slice(last));return parts;};
+    while(i<lines.length){
+      const l=lines[i];
+      if(/^### /.test(l)){out.push(h("h3",{key:key++,style:{fontSize:"12px",fontWeight:800,letterSpacing:".08em",textTransform:"uppercase",color:GOLDD,margin:"18px 0 6px"}},inline(l.slice(4))));i++;continue;}
+      if(/^## /.test(l)){out.push(h("h2",{key:key++,style:{fontSize:"16px",fontWeight:800,color:"var(--ink,#16243D)",margin:"20px 0 8px"}},inline(l.slice(3))));i++;continue;}
+      if(/^# /.test(l)){out.push(h("h1",{key:key++,style:{fontSize:"21px",fontWeight:800,color:"var(--ink,#16243D)",margin:"2px 0 8px",lineHeight:1.25}},inline(l.slice(2))));i++;continue;}
+      if(/^> /.test(l)){const q=[];while(i<lines.length&&/^> /.test(lines[i])){q.push(lines[i].slice(2));i++;}out.push(h("blockquote",{key:key++,style:{borderLeft:"3px solid "+GOLD,background:"var(--track,#EEF4FC)",padding:"10px 14px",margin:"12px 0",borderRadius:"0 8px 8px 0",color:"var(--ink2,#3C4C66)",fontSize:"13.5px",lineHeight:1.6}},inline(q.join(" "))));continue;}
+      if(/^\s*[-*] /.test(l)){const items=[];while(i<lines.length&&/^\s*[-*] /.test(lines[i])){items.push(h("li",{key:key++,style:{margin:"5px 0"}},inline(lines[i].replace(/^\s*[-*] /,""))));i++;}out.push(h("ul",{key:key++,style:{margin:"8px 0",paddingLeft:"20px",color:"var(--ink2,#3C4C66)",fontSize:"13.5px",lineHeight:1.6}},items));continue;}
+      if(/^\d+\. /.test(l)){const items=[];while(i<lines.length&&/^\d+\. /.test(lines[i])){items.push(h("li",{key:key++,style:{margin:"5px 0"}},inline(lines[i].replace(/^\d+\. /,""))));i++;}out.push(h("ol",{key:key++,style:{margin:"8px 0",paddingLeft:"22px",color:"var(--ink2,#3C4C66)",fontSize:"13.5px",lineHeight:1.6}},items));continue;}
+      if(/^\|/.test(l)){const rows=[];while(i<lines.length&&/^\|/.test(lines[i])){rows.push(lines[i]);i++;}const cells=r=>r.split("|").slice(1,-1).map(c=>c.trim());const head=cells(rows[0]);const body=rows.slice(2).map(cells);
+        out.push(h("table",{key:key++,style:{width:"100%",borderCollapse:"collapse",margin:"12px 0",fontSize:"12.5px",fontVariantNumeric:"tabular-nums"}},[
+          h("thead",{key:"h"},h("tr",{},head.map((c,ci)=>h("th",{key:ci,style:{textAlign:ci?"right":"left",background:NAVY,color:"#fff",fontWeight:700,padding:"8px 10px",border:"1px solid "+NAVY2}},c)))),
+          h("tbody",{key:"b"},body.map((row,ri)=>h("tr",{key:ri,style:{background:ri%2?"var(--surface-alt,#EEF4FC)":"var(--surface,#fff)"}},row.map((c,ci)=>h("td",{key:ci,style:{textAlign:ci?"right":"left",padding:"7px 10px",border:"1px solid var(--border,#E4E9F2)",color:ci?"var(--ink,#16243D)":"var(--ink2,#3C4C66)",fontWeight:ci?600:500}},inline(c))))))
+        ]));continue;}
+      if(l.trim()===""){i++;continue;}
+      out.push(h("p",{key:key++,style:{margin:"8px 0",color:"var(--ink2,#3C4C66)",fontSize:"13.5px",lineHeight:1.65}},inline(l)));i++;
+    }
+    return out;
+  }
+
+  provBadge(prov,onLight){const p=PROV[prov];const priv=p.privacy;
+    if(priv)return"display:flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;color:#8FD3A0;background:rgba(78,138,90,.18);border:1px solid rgba(78,138,90,.4);border-radius:99px;padding:3px 9px";
+    return"font-size:10.5px;font-weight:700;color:"+(onLight?"#3C4C66":"#EAF1FB")+";background:rgba(217,230,247,"+(onLight?".5":".14")+");border:1px solid rgba(217,230,247,"+(onLight?".9":".2")+");border-radius:99px;padding:3px 9px";}
+
+  renderVals(){
+    const{lang,glass,active,phase,streamed,showSent,builderOpen,bName,bCat,bProv,bPrompt,bScopes,toast}=this.state;
+    const ja=lang==="ja";const theme=this.state.theme;const dark=theme==="dark";
+    const gb=this.glassBase();
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",aiNative:"AI-NATIVE",insights:"Insights",insightsSub:"A wall of prompt buttons. A builder authors one; anyone clicks it forever.",newButton:"New button",seedTitle:"This is a prompt. Duplicate it. Make it yours.",seedBody:"6 seed buttons ship with every install — all editable in Insight Studio.",forThisDeal:"Insights for this deal",shareDeal:"Share to deal",copy:"Copy",saveHist:"Save",rerun:"Re-run",whatSent:"What was sent",builder:"INSIGHT STUDIO",bName:"Button name",bCat:"Category",bProvider:"Provider & model",bPrompt:"Prompt template",bScope:"Data scope",bPreview:"Packaged preview",roleLocked:"ROLE-LOCKED",roleWarn:"This scope contains floor / cost data. The button will be restricted to roles allowed to see it (§2 access matrix).",cancel:"Cancel",publish:"Publish"},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",aiNative:"AIネイティブ",insights:"インサイト",insightsSub:"プロンプトボタンの壁。ビルダーが一度作れば、誰でも何度でもクリック。",newButton:"新規ボタン",seedTitle:"これはプロンプトです。複製して、あなた仕様に。",seedBody:"6つのシードボタンを標準搭載 — すべてInsight Studioで編集可能。",forThisDeal:"この案件のインサイト",shareDeal:"案件に共有",copy:"コピー",saveHist:"保存",rerun:"再実行",whatSent:"送信内容",builder:"インサイトスタジオ",bName:"ボタン名",bCat:"カテゴリ",bProvider:"プロバイダ & モデル",bPrompt:"プロンプトテンプレート",bScope:"データスコープ",bPreview:"パッケージプレビュー",roleLocked:"ロール制限",roleWarn:"このスコープにはフロア／コストデータが含まれます。閲覧可能なロールに制限されます（§2アクセス表）。",cancel:"キャンセル",publish:"公開"}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const gRunbar=toStr(gb)+";display:flex;align-items:center;gap:14px;flex-wrap:wrap;border-radius:14px;padding:12px 16px;box-shadow:0 8px 28px rgba(11,18,32,.16)";
+    const capStyle=toStr(gb)+";border-radius:16px;padding:16px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;box-shadow:0 6px 22px rgba(11,18,32,.18)";
+
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);const a=id===this.state.nav;return{icon:n.icon,label:ja?n.ja:n.en,href:a?"#":hrefFor(id),current:a?"page":undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:"+(a?GOLD:"#C3D2E8")+";font-family:inherit"};});
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,current:a?"page":undefined,onClick:()=>this.setState({nav:n.id}),style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const mkBtn=b=>({...b,provLabel:PROV[b.prov].label,icon:b.icon,onClick:()=>this.run(b.id),badge:this.provBadge(b.prov,false)});
+    const all=this.allBtns();
+    const categories=CATS.map(c=>{const list=all.filter(b=>b.cat===c.id).map(mkBtn);return{label:ja?c.ja:c.en,count:list.length,buttons:list};});
+    const contextBtns=["gov","below","variance"].map(id=>{const b=this.findBtn(id);return{name:b.name.length>34?b.name.slice(0,32)+"…":b.name,provShort:PROV[b.prov].label,badge:this.provBadge(b.prov,false),onClick:()=>this.run(id)};});
+
+    // overlay
+    const ab=active?this.findBtn(active):null;
+    const isDone=phase==="done";
+    const solid=isDone;
+    const panelStyle=(solid?"background:var(--surface,#fff);border:1px solid var(--border,#E4E9F2);":toStr(gb)+";")+"border-radius:18px;padding:20px 22px;box-shadow:0 30px 90px rgba(11,18,32,.5);animation:ds-pop .3s cubic-bezier(.2,.7,.2,1)";
+
+    // builder derived
+    const showRoleWarn=bScopes.includes("floorcost");
+    const catOpts=CATS.map(c=>({id:c.id,label:ja?c.ja:c.en,sel:c.id===bCat?"selected":undefined}));
+    const provOpts=Object.entries(PROV).map(([id,p])=>({id,label:p.label+" · "+p.model,sel:id===bProv?"selected":undefined}));
+    const varChips=VARS.map(v=>({token:v,onClick:()=>this.setState(s=>({bPrompt:s.bPrompt+v+" "}))}));
+    const scopeOpts=SCOPES.map(s=>{const on=bScopes.includes(s.id);return{label:s.label,restricted:s.restricted,check:on?"✓":"",onClick:()=>this.toggleScope(s.id),box:"width:18px;height:18px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#16243D;border:1.5px solid "+(on?GOLD:"rgba(217,230,247,.35)")+";background:"+(on?GOLD:"transparent")};});
+    const builderPreview="### PROMPT\n"+(bPrompt||"(empty)")+"\n\n### DATA SCOPE\n"+(bScopes.map(x=>"- "+(SCOPES.find(s=>s.id===x)||{}).label).join("\n")||"- (none)")+"\n\n### PROVIDER\n"+PROV[bProv].label+" · "+PROV[bProv].model;
+
+    const sentPackage=ab?("### PROMPT\n"+("Analyze "+ab.scope+" for DL-2026-0142 and answer: "+ab.name+".")+"\n\n### DATA SCOPE\n- "+ab.scope+"\n\n### PROVIDER\n"+PROV[ab.prov].label+" · "+PROV[ab.prov].model):"";
+
+    const bLbl="font-size:11px;font-weight:700;color:#9FB1CC;letter-spacing:.04em;text-transform:uppercase";
+    const bInput="width:100%;margin-top:6px;background:#fff;border:1px solid #C9D6EA;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13.5px;color:#16243D";
+    const bSelect="width:100%;margin-top:6px;background:#fff;border:1px solid #C9D6EA;border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px;font-weight:600;color:#16243D";
+
+    return{
+      t:T,kicker,pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--track:#263C5F;--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--track:#EEF4FC;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      gBar,gRail,gTab,gRunbar,capStyle,navItems,tabItems,themeStops,langs,glassStops,categories,contextBtns,
+      openBuilder:()=>this.setState({builderOpen:true}),closeBuilder:()=>this.setState({builderOpen:false}),builderOpen,
+      overlayOpen:!!active,close:()=>this.close(),rerun:()=>this.run(active),
+      scrimStyle:"position:fixed;inset:0;z-index:60;background:rgba(11,18,32,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);animation:ds-scrim .25s",
+      panelWrap:"position:fixed;inset:0;z-index:61;display:flex;align-items:flex-start;justify-content:center;padding:56px 20px;overflow:auto;pointer-events:none",
+      panelStyleOuter:"pointer-events:auto;width:100%;max-width:720px",
+      panelStyle:"pointer-events:auto;width:100%;max-width:720px;"+panelStyle,
+      panelBorder:solid?"var(--border,#E4E9F2)":"rgba(255,255,255,.16)",panelTitleColor:solid?"var(--ink,#16243D)":"#fff",panelMeta:solid?"var(--muted,#6B7A93)":"#9FB1CC",
+      activeName:ab?ab.name:"",activeProvLabel:ab?PROV[ab.prov].label:"",activeModel:ab?PROV[ab.prov].model:"",activeScope:ab?("uses: "+ab.scope):"",activeBadge:ab?this.provBadge(ab.prov,solid):"",activeFallback:ab&&ab.fallback?ab.fallback:"",
+      isPackaging:phase==="packaging",isStreaming:phase==="streaming",isDone,
+      packagingLabel:(ja?"データ収集中… ":"Gathering data… ")+(ab?ab.scope:""),
+      streamed,resultNodes:isDone?this.mdNodes(RESULTS[active]||("# "+(ab?ab.name:"")+"\n\nRendered on a solid card.")):null,
+      nowStr:new Intl.DateTimeFormat(ja?"ja-JP":"en-US",{hour:"2-digit",minute:"2-digit"}).format(new Date()),
+      showSent,toggleSent:()=>this.setState(s=>({showSent:!s.showSent})),sentChevron:"transition:transform .2s;transform:rotate("+(showSent?"180deg":"0")+")",sentPackage,
+      actPrimary:"display:flex;align-items:center;gap:7px;background:"+GOLD+";border:none;border-radius:9px;padding:9px 15px;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:800;color:#16243D",
+      actSecondary:"background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:9px;padding:9px 14px;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink2,#3C4C66)",
+      // builder
+      sheetStyle:toStr(gb)+";position:fixed;top:0;right:0;z-index:61;height:100vh;width:min(480px,94vw);display:flex;flex-direction:column;padding:20px;box-shadow:-20px 0 70px rgba(11,18,32,.45);animation:ds-sheet .3s cubic-bezier(.2,.7,.2,1)",
+      bName,bPrompt,catOpts,provOpts,varChips,scopeOpts,showRoleWarn,builderPreview,bLbl,bInput,bSelect,
+      publish:()=>this.publish(),
+      h:{bName:e=>this.setState({bName:e.target.value}),bCat:e=>this.setState({bCat:e.target.value}),bProv:e=>this.setState({bProv:e.target.value}),bPrompt:e=>this.setState({bPrompt:e.target.value})},
+      toast,
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  a{color:#C77F1A;text-decoration:none}
+  a:hover{color:#E8A33D}
+  ::selection{background:rgba(232,163,61,0.28)}
+  input:focus-visible,button:focus-visible,select:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid #E8A33D;outline-offset:2px}
+  .ds-scroll::-webkit-scrollbar{width:10px;height:10px}
+  .ds-scroll::-webkit-scrollbar-thumb{background:rgba(120,140,170,.32);border-radius:99px;border:3px solid transparent;background-clip:content-box}
+  .ds-set{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:start}
+  .ds-mxwrap{overflow-x:auto}
+  .ds-tabbar{display:none}
+  @media(max-width:980px){.ds-set{grid-template-columns:1fr}}
+  @media(max-width:620px){.ds-search{display:none !important}}
+  @media(max-width:860px){.ds-rail{display:none !important}.ds-tabbar{display:flex}.ds-main{padding-bottom:92px !important}}
+  @keyframes ds-pop{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
+  @media(prefers-reduced-motion:reduce){.ds-anim{animation:none !important}}
+</style>
+</helmet>
+<div class="ds-scroll" style="{{ pageStyle }}">
+
+  <header style="{{ gBar }}">
+    <div style="display:flex;align-items:center;gap:9px;min-width:180px">
+      <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#E8A33D,#C77F1A);display:flex;align-items:center;justify-content:center;font-weight:800;color:#16243D;font-size:16px">D</div>
+      <div style="font-weight:800;font-size:16px;color:#fff">DealSpine</div>
+    </div>
+    <div class="ds-search" style="flex:1;display:flex;justify-content:center;padding:0 18px">
+      <div style="display:flex;align-items:center;gap:8px;width:100%;max-width:420px;background:#fff;border:1px solid #D9E6F7;border-radius:99px;padding:8px 14px">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7A93" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg>
+        <input type="text" placeholder="{{ t.search }}" aria-label="{{ t.search }}" style="border:none;outline:none;flex:1;font-size:13px;color:#3C4C66;background:transparent">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;min-width:180px;justify-content:flex-end">
+      <div style="display:flex;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:99px;padding:2px">
+        <sc-for list="{{ langs }}" as="l" hint-placeholder-count="2">
+          <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+        </sc-for>
+      </div>
+      <div style="width:32px;height:32px;border-radius:50%;background:#24385C;border:1px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;color:#D9E6F7;font-size:12px;font-weight:700">LD</div>
+    </div>
+  </header>
+
+  <div style="display:flex;align-items:stretch">
+    <nav class="ds-rail" style="{{ gRail }}">
+      <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="11">
+        <a href="{{ n.href }}" aria-current="{{ n.current }}" style="{{ n.style }}">
+          <span style="{{ n.dotStyle }}"></span>
+          <span style="width:20px;display:flex;justify-content:center" data-om-raster>{{ n.icon }}</span>
+          <span style="white-space:nowrap">{{ n.label }}</span>
+        </a>
+      </sc-for>
+      <div style="margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:10px">
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.theme }}</div>
+          <div style="display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ themeStops }}" as="th" hint-placeholder-count="2"><button onClick="{{ th.onClick }}" aria-pressed="{{ th.active }}" style="{{ th.style }}">{{ th.label }}</button></sc-for>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:9px;letter-spacing:.16em;color:rgba(217,230,247,.5);padding:0 12px 6px;text-transform:uppercase">{{ t.glassMode }}</div>
+          <div style="display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.06);border-radius:12px;padding:4px">
+            <sc-for list="{{ glassStops }}" as="g" hint-placeholder-count="3">
+              <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="ds-main" style="flex:1;min-width:0;padding:22px 26px 72px">
+      <div style="margin-bottom:18px">
+        <div style="{{ kicker }}">{{ t.kickerLbl }}</div>
+        <h1 style="{{ h1Style }}">{{ t.settings }}</h1>
+        <div style="color:var(--muted,#6B7A93);font-size:12.5px;margin-top:6px">{{ sub }}</div>
+      </div>
+
+      <div class="ds-set">
+        <!-- SETTINGS MENU -->
+        <nav style="{{ card }};padding:8px">
+          <sc-for list="{{ menu }}" as="m" hint-placeholder-count="4">
+            <button onClick="{{ m.onClick }}" aria-current="{{ m.current }}" style="{{ m.style }}">
+              <span style="width:18px;display:flex;justify-content:center" data-om-raster>{{ m.icon }}</span>
+              <span>{{ m.label }}</span>
+            </button>
+          </sc-for>
+        </nav>
+
+        <div>
+          <!-- ACCESS MATRIX -->
+          <sc-if value="{{ secAccess }}" hint-placeholder-val="{{ true }}">
+            <section style="{{ card }}">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap">
+                <div>
+                  <div style="font-size:14px;font-weight:800;color:var(--ink,#16243D)">{{ t.accessTitle }}</div>
+                  <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px;max-width:520px">{{ t.accessSub }}</div>
+                </div>
+                <button onClick="{{ onToggleEdit }}" aria-pressed="{{ editActive }}" style="{{ editBtnStyle }}">{{ editBtnLabel }}</button>
+              </div>
+              <div class="ds-mxwrap" style="margin-top:16px">
+                <div style="{{ gridStyle }}">
+                  <sc-for list="{{ gridCells }}" as="c" hint-placeholder-count="56">
+                    <div onClick="{{ c.onClick }}" role="{{ c.role }}" tabindex="{{ c.tab }}" aria-label="{{ c.aria }}" style="{{ c.style }}">{{ c.text }}</div>
+                  </sc-for>
+                </div>
+              </div>
+              <div style="display:flex;gap:16px;margin-top:16px;flex-wrap:wrap">
+                <sc-for list="{{ legend }}" as="l" hint-placeholder-count="4">
+                  <div style="display:flex;align-items:center;gap:7px;font-size:11px;color:#6B7A93"><span style="{{ l.chip }}">{{ l.k }}</span>{{ l.label }}</div>
+                </sc-for>
+              </div>
+            </section>
+          </sc-if>
+
+          <!-- TEAM MEMBERS -->
+          <sc-if value="{{ secTeam }}" hint-placeholder-val="{{ false }}">
+            <section style="{{ card }}">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+                <div>
+                  <div style="font-size:14px;font-weight:800;color:var(--ink,#16243D)">{{ t.teamTitle }}</div>
+                  <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.teamSub }}</div>
+                </div>
+                <button onClick="{{ onInvite }}" style="display:flex;align-items:center;gap:7px;border:none;border-radius:99px;padding:9px 16px;font-size:12.5px;font-weight:800;font-family:inherit;background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;cursor:pointer">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>{{ t.invite }}
+                </button>
+              </div>
+              <div class="ds-mxwrap" style="margin-top:14px">
+                <table style="width:100%;border-collapse:collapse;font-size:12.5px;min-width:620px">
+                  <thead><tr>
+                    <sc-for list="{{ userCols }}" as="c" hint-placeholder-count="4">
+                      <th style="{{ c.style }}">{{ c.label }}</th>
+                    </sc-for>
+                  </tr></thead>
+                  <tbody>
+                    <sc-for list="{{ users }}" as="u" hint-placeholder-count="6">
+                      <tr style="{{ u.trStyle }}">
+                        <td style="text-align:left;padding:11px 12px">
+                          <div style="display:flex;align-items:center;gap:10px">
+                            <span style="{{ u.avStyle }}">{{ u.av }}</span>
+                            <div><div style="font-weight:700;color:var(--ink,#16243D)">{{ u.name }}</div><div style="font-size:10.5px;color:var(--faint,#9AA9C0)">{{ u.email }}</div></div>
+                          </div>
+                        </td>
+                        <td style="text-align:left;padding:11px 12px">
+                          <select value="{{ u.role }}" onChange="{{ u.onRole }}" style="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:8px;padding:7px 10px;font-size:12px;font-family:inherit;color:var(--ink,#16243D);font-weight:600">
+                            <sc-for list="{{ roleOptions }}" as="o" hint-placeholder-count="6">
+                              <option value="{{ o.id }}">{{ o.label }}</option>
+                            </sc-for>
+                          </select>
+                        </td>
+                        <td style="text-align:left;padding:11px 12px;color:var(--muted,#6B7A93)">{{ u.active }}</td>
+                        <td style="text-align:center;padding:11px 12px"><span style="{{ u.statusPill }}">{{ u.statusLabel }}</span></td>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </sc-if>
+
+          <!-- INTEGRATIONS -->
+          <sc-if value="{{ secInteg }}" hint-placeholder-val="{{ false }}">
+            <section style="{{ card }}">
+              <div style="font-size:14px;font-weight:800;color:var(--ink,#16243D)">{{ t.integTitle }}</div>
+              <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.integSub }}</div>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px">
+                <sc-for list="{{ integrations }}" as="i" hint-placeholder-count="4">
+                  <div style="border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:16px;background:var(--surface-alt,#F8FBFF)">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <span style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;color:var(--ink,#16243D);background:var(--surface-alt,#EEF4FC);font-weight:800" data-om-raster>{{ i.icon }}</span>
+                      <span style="{{ i.pill }}">{{ i.statusLabel }}</span>
+                    </div>
+                    <div style="font-size:13.5px;font-weight:800;color:var(--ink,#16243D);margin-top:12px">{{ i.name }}</div>
+                    <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:3px;line-height:1.5">{{ i.desc }}</div>
+                    <button onClick="{{ i.onClick }}" style="{{ i.btnStyle }}">{{ i.btnLabel }}</button>
+                  </div>
+                </sc-for>
+              </div>
+            </section>
+          </sc-if>
+
+          <!-- PREFERENCES -->
+          <sc-if value="{{ secPrefs }}" hint-placeholder-val="{{ false }}">
+            <section style="{{ card }}">
+              <div style="font-size:14px;font-weight:800;color:var(--ink,#16243D)">{{ t.prefTitle }}</div>
+              <div style="font-size:11.5px;color:var(--muted,#6B7A93);margin-top:2px">{{ t.prefSub }}</div>
+
+              <div style="margin-top:18px;display:flex;flex-direction:column;gap:20px">
+                <div>
+                  <div style="font-size:12px;font-weight:800;color:var(--ink,#16243D);margin-bottom:8px">{{ t.langDefault }}</div>
+                  <div style="display:inline-flex;gap:6px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:4px">
+                    <sc-for list="{{ langDefaults }}" as="l" hint-placeholder-count="2">
+                      <button onClick="{{ l.onClick }}" aria-pressed="{{ l.active }}" style="{{ l.style }}">{{ l.label }}</button>
+                    </sc-for>
+                  </div>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:800;color:var(--ink,#16243D);margin-bottom:8px">{{ t.glassDefault }}</div>
+                  <div style="display:inline-flex;gap:6px;background:var(--surface-alt,#EEF4FC);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:4px">
+                    <sc-for list="{{ glassDefaults }}" as="g" hint-placeholder-count="3">
+                      <button onClick="{{ g.onClick }}" aria-pressed="{{ g.active }}" style="{{ g.style }}">{{ g.label }}</button>
+                    </sc-for>
+                  </div>
+                  <div style="font-size:11px;color:var(--faint,#9AA9C0);margin-top:8px;max-width:460px">{{ t.a11yNote }}</div>
+                </div>
+                <div>
+                  <div style="font-size:12px;font-weight:800;color:var(--ink,#16243D);margin-bottom:10px">{{ t.notifications }}</div>
+                  <div style="display:flex;flex-direction:column;gap:2px;max-width:520px">
+                    <sc-for list="{{ notifs }}" as="n" hint-placeholder-count="4">
+                      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--hairline,#F2F6FC)">
+                        <div><div style="font-size:12.5px;font-weight:600;color:var(--ink,#16243D)">{{ n.label }}</div><div style="font-size:11px;color:var(--faint,#9AA9C0);margin-top:1px">{{ n.desc }}</div></div>
+                        <button onClick="{{ n.onClick }}" role="switch" aria-checked="{{ n.on }}" aria-label="{{ n.label }}" style="{{ n.track }}"><span style="{{ n.knob }}"></span></button>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </sc-if>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <nav class="ds-tabbar" style="{{ gTab }}">
+    <sc-for list="{{ tabItems }}" as="tb" hint-placeholder-count="5"><a href="{{ tb.href }}" aria-current="{{ tb.current }}" style="{{ tb.style }}"><span data-om-raster style="font-size:17px;line-height:1">{{ tb.icon }}</span><span style="font-size:9px;font-weight:700">{{ tb.label }}</span></a></sc-for>
+  </nav>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div class="ds-anim" role="status" style="{{ toastStyle }}">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8FD3A0" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>
+      <span>{{ toast }}</span>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:1080},&quot;intensity&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;full&quot;,&quot;reduced&quot;,&quot;opaque&quot;],&quot;default&quot;:&quot;full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Liquid Glass&quot;},&quot;locale&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;en&quot;,&quot;ja&quot;],&quot;default&quot;:&quot;en&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Localization&quot;}}">
+const NAVY="#16243D",NAVY2="#24385C",SLATE="#3C4C66",MUTED="#6B7A93",ICE="#D9E6F7",ICE2="#EEF4FC",GOLD="#E8A33D",GOLDD="#C77F1A",RED="#C0504D",GREEN="#4E8A5A";
+const toStr=o=>Object.entries(o).map(([k,v])=>k.replace(/[A-Z]/g,m=>"-"+m.toLowerCase())+":"+v).join(";");
+const FILEMAP={workspace:"DealSpine Deal Workspace.dc.html",approvals:"DealSpine Approvals.dc.html",proposals:"DealSpine Proposal Preview.dc.html",portfolio:"DealSpine Portfolio.dc.html",insights:"DealSpine Insights.dc.html",policy:"DealSpine Policy Studio.dc.html",evidence:"DealSpine Evidence.dc.html",engagements:"DealSpine Engagements.dc.html",home:"DealSpine Home.dc.html"};
+const hrefFor=id=>FILEMAP[id]||"#";
+const NAV=[{id:"home",en:"Home",ja:"ホーム",icon:"⌂"},{id:"workspace",en:"Deal Workspace",ja:"案件ワークスペース",icon:"◱"},{id:"approvals",en:"Approvals",ja:"承認",icon:"✓"},{id:"policy",en:"Policy Studio",ja:"ポリシースタジオ",icon:"⚙"},{id:"proposals",en:"Proposals",ja:"提案書",icon:"▤"},{id:"evidence",en:"Evidence",ja:"エビデンス",icon:"◈"},{id:"engagements",en:"Engagements",ja:"エンゲージメント",icon:"◎"},{id:"portfolio",en:"Portfolio",ja:"ポートフォリオ",icon:"▦"},{id:"insights",en:"Insights",ja:"インサイト",icon:"✦"},{id:"settings",en:"Settings",ja:"設定",icon:"⚒"},{id:"help",en:"Help",ja:"ヘルプ",icon:"?"}];
+
+const RCOLS=[{id:"sales",en:"Sales",ja:"営業"},{id:"desk",en:"Desk",ja:"デスク"},{id:"lead",en:"Lead",ja:"リード"},{id:"owner",en:"Owner",ja:"オーナー"},{id:"exec",en:"Exec",ja:"経営"},{id:"admin",en:"Admin",ja:"管理"}];
+const SURF=[
+  {id:"workspace",en:"Deal Workspace & pricing",ja:"案件ワークスペース・価格",perm:[2,2,1,1,1,1]},
+  {id:"approvals",en:"Approvals & overrides",ja:"承認・オーバーライド",perm:[1,3,0,1,1,1]},
+  {id:"policy",en:"Policy Studio (bands/floors)",ja:"ポリシースタジオ",perm:[1,1,0,3,1,1]},
+  {id:"rates",en:"Rate cards & LLM prices",ja:"レート・LLM価格",perm:[0,1,0,3,1,2]},
+  {id:"proposals",en:"Proposals (customer-facing)",ja:"提案書（顧客向け）",perm:[2,1,1,0,1,1]},
+  {id:"evidence",en:"Evidence capture",ja:"エビデンス記録",perm:[0,1,2,0,1,1]},
+  {id:"portfolio",en:"Portfolio & analytics",ja:"ポートフォリオ・分析",perm:[1,1,1,1,1,1]},
+  {id:"admin",en:"Admin & user management",ja:"管理・ユーザー管理",perm:[0,0,0,0,0,3]},
+];
+const USERS=[
+  {av:"LD",name:"Lena Duarte",email:"lena.d@nuvear.com",role:"owner",active:"2m ago",status:"active"},
+  {av:"DR",name:"Dana Rivera",email:"dana.r@nuvear.com",role:"desk",active:"1h ago",status:"active"},
+  {av:"AT",name:"Aiko Tanaka",email:"aiko.t@nuvear.com",role:"lead",active:"18m ago",status:"active"},
+  {av:"SK",name:"Sam Keller",email:"sam.k@nuvear.com",role:"sales",active:"3h ago",status:"active"},
+  {av:"CN",name:"Chris Novak",email:"chris.n@nuvear.com",role:"exec",active:"yesterday",status:"active"},
+  {av:"MR",name:"Marco Rossi",email:"marco.r@nuvear.com",role:"sales",active:"pending",status:"invited"},
+];
+
+class Component extends DCLogic{
+  constructor(props){
+    super(props);
+    const mx={};SURF.forEach(s=>{mx[s.id]={};RCOLS.forEach((r,i)=>mx[s.id][r.id]=s.perm[i]);});
+    this.state={
+      lang:props.locale==="ja"?"ja":"en",
+      glass:["full","reduced","opaque"].includes(props.intensity)?props.intensity:"full",
+      theme:props.theme==="dark"?"dark":"light",
+      nav:"settings",section:"access",editAccess:false,matrix:mx,
+      users:USERS.map(u=>({...u})),
+      notif:{verdict:true,approval:true,dispute:true,digest:false},
+      toast:null,
+    };
+  }
+  glassBase(){const g=this.state.glass;
+    if(g==="opaque")return{background:"rgba(22,36,61,0.98)",border:"1px solid rgba(255,255,255,0.10)"};
+    if(g==="reduced")return{backdropFilter:"blur(10px) saturate(130%)",WebkitBackdropFilter:"blur(10px) saturate(130%)",background:"rgba(22,36,61,0.82)",border:"1px solid rgba(255,255,255,0.12)"};
+    return{backdropFilter:"blur(22px) saturate(160%)",WebkitBackdropFilter:"blur(22px) saturate(160%)",background:"rgba(22,36,61,0.55)",border:"1px solid rgba(255,255,255,0.14)"};}
+  toastMsg(m){this._tt=(this._tt||0)+1;const t=this._tt;this.setState({toast:m});setTimeout(()=>{if(this._tt===t)this.setState({toast:null});},2600);}
+  componentWillUnmount(){this._tt=-1;}
+  cycle(sid,rid){this.setState(s=>({matrix:{...s.matrix,[sid]:{...s.matrix[sid],[rid]:(s.matrix[sid][rid]+1)%4}}}));this.toastMsg(this.state.lang==="ja"?"権限を更新（未保存）":"Permission updated (unsaved)");}
+
+  renderVals(){
+    const{lang,glass,section}=this.state;const ja=lang==="ja";const theme=this.state.theme;const dark=theme==="dark";const gb=this.glassBase();const ea=this.state.editAccess;
+    const T={en:{search:"Search deals, quotes, engagements",glassMode:"Glass",theme:"Theme",kickerLbl:"ADMINISTRATION",settings:"Settings",
+      mAccess:"Access matrix",mTeam:"Team members",mInteg:"Integrations",mPrefs:"Preferences",
+      accessTitle:"Role access matrix",accessSub:"What each role can do on every surface. Only the pricing owner edits policy; only admins manage users.",editOn:"Editing permissions",editOff:"Edit permissions",
+      lvNone:"No access",lvRead:"Read",lvEdit:"Edit",lvPublish:"Publish / approve",
+      teamTitle:"Team members",teamSub:"Assign roles. Role drives every access decision above.",invite:"Invite member",cName:"Member",cRole:"Role",cActive:"Last active",cStatus:"Status",stActive:"Active",stInvited:"Invited",
+      integTitle:"Integrations",integSub:"Systems DealSpine reads from and writes to.",manage:"Manage",connect:"Connect",connected:"Connected",notConnected:"Not connected",
+      prefTitle:"Preferences",prefSub:"Defaults applied to new sessions on this account.",langDefault:"Default language",glassDefault:"Default glass intensity",a11yNote:"DealSpine always honors your OS reduced-transparency, reduced-motion and increased-contrast settings, regardless of this default.",notifications:"Notifications"},
+      ja:{search:"案件・見積・エンゲージメントを検索",glassMode:"ガラス",theme:"テーマ",kickerLbl:"管理",settings:"設定",
+      mAccess:"アクセスマトリクス",mTeam:"チームメンバー",mInteg:"連携",mPrefs:"環境設定",
+      accessTitle:"ロールアクセスマトリクス",accessSub:"各ロールが各画面でできること。ポリシー編集はオーナーのみ、ユーザー管理は管理者のみ。",editOn:"権限を編集中",editOff:"権限を編集",
+      lvNone:"アクセス不可",lvRead:"閲覧",lvEdit:"編集",lvPublish:"公開・承認",
+      teamTitle:"チームメンバー",teamSub:"ロールを割り当て。上記のアクセスはすべてロールで決まります。",invite:"メンバーを招待",cName:"メンバー",cRole:"ロール",cActive:"最終アクティブ",cStatus:"状態",stActive:"有効",stInvited:"招待済み",
+      integTitle:"連携",integSub:"DealSpine が読み書きするシステム。",manage:"管理",connect:"接続",connected:"接続済み",notConnected:"未接続",
+      prefTitle:"環境設定",prefSub:"このアカウントの新規セッションに適用される既定値。",langDefault:"既定の言語",glassDefault:"既定のガラス強度",a11yNote:"DealSpine はこの既定値に関わらず、OS の透明度低減・視差効果低減・コントラスト強化の設定を常に尊重します。",notifications:"通知"}}[lang];
+
+    const kicker=ja?"color:#C77F1A;font-size:11.5px;font-weight:700":"color:#C77F1A;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase";
+    const card="background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:12px;padding:18px;box-shadow:0 1px 2px rgba(11,18,32,0.06)";
+    const gBar=toStr(gb)+";position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;padding:12px 20px;box-shadow:0 6px 24px rgba(11,18,32,.20)";
+    const gRail=toStr(gb)+";position:sticky;top:64px;align-self:flex-start;height:calc(100vh - 64px);width:214px;flex:none;display:flex;flex-direction:column;gap:3px;padding:16px 12px;box-shadow:0 8px 30px rgba(11,18,32,.18)";
+    const navItems=NAV.map(n=>{const a=n.id===this.state.nav;return{...n,label:ja?n.ja:n.en,href:n.id==="settings"?"#":hrefFor(n.id),current:a?"page":undefined,style:"display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:10px;border:none;cursor:pointer;text-align:left;text-decoration:none;font-size:13px;font-weight:"+(a?"700":"500")+";font-family:inherit;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")+";position:relative",dotStyle:a?"position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:99px;background:"+GOLD:"display:none"};});
+    const langs=[{id:"en",label:"EN"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{...l,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:99px;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const glassStops=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:left;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+
+    const themeStops=[{id:"light",en:"Light",ja:"ライト"},{id:"dark",en:"Dark",ja:"ダーク"}].map(x=>{const a=x.id===theme;return{label:ja?x.ja:x.en,active:a,onClick:()=>this.setState({theme:x.id}),style:"flex:1;border:none;cursor:pointer;font-family:inherit;font-size:11px;font-weight:"+(a?"700":"500")+";padding:6px 8px;border-radius:8px;text-align:center;color:"+(a?"#16243D":"#D9E6F7")+";background:"+(a?GOLD:"transparent")};});
+    const gTab=toStr(gb)+";position:fixed;left:0;right:0;bottom:0;z-index:50;justify-content:space-around;align-items:stretch;padding:8px 4px;box-shadow:0 -6px 24px rgba(11,18,32,.28)";
+    const tabItems=["home","workspace","approvals","evidence","portfolio"].map(id=>{const n=NAV.find(x=>x.id===id);return{icon:n.icon,label:ja?n.ja:n.en,href:hrefFor(id),current:undefined,style:"flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:10px;text-decoration:none;color:#C3D2E8;font-family:inherit"};});
+    const menuDef=[["access","mAccess","▦"],["team","mTeam","◎"],["integ","mInteg","⚿"],["prefs","mPrefs","⚒"]];
+    const menu=menuDef.map(([id,k,icon])=>{const a=id===section;return{label:T[k],icon,current:a?"true":undefined,onClick:()=>this.setState({section:id}),style:"display:flex;align-items:center;gap:10px;width:100%;text-align:left;border:none;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:"+(a?"800":"600")+";padding:10px 12px;border-radius:9px;color:"+(a?"#16243D":"var(--muted,#6B7A93)")+";background:"+(a?"rgba(232,163,61,.12)":"transparent")};});
+
+    // access matrix grid
+    const lvMeta=l=>[["—","var(--faint,#6B7A93)","var(--track,#F2F6FC)"],["R","#3A5F94","rgba(120,150,190,.16)"],["E",GOLDD,"rgba(232,163,61,.16)"],["P",GREEN,"rgba(78,138,90,.14)"]][l];
+    const headBase="display:flex;align-items:center;font-size:10.5px;font-weight:800;color:var(--ink,#16243D);padding:8px 6px;background:var(--th,#EEF4FC);border-radius:7px;justify-content:center;white-space:nowrap";
+    const gridCells=[];
+    gridCells.push({text:ja?"画面 / ロール":"Surface / role",style:"display:flex;align-items:center;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--faint,#9AA9C0);padding:8px 6px"});
+    RCOLS.forEach(r=>gridCells.push({text:ja?r.ja:r.en,style:headBase}));
+    SURF.forEach(s=>{
+      gridCells.push({text:ja?s.ja:s.en,style:"display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--ink,#16243D);padding:9px 8px;background:var(--surface-alt,#F8FBFF);border-radius:7px"});
+      RCOLS.forEach(r=>{const l=this.state.matrix[s.id][r.id];const[ch,c,bg]=lvMeta(l);
+        gridCells.push({text:ch,role:ea?"button":undefined,tab:ea?"0":undefined,aria:(ja?s.ja:s.en)+" · "+(ja?r.ja:r.en),
+          onClick:ea?(()=>this.cycle(s.id,r.id)):(()=>{}),
+          style:"display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;font-variant-numeric:tabular-nums;padding:10px 6px;border-radius:7px;color:"+c+";background:"+bg+(ea?";cursor:pointer;box-shadow:inset 0 0 0 1px rgba(232,163,61,.35)":"")});});
+    });
+    const gridStyle="display:grid;grid-template-columns:minmax(180px,1.5fr) repeat(6,minmax(54px,1fr));gap:6px;min-width:640px";
+    const legend=[[0,"lvNone"],[1,"lvRead"],[2,"lvEdit"],[3,"lvPublish"]].map(([l,k])=>{const[ch,c,bg]=lvMeta(l);return{k:ch,label:T[k],chip:"width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;font-weight:800;color:"+c+";background:"+bg};});
+    const editBtnLabel=ea?T.editOn:T.editOff;
+    const editBtnStyle=ea?"display:flex;align-items:center;gap:7px;border:none;border-radius:99px;padding:8px 15px;font-size:12px;font-weight:800;font-family:inherit;background:linear-gradient(135deg,#E8A33D,#C77F1A);color:#16243D;cursor:pointer":"display:flex;align-items:center;gap:7px;background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:99px;padding:8px 15px;font-size:12px;font-weight:700;font-family:inherit;color:var(--ink2,#3C4C66);cursor:pointer";
+
+    // team
+    const roleOptions=RCOLS.map(r=>({id:r.id,label:{sales:ja?"営業 (AE)":"Sales (AE)",desk:ja?"ディールデスク":"Deal Desk",lead:ja?"エンゲージメントリード":"Engagement Lead",owner:ja?"プライシングオーナー":"Pricing Owner",exec:ja?"リーダーシップ":"Leadership",admin:ja?"管理者":"Admin"}[r.id]}));
+    const roleLabel=id=>roleOptions.find(o=>o.id===id).label;
+    const th="text-align:left;padding:9px 12px;background:var(--th,#EEF4FC);color:var(--ink,#16243D);font-weight:700;font-size:10.5px;letter-spacing:.03em;border-bottom:2px solid var(--border,#D9E6F7);white-space:nowrap";
+    const userCols=[["cName"],["cRole"],["cActive"],["cStatus"]].map(([k],i)=>({label:T[k],style:(i===3?"text-align:center;":"")+th}));
+    const users=this.state.users.map((u,i)=>{const inv=u.status==="invited";return{av:u.av,name:u.name,email:u.email,role:u.role,active:u.active,
+      onRole:e=>{const v=e.target.value;this.setState(s=>({users:s.users.map((x,j)=>j===i?{...x,role:v}:x)}));this.toastMsg(ja?(u.name+" のロールを更新"):(u.name+"'s role updated"));},
+      avStyle:"width:30px;height:30px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;background:#24385C",
+      trStyle:"border-bottom:1px solid var(--hairline,#F0F4FA);background:"+(i%2?"var(--row-alt,#FBFDFF)":"var(--row,#fff)"),
+      statusLabel:inv?T.stInvited:T.stActive,statusPill:"font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:99px;color:"+(inv?GOLDD:GREEN)+";background:"+(inv?"rgba(232,163,61,.16)":"rgba(78,138,90,.14)")};});
+
+    // integrations
+    const INTEG=[
+      {id:"sap",icon:"S/4",name:"SAP S/4HANA",descEn:"Reads project actuals, rates and cost centers.",descJa:"プロジェクト実績・レート・コストセンターを読み取り。",connected:true},
+      {id:"sso",icon:"⚿",name:ja?"SSO · Okta":"SSO · Okta",descEn:"SAML single sign-on and role provisioning.",descJa:"SAML シングルサインオンとロール割り当て。",connected:true},
+      {id:"llm",icon:"✦",name:ja?"LLM ゲートウェイ":"LLM Gateway",descEn:"5 models priced in Policy Studio power Insights.",descJa:"ポリシースタジオで価格設定した5モデルがインサイトを駆動。",connected:true},
+      {id:"slack",icon:"◍",name:"Slack",descEn:"Push verdict and approval alerts to channels.",descJa:"判定・承認アラートをチャンネルへ通知。",connected:false},
+    ];
+    const integrations=INTEG.map(i=>({icon:i.icon,name:i.name,desc:ja?i.descJa:i.descEn,
+      statusLabel:i.connected?T.connected:T.notConnected,
+      pill:"font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:99px;color:"+(i.connected?GREEN:MUTED)+";background:"+(i.connected?"rgba(78,138,90,.14)":"rgba(107,122,147,.14)"),
+      btnLabel:i.connected?T.manage:T.connect,
+      onClick:()=>this.toastMsg((i.connected?(ja?"管理を開く: ":"Manage ")+i.name:(ja?"接続: ":"Connect ")+i.name)),
+      btnStyle:i.connected?"margin-top:14px;width:100%;background:var(--surface,#fff);border:1px solid var(--border,#D9E6F7);border-radius:9px;padding:9px;font-size:12px;font-weight:700;font-family:inherit;color:var(--ink2,#3C4C66);cursor:pointer":"margin-top:14px;width:100%;background:transparent;border:1px solid var(--border,#D9E6F7);border-radius:9px;padding:9px;font-size:12px;font-weight:800;font-family:inherit;color:var(--ink,#16243D);cursor:pointer"}));
+
+    // prefs
+    const langDefaults=[{id:"en",label:"English"},{id:"ja",label:"日本語"}].map(l=>{const a=l.id===lang;return{label:l.label,active:a,onClick:()=>this.setState({lang:l.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:"+(a?"800":"600")+";padding:8px 18px;border-radius:99px;color:"+(a?"#16243D":"#6B7A93")+";background:"+(a?"var(--surface,#fff)":"transparent")+(a?";box-shadow:0 1px 3px rgba(11,18,32,.16)":"")};});
+    const glassDefaults=[{id:"full",en:"Full",ja:"フル"},{id:"reduced",en:"Reduced",ja:"低減"},{id:"opaque",en:"Opaque",ja:"不透明"}].map(g=>{const a=g.id===glass;return{label:ja?g.ja:g.en,active:a,onClick:()=>this.setState({glass:g.id}),style:"border:none;cursor:pointer;font-family:inherit;font-size:12px;font-weight:"+(a?"800":"600")+";padding:8px 18px;border-radius:99px;color:"+(a?"#16243D":"#6B7A93")+";background:"+(a?"var(--surface,#fff)":"transparent")+(a?";box-shadow:0 1px 3px rgba(11,18,32,.16)":"")};});
+    const notifDef=[["verdict",ja?"判定の変更":"Verdict changes",ja?"担当案件のガバナンス判定":"Governance verdict on my deals"],["approval",ja?"承認の割り当て":"Approvals assigned",ja?"承認キューに追加されたとき":"When added to the approval queue"],["dispute",ja?"エビデンスの係争":"Evidence disputed",ja?"記録したユニットが却下されたとき":"When a unit I logged is challenged"],["digest",ja?"週次ダイジェスト":"Weekly digest",ja?"ポートフォリオとインサイトの要約":"Portfolio + Insights summary"]];
+    const notifs=notifDef.map(([id,label,desc])=>{const on=this.state.notif[id];return{label,desc,on:on?"true":"false",
+      onClick:()=>{this.setState(s=>({notif:{...s.notif,[id]:!s.notif[id]}}));},
+      track:"position:relative;width:42px;height:24px;flex:none;border:none;border-radius:99px;cursor:pointer;transition:background .18s;background:"+(on?GREEN:"#C7D3E4"),
+      knob:"position:absolute;top:3px;left:"+(on?"21px":"3px")+";width:18px;height:18px;border-radius:50%;background:#fff;transition:left .18s;box-shadow:0 1px 3px rgba(0,0,0,.25)"};});
+
+    const toastStyle=toStr(gb)+";position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:70;display:flex;align-items:center;gap:9px;padding:12px 20px;border-radius:99px;color:#fff;font-size:13px;font-weight:700;box-shadow:0 10px 34px rgba(11,18,32,.4);animation:ds-pop .3s cubic-bezier(.2,.7,.2,1)";
+
+    return{
+      t:T,kicker,card,gBar,gRail,gTab,navItems,tabItems,langs,glassStops,themeStops,menu,
+      pageStyle:(dark?"--surface:#182A47;--surface-alt:#1E3152;--border:rgba(255,255,255,.10);--ink:#EAF1FB;--ink2:#C3D2E8;--muted:#93A6C4;--faint:#708AAE;--hairline:rgba(255,255,255,.07);--row:#182A47;--row-alt:#1D3053;--th:#21365A;--track:#263C5F;--panel-border:rgba(232,163,61,.28)":"--surface:#ffffff;--surface-alt:#EEF4FC;--border:#D9E6F7;--ink:#16243D;--ink2:#3C4C66;--muted:#6B7A93;--faint:#9AA9C0;--hairline:#F0F4FA;--row:#ffffff;--row-alt:#FBFDFF;--th:#EEF4FC;--track:#EEF4FC;--panel-border:transparent")+";min-height:100vh;font-family:"+(ja?"'Noto Sans JP',":"")+"'Inter',system-ui,sans-serif;background:"+(dark?"radial-gradient(1100px 560px at 82% -8%, #1b2d4c, #0d1830 62%)":"radial-gradient(1100px 560px at 82% -8%, #dbe8f8, #EEF4FC 62%)")+";color:var(--ink,#16243D);line-height:"+(ja?"1.7":"1.5"),
+      h1Style:"font-size:26px;font-weight:800;margin:6px 0 0;letter-spacing:-.01em;color:var(--ink,#16243D)",
+      sub:ja?"アクセス・チーム・連携・環境設定":"Access, team, integrations and preferences",
+      secAccess:section==="access",secTeam:section==="team",secInteg:section==="integ",secPrefs:section==="prefs",
+      gridCells,gridStyle,legend,editActive:ea?"true":undefined,editBtnLabel,editBtnStyle,onToggleEdit:()=>this.setState({editAccess:!ea}),
+      userCols,users,roleOptions,onInvite:()=>this.toastMsg(ja?"招待リンクを送信しました":"Invite link sent"),
+      integrations,langDefaults,glassDefaults,notifs,
+      toast:this.state.toast,toastStyle,
+    };
+  }
+}
+</script>
+</body>
+</html>
