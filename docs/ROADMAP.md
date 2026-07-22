@@ -22,6 +22,8 @@ The goal: move Evidence and Engagements from placeholders to function, so the nu
 
 ## Production-hardening backlog (do before real customer data / go-live)
 
+> The complete, workstream-organized activity list to take `v1.0.0-pilot` → GA `v1.0.0` (SSO, full Japanese, live LLM, data/ops, security, accessibility) is in **`docs/PRODUCTION-READINESS.md`**. The summary below is the short version.
+
 These are known gaps in the pilot build, ordered by importance:
 
 1. **Real authentication.** Replace the dev-login user picker with SSO (SAML/OIDC) + SCIM. The role model and guards are already in place.

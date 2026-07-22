@@ -15,6 +15,7 @@ New here (human or AI)? **Read [`CLAUDE.md`](CLAUDE.md) first** — it orients y
 | **`app/`** | **DealSpine — the running, tested application (Phase 1).** |
 | `guide/DealSpine-Guide.md` | End-user book: all personas, the case example, real screenshots. |
 | `docs/AS-BUILT.md` · `docs/DECISIONS.md` · `docs/ROADMAP.md` | What's built vs the PRD · why · what's next. |
+| `docs/PRODUCTION-READINESS.md` · `CHANGELOG.md` | The activity list from `v1.0.0-pilot` → GA `v1.0.0` · release history. |
 | `app/QA-BUG-REPORT.md` | The multi-agent bug hunt and its 10 fixes (all resolved). |
 | `backups/` | Pre-red-team originals (reference only). |
 
