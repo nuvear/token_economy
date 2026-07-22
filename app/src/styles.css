@@ -1,0 +1,54 @@
+/* Tiny global stylesheet — everything else is inline styles from src/tokens.ts.
+   Values mirror design/design-tokens.json (the visual authority). */
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  font-size: 14px;
+  color: var(--ink, #16243D);
+  background: var(--page-bg, #EEF4FC);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tabular numerals on EVERY figure (design rule). */
+.num, td.num, .figure { font-variant-numeric: tabular-nums; }
+
+/* Gold focus ring, 2px, offset 2px. */
+:focus-visible {
+  outline: 2px solid #E8A33D;
+  outline-offset: 2px;
+}
+
+/* Uppercase tracked kicker — section labels only, never body. */
+.kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: #C77F1A;
+}
+/* JA kicker: same color/size, normal tracking, no uppercase. */
+.kicker[lang="ja"] { letter-spacing: normal; text-transform: none; }
+
+[lang="ja"] { line-height: 1.7; }
+
+/* Reduced transparency: glass converges on the opaque stop. */
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    backdrop-filter: none !important;
+    background: rgba(22, 36, 61, 0.98) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* Rail collapses under 860px (breakpoint from tokens). */
+@media (max-width: 860px) {
+  .ds-rail { display: none; }
+}
