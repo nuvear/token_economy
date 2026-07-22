@@ -47,7 +47,7 @@ The heart of it is a pricing **engine** that turns a countable unit of work (a r
 
 ## The closed loop: Prepare → Track → Learn
 
-- **Prepare.** Sales builds a quote in the Deal Workspace, the engine prices it and runs 34 policy gates, and — only if the quote clears governance or an approved exception exists — a customer‑safe proposal is generated.
+- **Prepare.** Sales builds a quote in the Deal Workspace, the engine prices it and runs 33 policy gates, and — only if the quote clears governance or an approved exception exists — a customer‑safe proposal is generated.
 - **Track.** Delivery logs one record per unit of work; the platform compares sold assumptions to delivered actuals.
 - **Learn.** Measured coverage, effort, rework and token numbers feed back into the parameters the next quote uses, and accumulated best practice becomes reusable.
 
@@ -181,7 +181,7 @@ with three numbers beneath it: **Naive floor d\* 32.5% · Current d 25.0% · Ris
 
 This is the whole point. The deck's naive story says a 25% discount is "safely inside the 32.5% floor." DealSpine applies the real risk stack — rework reserve, warranty reserve, evidence uncertainty, commercial costs — and the honest floor is **12.5%**. A 25% discount is *past* it. So the quote is **blocked** and routed to the deal desk. A rep cannot simply sign it.
 
-Sam clicks **Show gate detail** to see exactly which of the 34 gates failed and why.
+Sam clicks **Show gate detail** to see exactly which of the 33 gates failed and why.
 
 ![The governance panel expanded to the full gate list — every policy and evidence check with its pass / warning / fail state.](images/04-workspace-gates.png)
 

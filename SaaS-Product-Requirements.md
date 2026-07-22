@@ -1,5 +1,7 @@
 # DealSpine — Internal Platform Requirements
 
+> **This is the target PRD, not the current state.** Phase 1 is built and running. For what actually exists and where the implementation intentionally deviates from this document, read **`docs/AS-BUILT.md`**; for *why* those choices were made, **`docs/DECISIONS.md`**; for what's next, **`docs/ROADMAP.md`**. New to the repo? Start with **`CLAUDE.md`**.
+
 **AI-Delivery Pricing & Evidence Platform — internal tool for the advisory practice**
 
 | | |
