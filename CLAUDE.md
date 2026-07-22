@@ -97,4 +97,8 @@ These are enforced by tests; a change that violates one should fail `npm test`. 
 
 ## What to do next / where to pick up
 
-See `docs/ROADMAP.md`. In short: Phase 2 = the evidence loop (unit capture, sold-vs-actual, calibration); Phase 3 = IP registry + the MCP knowledge base; plus a production-hardening backlog (real SSO, the `verify-bid` endpoint that replaces the current clamp, Japanese screens). `docs/AS-BUILT.md` lists the specific deviations from the PRD you should know about before extending anything.
+- `docs/ROADMAP.md` — Phase 2 (the evidence loop) and Phase 3 (IP registry + MCP knowledge base).
+- `docs/PRODUCTION-READINESS.md` — the full `v1.0.0-pilot → GA v1.0.0` activity list: SSO+SCIM, full Japanese, live LLM + secrets, data/ops, security, accessibility, and (groups 10–11) **white-label packaging + time-bound licensing**.
+- `docs/AS-BUILT.md` — the specific deviations from the PRD to know before extending anything.
+
+**Commercial direction (D17):** the product is moving to white-label distribution — each customer gets a *separately packaged single-tenant build* (e.g., Nuvear → Minervia Partners) under a time-bound license. This deliberately keeps the current single-company architecture (no multi-tenancy). Two things follow for anyone touching the code: **(1) don't hardcode brand identity** — the product name ("DealSpine") and firm identity ("Nuvear", domain, proposal letterhead) will move into a `brand/` config, so route new brand references through it; **(2) licensing** will gate the app. Neither is built yet; both are specified in `docs/PRODUCTION-READINESS.md` groups 10–11.

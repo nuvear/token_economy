@@ -8,8 +8,8 @@ Last updated: 2026-07-23.
 
 ## Product-shape decisions (set before the build)
 
-### D1 · Internal tool, not a commercial SaaS
-DealSpine is built for one advisory practice's own use, not licensed to peers. **Why:** the user scoped it down explicitly; removes multi-tenancy, per-tenant billing, and cross-company benchmark governance from v1. **Consequence:** single-company data model, dev-login/SSO instead of tenant isolation, no benchmark network at launch (kept as a documented future option).
+### D1 · Internal tool, not a commercial SaaS *(superseded by D17 for GA)*
+DealSpine was initially built for one advisory practice's own use, not licensed to peers. **Why:** the user scoped it down; removed multi-tenancy, per-tenant billing, and cross-company benchmark governance from the pilot. **Consequence:** single-company data model, dev-login, no benchmark network at launch. **Update (2026-07-23):** the product direction changed to white-label distribution — see **D17**. The single-company architecture is retained (each customer gets a separate packaged build), so this decision's *simplicity* holds even though its *"internal-only"* framing is superseded.
 
 ### D2 · The deck already publishes the math; the moat is evidence + workflow
 The pricing formulas are openly documented in the deck and the reference JSX. **Why:** secrecy of the formula was never the advantage — the calibrated evidence base and the governance workflow are. **Consequence:** the engine is a straight, readable port (no obfuscation); value is placed in the evidence loop, the governance gates, and (future) the knowledge base.
@@ -64,3 +64,10 @@ The engine uses camelCase field names (matching the JSX, D8); the DB schema is s
 
 ### D16 · `playwright-core` as a dev dependency for tooling
 Added to script curated demo data (`seed-demo.mjs`) and capture guide screenshots (`capture.mjs`) against the real running app. **Why:** authentic governance states and real screenshots beat hand-mocked ones. **Consequence:** a dev-only dependency; the browser binary is cached locally; not needed to run or ship the app.
+
+---
+
+## Commercial-direction decisions (post-pilot)
+
+### D17 · White-label distribution under time-bound licenses *(revises D1)*
+DealSpine will be sold to multiple advisory firms, each running it under **their own brand** (the deploying firm today is Nuvear; a customer such as Minervia Partners must see only their own identity), under a **time-bound license**. **Why:** the product has value beyond one practice; white-labeling and licensing turn it into a sellable asset. **Model:** each customer is a **separately packaged single-tenant build** — not a multi-tenant SaaS — produced by a one-click packaging utility from a per-customer brand config, with a signed license injected at package time. **Consequence (deliberately architecture-preserving):** the existing single-company design (D1, D5) is kept intact — no multi-tenancy, no shared database, no tenant-isolation complexity; each sale is an isolated branded, licensed deployment. What this *adds* is: (a) a brand-token system so no identity is hardcoded, (b) the packaging utility that rebrands code + customer docs and runs the test gate, and (c) a time-bound licensing layer with a graceful, data-preserving expiry ladder. Full activity list: `docs/PRODUCTION-READINESS.md` groups 10–11. **Open question for the vendor:** whether the platform name "DealSpine" is also white-labeled per customer or kept as the vendor's product brand (the schema supports either — `productName` is a brand token).

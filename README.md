@@ -26,6 +26,8 @@ cd app && npm install && npm run seed && npm run dev
 # open http://localhost:8790 · npm test = the 161-test merge gate
 ```
 
-## Status (2026-07-23)
+## Status
 
-Phase 1 built, 161 tests green, running. Evidence/Engagements are Phase-2 placeholders; insights use an offline mock until real LLM keys are added; UI is English (Japanese plumbing present, screens later). Repo `nuvear/token_economy`, branch `main`, is current with code and docs.
+**`v1.0.0-pilot`** (2026-07-23) — Phase 1 built, 161 tests green, running. Evidence/Engagements are Phase-2 placeholders; insights use an offline mock until real LLM keys are added; UI is English (Japanese plumbing present, screens later). Repo `nuvear/token_economy`, branch `main`, is current with code and docs; tagged `v1.0.0-pilot`.
+
+**Direction:** moving toward white-label distribution — each customer runs a separately packaged, branded, time-bound-licensed single-tenant build (see `docs/DECISIONS.md` D17 and `docs/PRODUCTION-READINESS.md` groups 10–11). The path to GA `v1.0.0` (SSO, full Japanese, live LLM, white-label + licensing, hardening) is in `docs/PRODUCTION-READINESS.md`.

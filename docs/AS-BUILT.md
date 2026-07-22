@@ -32,6 +32,14 @@
 9. **Numeric input validation and error-response hygiene** were added beyond the PRD (D13) — no 500s from bad input, no stack/path leakage.
 10. **A camelCase↔snake_case seam** exists at the offering boundary (D15) — an implementation detail the PRD didn't anticipate; documented and tested.
 
+## Not yet built — required for commercial GA (D17)
+
+The product direction moved to white-label distribution under time-bound licenses (`docs/DECISIONS.md` D17). None of this exists in the pilot; all is specified in `docs/PRODUCTION-READINESS.md` groups 10–11:
+
+- **Brand-token system.** Product name ("DealSpine") and firm identity ("Nuvear", domain, proposal letterhead) are currently **hardcoded across ~20 files**; GA requires centralizing them into a `brand/` config read by a runtime brand context.
+- **One-click packaging utility.** A command that rebrands code + customer docs from a per-customer brand config, injects a license, runs the test gate, and emits a versioned distributable.
+- **Time-bound licensing.** A signed, offline-verifiable license with a graceful, data-preserving expiry ladder and entitlement/seat enforcement.
+
 ## What exists that the PRD didn't specify
 
 - **The offline mock provider** (D11) — a genuine feature: full insight functionality with zero API keys, transparently labelled.
