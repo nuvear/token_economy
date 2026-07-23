@@ -34,11 +34,12 @@
 
 ## Not yet built — required for commercial GA (D17)
 
-The product direction moved to white-label distribution under time-bound licenses (`docs/DECISIONS.md` D17). None of this exists in the pilot; all is specified in `docs/PRODUCTION-READINESS.md` groups 10–11:
+The product direction moved to white-label distribution as **full source** under time-bound licenses, with the customer integrating the engine (`docs/DECISIONS.md` D17–D18). None of this exists in the pilot; all is specified in `docs/PRODUCTION-READINESS.md` groups 10–12:
 
 - **Brand-token system.** Product name ("DealSpine") and firm identity ("Nuvear", domain, proposal letterhead) are currently **hardcoded across ~20 files**; GA requires centralizing them into a `brand/` config read by a runtime brand context.
-- **One-click packaging utility.** A command that rebrands code + customer docs from a per-customer brand config, injects a license, runs the test gate, and emits a versioned distributable.
-- **Time-bound licensing.** A signed, offline-verifiable license with a graceful, data-preserving expiry ladder and entitlement/seat enforcement.
+- **One-click packaging utility.** A command that rebrands code + customer docs from a per-customer brand config, injects a license, runs the test gate, and emits a **branded source distribution** (git bundle/tarball) with an integrity manifest.
+- **Time-bound licensing (legal-primary).** Since source is delivered, the commercial license agreement is the primary control; the technical layer is a signed, offline-verifiable license with a graceful, data-preserving expiry ladder, entitlement/seat enforcement, and tamper-evidence — not DRM.
+- **Engine integration.** A stable, versioned, documented public engine API and integration modes (embed the library / REST / headless service), with the license layer kept separable from the engine module.
 
 ## What exists that the PRD didn't specify
 
